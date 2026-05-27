@@ -6,8 +6,9 @@ using UnityEngine;
 /// </summary>
 public class CellContainer : MonoBehaviour
 {
-    [Header("容器模式")]
     public enum Mode { Scroll, Page, Fixed }
+
+    [Header("容器模式")]
     public Mode mode = Mode.Scroll;
 
     [Header("Grid 参数")]
