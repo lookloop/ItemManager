@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Lookloop.ItemManager
 {
-public static class 长按开始
+public static class B_长按开始
 {
     public static void Execute(UIResponder _this)
     {

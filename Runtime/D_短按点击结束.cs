@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Lookloop.ItemManager
 {
-public static class 短按点击结束
+public static class D_短按点击结束
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
     {

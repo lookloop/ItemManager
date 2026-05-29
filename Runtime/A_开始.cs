@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
-public static class 开始点击
+public static class A_开始
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
     {
@@ -37,7 +37,7 @@ public static class 开始点击
     public static IEnumerator 计时器(UIResponder _this)
     {
         yield return new WaitForSeconds(_this.timerValue);
-        长按开始.Execute(_this);
+        B_长按开始.Execute(_this);
     }
 }
 }

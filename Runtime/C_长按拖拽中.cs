@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
-public static class 长按拖拽中
+public static class C_长按拖拽中
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
     {

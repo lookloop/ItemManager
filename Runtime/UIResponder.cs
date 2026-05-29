@@ -19,7 +19,7 @@ public partial class UIResponder : MonoBehaviour,
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        开始点击.Execute(this, eventData);
+        A_开始.Execute(this, eventData);
     }
 
     public virtual void OnBeginDrag(PointerEventData eventData)
@@ -42,9 +42,9 @@ public partial class UIResponder : MonoBehaviour,
         if (eventData.pointerId != onlyResponder) return;
 
         if (isLongPress)
-            长按拖拽中.Execute(this, eventData);
+            C_长按拖拽中.Execute(this, eventData);
         else
-            短按拖拽中.Execute(this, eventData);
+            C_短按拖拽中.Execute(this, eventData);
     }
 
     public virtual void OnPointerUp(PointerEventData eventData)
@@ -60,16 +60,16 @@ public partial class UIResponder : MonoBehaviour,
         if (isLongPress)
         {
             if (isDrag)
-                长按拖拽结束.Execute(this, eventData);
+                D_长按拖拽结束.Execute(this, eventData);
             else
-                长按点击结束.Execute(this, eventData);
+                D_长按点击结束.Execute(this, eventData);
         }
         else
         {
             if (isDrag)
-                短按拖拽结束.Execute(this, eventData);
+                D_短按拖拽结束.Execute(this, eventData);
             else
-                短按点击结束.Execute(this, eventData);
+                D_短按点击结束.Execute(this, eventData);
         }
 
         isDrag = false;
