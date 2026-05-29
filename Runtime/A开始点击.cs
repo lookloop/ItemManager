@@ -37,7 +37,7 @@ public static class 开始点击
     public static IEnumerator 计时器(UIResponder _this)
     {
         yield return new WaitForSeconds(_this.timerValue);
-        _this.OnLongPressBegin?.Invoke();
+        长按开始.Execute(_this);
     }
 }
 }

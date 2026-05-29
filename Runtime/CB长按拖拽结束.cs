@@ -36,10 +36,7 @@ public static class 长按拖拽结束
                     _this.sourceItem.transform.localScale = Vector3.one;
                     if (_this.sourceItem.transform is RectTransform drt) drt.anchoredPosition = Vector2.zero;
 
-                    // 3D换装回调（委托）
-                    int equipTypeIndex = UIResponder.TypeToEquipIndex[draggedItem.Type];
-                    int key3D = UIResponder.TypeTo3DKey[draggedItem.Type];
-                    _this.OnEquipRequest?.Invoke(_this.accountId, equipTypeIndex, key3D);
+                    // TODO: 3D换装 — 外部系统直接读 equippedItems[] 即可
 
                     Debug.Log($"[装备槽] 装备成功: Type={draggedItem.Type} → 槽位{equipSlotIndex}");
                 }

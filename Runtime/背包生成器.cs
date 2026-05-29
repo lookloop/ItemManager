@@ -4,9 +4,9 @@ using UnityEngine.UI;
 namespace Lookloop.ItemManager
 {
 /// <summary>
-/// 自动构建背包层级：面板 → Mask → Grid → Cell
+/// 背包生成器 — 在 UIResponder 下自动构建 背包→Mask→Grid→Cell 完整层级
 /// </summary>
-public static class GridGenerator
+public static class 背包生成器
 {
     private static Sprite _defaultSprite;
 
@@ -30,19 +30,26 @@ public static class GridGenerator
     {
         RectTransform root = _this.transform as RectTransform;
 
-        // ── 1. 背包面板（自身） ──
-        _this.backpackPanel = root;
-        Image panelImg = root.GetComponent<Image>();
-        if (panelImg == null) panelImg = root.gameObject.AddComponent<Image>();
+        // ── 1. 背包面板（子物体，不污染根节点） ──
+        Transform panelT = root.Find("背包");
+        if (panelT == null)
+        {
+            GameObject panelGo = new GameObject("背包", typeof(RectTransform), typeof(Image));
+            panelGo.transform.SetParent(root, false);
+            panelGo.tag = "背包";
+            panelT = panelGo.transform;
+        }
+        _this.backpackPanel = panelT as RectTransform;
+        Image panelImg = panelT.GetComponent<Image>();
         panelImg.sprite = _this.backpackSprite != null ? _this.backpackSprite : DefaultSprite;
         panelImg.type = Image.Type.Sliced;
 
         // ── 2. Mask 子物体 ──
-        Transform maskT = root.Find("Mask");
+        Transform maskT = panelT.Find("Mask");
         if (maskT == null)
         {
             GameObject maskGo = new GameObject("Mask", typeof(RectTransform), typeof(Image), typeof(RectMask2D));
-            maskGo.transform.SetParent(root, false);
+            maskGo.transform.SetParent(panelT, false);
             maskT = maskGo.transform;
         }
         _this.maskTransform = maskT as RectTransform;
