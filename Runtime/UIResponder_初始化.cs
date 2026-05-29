@@ -4,6 +4,12 @@ namespace Lookloop.ItemManager
 {
 public partial class UIResponder
 {
+    void Awake()
+    {
+        if (canvas == null)
+            canvas = GetComponentInParent<Canvas>();
+    }
+
     void Start()
     {
         // rows/cols → cellCount/cellsPerRow 自动换算

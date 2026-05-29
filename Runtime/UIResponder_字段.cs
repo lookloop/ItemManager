@@ -59,7 +59,6 @@ public partial class UIResponder
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public bool isLongPress;
     [HideInInspector] public bool isDrag;
-    [HideInInspector] public int onlyResponder = -1;
 
     [HideInInspector] public Vector2 beginPosition;
     [HideInInspector] public Vector2 endPosition;

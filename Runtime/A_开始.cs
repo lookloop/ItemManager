@@ -9,7 +9,7 @@ public static class A_开始
     public static void Execute(UIResponder _this, PointerEventData eventData)
     {
         //如果是其他手指骚然，直接返回
-        if (_this.onlyResponder != -1) return; 
+        if (eventData.pointerId != 0) return; // 非第一根手指，忽略
         //重置长按状态
         _this.isLongPress = false;
         //隐藏详情面板
@@ -17,8 +17,6 @@ public static class A_开始
         //记录当前按下的物体
         _this.sourceObject = eventData.pointerCurrentRaycast.gameObject;
         
-        //记录当前手指ID并锁定
-        _this.onlyResponder = eventData.pointerId; 
         //启动计时器
         _this.timerCoroutine = _this.StartCoroutine(计时器(_this));
         
