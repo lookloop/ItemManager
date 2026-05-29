@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+namespace Lookloop.ItemManager
+{
 public static class 长按点击结束
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
@@ -11,10 +13,7 @@ public static class 长按点击结束
         ResetSourceItem(_this);
 
         // 结算完成后，清空临时记录
-        _this.sourceObject = null;
-        _this.targetObject = null;
-        _this.sourceItem = null;
-        _this.targetItem = null;
+        _this.ClearDragState();
     }
 
     // 辅助方法：将拖拽物复位回起始格子
@@ -27,4 +26,5 @@ public static class 长按点击结束
             if (_this.sourceItem.transform is RectTransform rt) rt.anchoredPosition = Vector2.zero;
         }
     }
+}
 }

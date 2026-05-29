@@ -3,6 +3,8 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using UnityEngine.UI;
 
+namespace Lookloop.ItemManager
+{
 public partial class UIResponder : MonoBehaviour, 
     IPointerDownHandler, 
     IPointerUpHandler, 
@@ -20,18 +22,16 @@ public partial class UIResponder : MonoBehaviour,
     [Header("计时器")]
     public float timerValue = 0.3f; // 长按判定的时间阈值（秒）
     public float dragDeadzone = 5f;  // 拖拽死区（像素），小于此值不触发 OnBeginDrag
-    public Coroutine timerCoroutine; // 长按计时器协程
+    [HideInInspector] public Coroutine timerCoroutine; // 长按计时器协程
 
     [Header("状态")]
-    public bool isLongPress = false; // 状态标记：当前是否处于长按状态
-    public bool isDrag = false; // 状态标记：当前是否处于拖拽状态
-    public int onlyResponder = -1; // 多点触控锁：记录当前正在操作的手指 ID（-1 表示无操作）
+    [HideInInspector] public bool isLongPress = false;
+    [HideInInspector] public bool isDrag = false;
+    [HideInInspector] public int onlyResponder = -1;
 
     [Header("交互数据记录")]
-    //在canvas下的开始坐标
-    public Vector2 beginPosition; // 记录手指按下时的起手局部坐标
-    //在canvas下的结束坐标
-    public Vector2 endPosition; // 记录手指拖拽中/抬起时的当前局部坐标
+    [HideInInspector] public Vector2 beginPosition;
+    [HideInInspector] public Vector2 endPosition;
 
     [Header("背包自动构建")]
     public bool autoBuild = true;
@@ -41,8 +41,8 @@ public partial class UIResponder : MonoBehaviour,
     public TMPro.TMP_FontAsset itemFont;
 
     [Header("滑动背包功能")]
-    public Vector2 gridPosition; // 记录手指按下时，滑动列表（Grid）的初始坐标
-    public Vector2 backpackPosition; // 记录手指按下时，背包面板的初始坐标
+    [HideInInspector] public Vector2 gridPosition;
+    [HideInInspector] public Vector2 backpackPosition;
     [HideInInspector] public RectTransform gridTransform;
     [HideInInspector] public RectTransform maskTransform;
     [HideInInspector] public RectTransform backpackPanel;
@@ -62,16 +62,14 @@ public partial class UIResponder : MonoBehaviour,
     public float backpackExtraHeight = 40f;
     [Tooltip("Mask Y 位置 (mm)，正=下 负=上")]
     public float maskPosY = -20f;
-    public GameObject[] cellRegistry;
-    public Item[] items;
+    [HideInInspector] public GameObject[] cellRegistry;
+    [HideInInspector] public Item[] items;
 
 
     [Header("拖拽视觉表现")]
-    public GameObject targetItem=null; // 拖拽时生成的镜像物品预制体（可选）
-    public GameObject sourceItem=null; // 长按拖拽时，跟随手指移动的源物品实例
-    public GameObject sourceObject=null; // 记录手指按下时，射线检测到的第一个储物格物体
-    public GameObject targetObject = null; 
-    //阴影挡板来一个
+    [HideInInspector] public GameObject sourceItem;
+    [HideInInspector] public GameObject sourceObject;
+    [HideInInspector] public GameObject targetObject;
     public GameObject shadowItem;
 
     [Header("详情面板")]
@@ -83,18 +81,11 @@ public partial class UIResponder : MonoBehaviour,
     [Header("3D换装联动")]
     public long accountId = 19194472025L;  // 测试账号ID
     public RectTransform[] equipmentSlots; // 4个装备槽: [0]头盔 [1]身甲 [2]护手 [3]护腿
-    public Item[] equippedItems;           // 当前已装备物品数据 (与equipmentSlots对应)
+    [HideInInspector] public Item[] equippedItems;
     // Type→equipTypeIndex 映射: Type 1→2, 2→1, 3→3, 4→4
     public static readonly int[] TypeToEquipIndex = { 0, 2, 1, 3, 4 };
     // Type→3D Addressable Key 映射
     public static readonly int[] TypeTo3DKey = { 0, 1001, 1002, 1003, 1004 };
-
-    
-
-
-
-
-
 
     // 起手式
     public virtual void OnPointerDown(PointerEventData eventData)
@@ -172,4 +163,18 @@ public partial class UIResponder : MonoBehaviour,
         isDrag = false;
         onlyResponder = -1;
     }
+
+    /// <summary>统一清理拖拽临时状态（长按结算分支共用）</summary>
+    public void ClearDragState()
+    {
+        if (shadowItem != null)
+        {
+            shadowItem.SetActive(false);
+            shadowItem.transform.SetParent(canvas != null ? canvas.transform : transform, false);
+        }
+        sourceObject = null;
+        targetObject = null;
+        sourceItem = null;
+    }
+}
 }

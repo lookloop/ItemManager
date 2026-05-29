@@ -3,7 +3,10 @@ using System.IO;
 using UnityEditor;
 #endif
 using UnityEngine;
+using Lookloop.ItemManager;
 
+namespace Lookloop.ItemManager.Editor
+{
 /// <summary>
 /// 编辑器扩展：在 Project 窗口用菜单批量/快速创建 <see cref="ItemTable"/> 资源。
 /// 与资源上右键 Create → ItemTable 相同，均为 CreateInstance + CreateAsset 写入磁盘。
@@ -51,4 +54,5 @@ public static class ItemTableEditorTools
         return string.IsNullOrEmpty(dir) ? "Assets" : dir.Replace("\\", "/");
     }
 #endif
+}
 }

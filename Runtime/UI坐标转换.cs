@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+namespace Lookloop.ItemManager
+{
 public static class UI坐标转换
 {
     /// <summary>
@@ -57,4 +59,5 @@ public static class UI坐标转换
         if (target == null || eventData == null) return Vector2.zero;
         return 屏幕坐标转局部坐标(target, eventData.position, eventData.pressEventCamera);
     }
+}
 }

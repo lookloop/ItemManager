@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+namespace Lookloop.ItemManager
+{
 public partial class UIResponder
 {
     // ── 8个结算分支委托 ──────────────────────────────
@@ -45,4 +47,5 @@ public partial class UIResponder
         OnShortDragEnd  += (e) => 短按拖拽结束.Execute(this, e);
         OnLongDragEnd   += (e) => 长按拖拽结束.Execute(this, e);
     }
+}
 }

@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+namespace Lookloop.ItemManager
+{
 public static class 开始点击
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
@@ -11,7 +13,7 @@ public static class 开始点击
         //重置长按状态
         _this.isLongPress = false;
         //隐藏详情面板
-        _this.Panel.gameObject.SetActive(false);
+        if (_this.Panel != null) _this.Panel.gameObject.SetActive(false);
         //记录当前按下的物体
         _this.sourceObject = eventData.pointerCurrentRaycast.gameObject;
         
@@ -37,4 +39,5 @@ public static class 开始点击
         yield return new WaitForSeconds(_this.timerValue);
         _this.OnLongPressBegin?.Invoke();
     }
+}
 }

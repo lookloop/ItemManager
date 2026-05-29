@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+namespace Lookloop.ItemManager
+{
 /// <summary>
 /// 自动构建背包层级：面板 → Mask → Grid → Cell
 /// </summary>
@@ -80,4 +82,5 @@ public static class GridGenerator
             _this.cellRegistry[i] = cell;
         }
     }
+}
 }

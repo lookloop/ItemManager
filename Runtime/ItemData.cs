@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+namespace Lookloop.ItemManager
+{
 [CreateAssetMenu(fileName = "ItemData", menuName = "ItemManager/ItemData")]
 public class ItemTable : ScriptableObject
 {
@@ -11,4 +13,5 @@ public class ItemTable : ScriptableObject
     public string ItemDescription;
     public Sprite ItemSprite;
     public Sprite GlowSprite; 
+}
 }

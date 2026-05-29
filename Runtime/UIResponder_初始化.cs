@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace Lookloop.ItemManager
+{
 public partial class UIResponder
 {
     void Start()
@@ -17,4 +19,5 @@ public partial class UIResponder
 
         背包初始化.Execute(this);
     }
+}
 }

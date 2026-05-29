@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+namespace Lookloop.ItemManager
+{
 public static class 短按拖拽中
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
@@ -51,4 +53,5 @@ public static class 短按拖拽中
         // 对xy进行偏移，移动当前点击到的背包面板
         (_this.sourceObject.transform as RectTransform).anchoredPosition = _this.backpackPosition + totalDelta;
     }
+}
 }

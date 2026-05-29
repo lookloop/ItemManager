@@ -1,5 +1,7 @@
 using System;
 
+namespace Lookloop.ItemManager
+{
 [Serializable]
 public class Item
 {
@@ -26,4 +28,5 @@ public class Item
         Count = count;
         Data = data;
     }
+}
 }

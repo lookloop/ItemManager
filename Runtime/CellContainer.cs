@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace Lookloop.ItemManager
+{
 /// <summary>
 /// Cell 容器组件 — 挂 Canvas 下自动生成面板+Grid+Cell。
 /// mode: Scroll / Page / Fixed
@@ -73,21 +75,29 @@ public class CellContainer : MonoBehaviour
         maskTransform = _responder.maskTransform;
         panelTransform = _responder.backpackPanel;
 
-        // 初始化数据
-        items = new Item[cells.Length];
-        for (int i = 0; i < items.Length; i++)
-            背包初始化.设置格子(_responder, i, null);
+        // items = 全量数据集，_responder.items = 当前页可见窗口
+        int dataSize = Mathf.Max(totalItems, cells.Length);
+        items = new Item[dataSize];
+        _responder.items = new Item[cells.Length];
+        SyncPage();
     }
 
+    /// <summary>写入全量数据集。若 index 在当前可见页内则同步 UI。</summary>
     public void SetCell(int index, Item item)
     {
         if (index < 0 || index >= items.Length) return;
-        背包初始化.设置格子(_responder, index, item);
+        items[index] = item;
+
+        int pageSize = cells.Length;
+        int pageStart = currentPage * pageSize;
+        if (index >= pageStart && index < pageStart + pageSize)
+            背包初始化.设置格子(_responder, index - pageStart, item);
     }
 
     public void NextPage()
     {
-        currentPage++;
+        int maxPage = Mathf.Max(0, (items.Length - 1) / cells.Length);
+        if (currentPage < maxPage) currentPage++;
         SyncPage();
     }
 
@@ -99,9 +109,17 @@ public class CellContainer : MonoBehaviour
 
     void SyncPage()
     {
-        // 翻页: 偏移 Key 重新同步
+        int pageSize = cells.Length;
+        int pageStart = currentPage * pageSize;
+
         for (int i = 0; i < cells.Length; i++)
-            背包初始化.设置格子(_responder, i, null);
-        // 外部通过 SetCell 填充
+        {
+            int dataIndex = pageStart + i;
+            if (dataIndex < items.Length)
+                背包初始化.设置格子(_responder, i, items[dataIndex]);
+            else
+                背包初始化.设置格子(_responder, i, null);
+        }
     }
+}
 }

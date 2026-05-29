@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace Lookloop.ItemManager
+{
 public static class 背包初始化
 {
     public static void Execute(UIResponder _this)
@@ -44,8 +46,15 @@ public static class 背包初始化
         // 创建 Item
         var itemInstance = 创建Item(_this, cell);
 
-        // 加载 ItemTable 并填充
+        // 加载 ItemTable（异步 — 期间容器可能被销毁）
         var table = await _this.GetItemTable(itemData.Id.ToString());
+
+        // await 后安全检查：Cell / UIResponder 可能已被销毁（翻页、关闭面板等）
+        if (cell == null || _this == null || _this.cellRegistry == null)
+        {
+            if (itemInstance != null) Object.Destroy(itemInstance);
+            return;
+        }
         if (table == null) return;
 
         var body = itemInstance.GetComponent<UnityEngine.UI.Image>();
@@ -145,4 +154,5 @@ public static class 背包初始化
                 gridW + _this.horizontalPadding * 2f,
                 _this.maskHeight + _this.backpackExtraHeight);
     }
+}
 }

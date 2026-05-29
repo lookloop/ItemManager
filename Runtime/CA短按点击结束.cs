@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+namespace Lookloop.ItemManager
+{
 public static class 短按点击结束
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
@@ -165,4 +167,5 @@ public static class 短按点击结束
         // 直接赋值位置
         _this.Panel.anchoredPosition = finalPosition;
     }
+}
 }

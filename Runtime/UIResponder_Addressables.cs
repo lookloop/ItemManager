@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
+namespace Lookloop.ItemManager
+{
 public partial class UIResponder
 {
     /// <summary>
@@ -22,4 +24,5 @@ public partial class UIResponder
         Addressables.Release(handle);
         return null;
     }
+}
 }

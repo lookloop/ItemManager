@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+namespace Lookloop.ItemManager
+{
 /// <summary>
 /// 跨容器 static event 总线 — 所有包通过这里通信，互不引用。
 /// </summary>
@@ -20,4 +22,5 @@ public static class GameEvents
 
     /// <summary>炼丹/锻造: 消耗输入Cell → 生成输出Item</summary>
     public static System.Action<int[], int, int> OnCraftRequest;
+}
 }

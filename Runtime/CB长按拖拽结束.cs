@@ -1,20 +1,15 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+namespace Lookloop.ItemManager
+{
 public static class 长按拖拽结束
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
     {
         Debug.Log("执行程序：长按拖拽结算 (Long Drag End)");
 
-        // 1. 无论如何，先把阴影对象收回 Canvas 并隐藏
-        if (_this.shadowItem != null)
-        {
-            _this.shadowItem.SetActive(false);
-            _this.shadowItem.transform.SetParent(_this.canvas.transform, false);
-        }
-
-        // 2. 装备槽检测：松手位置是否为装备槽
+        // 1. 装备槽检测：松手位置是否为装备槽
         GameObject dropTarget = eventData.pointerCurrentRaycast.gameObject;
         int equipSlotIndex = GetEquipSlotIndex(_this, dropTarget);
         if (equipSlotIndex >= 0 && _this.sourceObject != null)
@@ -61,10 +56,7 @@ public static class 长按拖拽结束
             }
 
             // 装备槽结算完成，清空并返回
-            _this.sourceObject = null;
-            _this.targetObject = null;
-            _this.sourceItem = null;
-            _this.targetItem = null;
+            _this.ClearDragState();
             return;
         }
 
@@ -103,11 +95,8 @@ public static class 长按拖拽结束
         }
 
 
-        // 5. 结算完成后，清空四大临时记录
-        _this.sourceObject = null;
-        _this.targetObject = null;
-        _this.sourceItem = null;
-        _this.targetItem = null;
+        // 5. 结算完成后，清空临时记录
+        _this.ClearDragState();
     }
 
     // 辅助方法：检测松手 GameObject 是否为装备槽，返回槽索引(-1表示不是)
@@ -134,4 +123,5 @@ public static class 长按拖拽结束
             if (_this.sourceItem.transform is RectTransform rt) rt.anchoredPosition = Vector2.zero;
         }
     }
+}
 }
