@@ -3,7 +3,8 @@ using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
-public static class C_长按拖拽中
+/// <summary>C 长按拖拽中 — sourceItem 跟随手指 + 射线检测悬停格子显示阴影</summary>
+public static class C_LongPressDrag
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
     {
@@ -23,7 +24,7 @@ public static class C_长按拖拽中
         GameObject hoverObj = eventData.pointerCurrentRaycast.gameObject;
 
         // 只要是储物格就行
-        if (hoverObj != null && hoverObj.CompareTag("储物格"))
+        if (hoverObj != null && hoverObj.CompareTag("Item"))
         {
             // 如果悬停的格子发生了变化
             if (_this.targetObject != hoverObj)

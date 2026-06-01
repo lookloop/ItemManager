@@ -6,7 +6,11 @@ public static class 背包初始化
 {
     public static void Execute(UIResponder _this)
     {
-        _this.items = new Item[_this.cellCount];
+        // 初始化第一个容器（生成器创建的 Backpack）的数据
+        if (_this.containers == null || _this.containers.Count == 0) return;
+        var container = _this.containers[0];
+        container.items = new Item[_this.cellCount];
+        _this.items = container.items; // 向后兼容，旧代码仍可读 _this.items
         ApplyCellPositions(_this);
         ApplyGridSize(_this);
 
@@ -27,6 +31,9 @@ public static class 背包初始化
     /// <summary>写入数据并同步画面（唯一入口，外部只调这个方法）</summary>
     public static void 设置格子(UIResponder _this, int index, Item item)
     {
+        // 使用 containers[0] 作为当前操作的容器（向后兼容）
+        if (_this.containers != null && _this.containers.Count > 0)
+            _this.containers[0].items[index] = item;
         _this.items[index] = item;
         同步格子(_this, index);
     }

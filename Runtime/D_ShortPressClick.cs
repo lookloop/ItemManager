@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 namespace Lookloop.ItemManager
 {
-public static class D_短按点击结束
+/// <summary>D 短按点击结算 — 显示物品详情面板</summary>
+public static class D_ShortPressClick
 {
     public static void Execute(UIResponder _this, PointerEventData eventData)
     {
@@ -14,11 +15,13 @@ public static class D_短按点击结束
         if (clickedObject != null)
         {
             // 使用 System.Array.IndexOf 获取对象在 cellRegistry 中的索引
+            var container = _this.GetContainerData(clickedObject.transform);
+            if (container == null || container.items == null) return;
             int index = System.Array.IndexOf(_this.cellRegistry, clickedObject);
-            if (index >= 0 && index < _this.items.Length)
+            if (index >= 0 && index < container.items.Length)
             {
                 // 3. 得到 id
-                Item item = _this.items[index];
+                Item item = container.items[index];
                 if (item != null)
                 {
                     Debug.Log($"点击了索引: {index}, 物品 ID: {item.Id}");

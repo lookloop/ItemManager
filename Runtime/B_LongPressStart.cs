@@ -2,7 +2,8 @@ using UnityEngine;
 
 namespace Lookloop.ItemManager
 {
-public static class B_长按开始
+/// <summary>B 长按开始 — 计时器到点，设 isLongPress，拾起物品到 Canvas</summary>
+public static class B_LongPressStart
 {
     public static void Execute(UIResponder _this)
     {
@@ -10,7 +11,7 @@ public static class B_长按开始
         _this.isLongPress = true;
         
         // 如果开始物体是储物格，并且里面有物品（有子物体）
-        if (_this.sourceObject != null && _this.sourceObject.CompareTag("储物格") && _this.sourceObject.transform.childCount > 0)
+        if (_this.sourceObject != null && _this.sourceObject.transform.childCount > 0)
         {
             // 获取储物格里的实际物品（第一个子物体）并记录为拖拽物
             _this.sourceItem = _this.sourceObject.transform.GetChild(0).gameObject;

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Lookloop.ItemManager
 {
 /// <summary>
-/// 背包生成器 — 在 UIResponder 下自动构建 背包→Mask→Grid→Cell 完整层级
+/// 背包生成器 — 在 UIResponder 下自动构建 Container→Mask→Grid→Cell 完整层级
 /// </summary>
 public static class 背包生成器
 {
@@ -30,13 +30,13 @@ public static class 背包生成器
     {
         RectTransform root = _this.transform as RectTransform;
 
-        // ── 1. 背包面板（子物体，不污染根节点） ──
-        Transform panelT = root.Find("背包");
+        // ── 1. Container 面板 ──
+        Transform panelT = root.Find("Backpack");
         if (panelT == null)
         {
-            GameObject panelGo = new GameObject("背包", typeof(RectTransform), typeof(Image));
+            GameObject panelGo = new GameObject("Backpack", typeof(RectTransform), typeof(Image));
             panelGo.transform.SetParent(root, false);
-            panelGo.tag = "背包";
+            panelGo.tag = "Container";
             panelT = panelGo.transform;
         }
         _this.backpackPanel = panelT as RectTransform;
@@ -66,6 +66,7 @@ public static class 背包生成器
         if (gridT == null)
         {
             GameObject gridGo = new GameObject("Grid", typeof(RectTransform));
+            gridGo.tag = "Grid";
             gridGo.transform.SetParent(maskT, false);
             gridT = gridGo.transform;
         }
@@ -85,9 +86,18 @@ public static class 背包生成器
             crt.sizeDelta = new Vector2(_this.cellWidth, _this.cellWidth);
             Image cellImg = cell.GetComponent<Image>();
             cellImg.sprite = _this.cellSprite != null ? _this.cellSprite : DefaultSprite;
-            cell.tag = "储物格";
+            cell.tag = "Item";
             _this.cellRegistry[i] = cell;
         }
+
+        // ── 5. 注册 ContainerData ──
+        if (_this.containers == null)
+            _this.containers = new System.Collections.Generic.List<ContainerData>();
+        _this.containers.Add(new ContainerData
+        {
+            container = panelT as RectTransform,
+            items = null  // 由 背包初始化 之后赋值
+        });
     }
 }
 }
