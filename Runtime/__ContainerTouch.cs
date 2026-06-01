@@ -15,7 +15,7 @@ namespace Lookloop.ItemManager
 ///   拖拽中    → 面板跟随手指
 ///   结算      → 清理
 /// </summary>
-public static class Container触控
+public static class ContainerTouch
 {
     public static GameObject source;
     static Vector2 beginPosition;
@@ -24,7 +24,7 @@ public static class Container触控
     // ════════════════════════════════════════════════════════════
     // 1. 开始拖拽 — A 阶段
     // ════════════════════════════════════════════════════════════
-    public static void 开始拖拽(UIResponder _this, PointerEventData eventData)
+    public static void BeginDrag(UIResponder _this, PointerEventData eventData)
     {
         source        = eventData.pointerCurrentRaycast.gameObject;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -35,7 +35,7 @@ public static class Container触控
     // ════════════════════════════════════════════════════════════
     // 2. 拖拽中 — C 阶段（每帧）
     // ════════════════════════════════════════════════════════════
-    public static void 拖拽中(UIResponder _this, PointerEventData eventData)
+    public static void OnDrag(UIResponder _this, PointerEventData eventData)
     {
         if (source == null) return;
 
@@ -48,7 +48,7 @@ public static class Container触控
     // ════════════════════════════════════════════════════════════
     // 3. 结算 — D 阶段（手指抬起）
     // ════════════════════════════════════════════════════════════
-    public static void 结算(UIResponder _this)
+    public static void EndDrag(UIResponder _this)
     {
         source = null;
     }

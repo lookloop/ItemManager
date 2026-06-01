@@ -11,7 +11,7 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     // 注册 — 构建好的 GameObject → 分配 ID → 加入 containers 列表
     // ════════════════════════════════════════════════════════════
-    public static int 注册(GameObject containerObj, UIResponder _this)
+    public static int Register(GameObject containerObj, UIResponder _this)
     {
         if (_this.containers == null)
             _this.containers = new System.Collections.Generic.List<ContainerData>();
@@ -31,7 +31,7 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     // 注销 — 从列表移除，可选销毁 GameObject
     // ════════════════════════════════════════════════════════════
-    public static void 注销容器(UIResponder _this, int id, bool destroyGO = true)
+    public static void Unregister(UIResponder _this, int id, bool destroyGO = true)
     {
         if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
 
@@ -45,7 +45,7 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     // 显示 / 隐藏
     // ════════════════════════════════════════════════════════════
-    public static void 显示容器(UIResponder _this, int id)
+    public static void Show(UIResponder _this, int id)
     {
         if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
         var cd = _this.containers[id];
@@ -53,7 +53,7 @@ public static class ContainerManager
             cd.container.gameObject.SetActive(true);
     }
 
-    public static void 隐藏容器(UIResponder _this, int id)
+    public static void Hide(UIResponder _this, int id)
     {
         if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
         var cd = _this.containers[id];
@@ -64,7 +64,7 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     // 移动容器到指定位置
     // ════════════════════════════════════════════════════════════
-    public static void 移动容器到(UIResponder _this, int id, Vector2 anchoredPosition)
+    public static void MoveTo(UIResponder _this, int id, Vector2 anchoredPosition)
     {
         if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
         var cd = _this.containers[id];

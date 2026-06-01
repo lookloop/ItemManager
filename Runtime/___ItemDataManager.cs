@@ -18,28 +18,28 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     // 核心：设置格子 — 数据写入 + 视觉同步
     // ════════════════════════════════════════════════════════════
-    public static void 设置格子(UIResponder _this, int index, Item item)
+    public static void SetCell(UIResponder _this, int index, Item item)
     {
         if (_this.containers != null && _this.containers.Count > 0)
             _this.containers[0].items[index] = item;
         _this.items[index] = item;
-        ___Item视图.同步(_this, index);
+        ItemView.Sync(_this, index);
     }
 
     // ════════════════════════════════════════════════════════════
     // 构建数据 — 创建 items[] + 同步首页
     // ════════════════════════════════════════════════════════════
-    public static void 构建数据(UIResponder _this)
+    public static void BuildData(UIResponder _this)
     {
         int dataSize = Mathf.Max(_this.totalItems, _this.cellCount);
         _this.items = new Item[dataSize];
-        同步页面(_this);
+        SyncPage(_this);
     }
 
     // ════════════════════════════════════════════════════════════
     // 设置Cell — 外部入口：写全量数组，若在当前页则刷新视图
     // ════════════════════════════════════════════════════════════
-    public static void 设置Cell(UIResponder _this, int index, Item item)
+    public static void SetCellData(UIResponder _this, int index, Item item)
     {
         if (index < 0 || index >= _this.items.Length) return;
         _this.items[index] = item;
@@ -47,29 +47,29 @@ public static class ItemDataManager
         int pageSize  = _this.cellCount;
         int pageStart = _this.currentPage * pageSize;
         if (index >= pageStart && index < pageStart + pageSize)
-            设置格子(_this, index - pageStart, item);
+            SetCell(_this, index - pageStart, item);
     }
 
     // ════════════════════════════════════════════════════════════
     // 翻页
     // ════════════════════════════════════════════════════════════
-    public static void 下一页(UIResponder _this)
+    public static void NextPage(UIResponder _this)
     {
         int maxPage = Mathf.Max(0, (_this.items.Length - 1) / _this.cellCount);
         if (_this.currentPage < maxPage) _this.currentPage++;
-        同步页面(_this);
+        SyncPage(_this);
     }
 
-    public static void 上一页(UIResponder _this)
+    public static void PrevPage(UIResponder _this)
     {
         if (_this.currentPage > 0) _this.currentPage--;
-        同步页面(_this);
+        SyncPage(_this);
     }
 
     // ════════════════════════════════════════════════════════════
     // 同步页面 — 整页刷新
     // ════════════════════════════════════════════════════════════
-    public static void 同步页面(UIResponder _this)
+    public static void SyncPage(UIResponder _this)
     {
         int pageSize  = _this.cellCount;
         int pageStart = _this.currentPage * pageSize;
@@ -78,9 +78,9 @@ public static class ItemDataManager
         {
             int dataIndex = pageStart + i;
             if (dataIndex < _this.items.Length)
-                设置格子(_this, i, _this.items[dataIndex]);
+                SetCell(_this, i, _this.items[dataIndex]);
             else
-                设置格子(_this, i, null);
+                SetCell(_this, i, null);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Lookloop.ItemManager
 ///   拖拽中    → 内部判断长按/短按：物品跟随 或 滚Grid
 ///   结算      → 内部判断：交换/复位/详情面板
 /// </summary>
-public static class Item触控
+public static class ItemTouch
 {
     // ════════════════════════════════════════════════════════════
     // 3 个核心字段
@@ -42,7 +42,7 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // 1. 开始点击 — A 阶段
     // ════════════════════════════════════════════════════════════
-    public static void 开始点击(UIResponder _this, PointerEventData eventData)
+    public static void BeginClick(UIResponder _this, PointerEventData eventData)
     {
         // 重置状态
         isLongPress = false;
@@ -73,10 +73,10 @@ public static class Item触控
         // 启计时器 — 到点自动变长按
         if (timerCoroutine != null)
             _this.StopCoroutine(timerCoroutine);
-        timerCoroutine = _this.StartCoroutine(计时器(_this));
+        timerCoroutine = _this.StartCoroutine(Timer(_this));
     }
 
-    static IEnumerator 计时器(UIResponder _this)
+    static IEnumerator Timer(UIResponder _this)
     {
         yield return new WaitForSeconds(_this.timerValue);
 
@@ -100,7 +100,7 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // 2. 开始拖拽 — B 阶段
     // ════════════════════════════════════════════════════════════
-    public static void 开始拖拽(UIResponder _this)
+    public static void BeginDrag(UIResponder _this)
     {
         if (timerCoroutine != null)
         {
@@ -113,18 +113,18 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // 3. 拖拽中 — C 阶段（每帧）
     // ════════════════════════════════════════════════════════════
-    public static void 拖拽中(UIResponder _this, PointerEventData eventData)
+    public static void OnDrag(UIResponder _this, PointerEventData eventData)
     {
         if (isLongPress)
-            长按跟随(_this, eventData);
+            LongPressFollow(_this, eventData);
         else if (gridTarget != null)
-            滚Grid(_this, eventData);
+            ScrollGrid(_this, eventData);
     }
 
     // ════════════════════════════════════════════════════════════
     // 4. 结算 — D 阶段（手指抬起）
     // ════════════════════════════════════════════════════════════
-    public static void 结算(UIResponder _this, PointerEventData eventData)
+    public static void EndDrag(UIResponder _this, PointerEventData eventData)
     {
         // 先停计时器
         if (timerCoroutine != null)
@@ -135,22 +135,22 @@ public static class Item触控
 
         if (isLongPress)
         {
-            if (isDrag)  交换(_this);
-            else         复位(_this);
+            if (isDrag)  Swap(_this);
+            else         ResetPosition(_this);
         }
         else if (!isDrag)
         {
-            显示详情(_this, eventData);
+            ShowDetail(_this, eventData);
         }
         // else: 短按拖拽 — 滚 Grid 最后一帧已到位，无结算
 
-        清理(_this);
+        Cleanup(_this);
     }
 
     // ════════════════════════════════════════════════════════════
     // ── 内部：长按物品跟随手指 + 阴影悬停检测 ──
     // ════════════════════════════════════════════════════════════
-    static void 长按跟随(UIResponder _this, PointerEventData eventData)
+    static void LongPressFollow(UIResponder _this, PointerEventData eventData)
     {
         Debug.Log("UI 长按拖拽: " + _this.gameObject.name);
 
@@ -200,7 +200,7 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // ── 内部：短按滚 Grid（X 锁定，Y 钳位）──
     // ════════════════════════════════════════════════════════════
-    static void 滚Grid(UIResponder _this, PointerEventData eventData)
+    static void ScrollGrid(UIResponder _this, PointerEventData eventData)
     {
         RectTransform maskRT = gridTarget.parent as RectTransform;
         if (maskRT == null) return;
@@ -222,7 +222,7 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // ── 内部：复位 — 物品回原格 ──
     // ════════════════════════════════════════════════════════════
-    static void 复位(UIResponder _this)
+    static void ResetPosition(UIResponder _this)
     {
         if (itemDragging != null && source != null)
         {
@@ -236,17 +236,17 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // ── 内部：格子交换 ──
     // ════════════════════════════════════════════════════════════
-    static void 交换(UIResponder _this)
+    static void Swap(UIResponder _this)
     {
-        if (!尝试交换(_this))
-            复位(_this);
+        if (!TrySwap(_this))
+            ResetPosition(_this);
     }
 
-    static bool 尝试交换(UIResponder _this)
+    static bool TrySwap(UIResponder _this)
     {
         if (target == null || target == source) return false;
 
-        var cont = 取容器数据(_this, source.transform);
+        var cont = GetContainerData(_this, source.transform);
         if (cont == null || cont.items == null) return false;
 
         int srcIdx = System.Array.IndexOf(_this.cellRegistry, source);
@@ -256,8 +256,8 @@ public static class Item触控
 
         var srcItem = cont.items[srcIdx];
         var dstItem = cont.items[dstIdx];
-        ItemDataManager.设置格子(_this, srcIdx, dstItem);
-        ItemDataManager.设置格子(_this, dstIdx, srcItem);
+        ItemDataManager.SetCell(_this, srcIdx, dstItem);
+        ItemDataManager.SetCell(_this, dstIdx, srcItem);
 
         if (itemDragging != null) Object.Destroy(itemDragging);
 
@@ -268,7 +268,7 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // ── 内部：从子级往上找 Container，匹配返回 ContainerData ──
     // ════════════════════════════════════════════════════════════
-    static ContainerData 取容器数据(UIResponder _this, Transform child)
+    static ContainerData GetContainerData(UIResponder _this, Transform child)
     {
         if (_this.containers == null) return null;
         Transform t = child;
@@ -289,7 +289,7 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // ── 内部：清理状态 ──
     // ════════════════════════════════════════════════════════════
-    static void 清理(UIResponder _this)
+    static void Cleanup(UIResponder _this)
     {
         if (_this.shadowItem != null)
         {
@@ -307,13 +307,13 @@ public static class Item触控
     // ════════════════════════════════════════════════════════════
     // ── 内部：短按点击 → 显示详情面板 ──
     // ════════════════════════════════════════════════════════════
-    static void 显示详情(UIResponder _this, PointerEventData eventData)
+    static void ShowDetail(UIResponder _this, PointerEventData eventData)
     {
         Debug.Log("执行程序：短按普通点击结算 (Short Click)");
         GameObject clickedObject = eventData.pointerCurrentRaycast.gameObject;
         if (clickedObject == null) return;
 
-        var container = 取容器数据(_this, clickedObject.transform);
+        var container = GetContainerData(_this, clickedObject.transform);
         if (container == null || container.items == null) return;
 
         int index = System.Array.IndexOf(_this.cellRegistry, clickedObject);

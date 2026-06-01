@@ -8,10 +8,10 @@ namespace Lookloop.ItemManager
 /// Item 视觉 — 数据 → 画面同步。
 /// 负责创建/更新/清空 Cell 内的 Item 显示（图标 + 光晕 + 数量文字）。
 /// </summary>
-public static class ___Item视图
+public static class ItemView
 {
     /// <summary>清空旧 Item → 创建新 Item → 加载 Addressables 资源 → 显示</summary>
-    public static async void 同步(UIResponder _this, int index)
+    public static async void Sync(UIResponder _this, int index)
     {
         var cell     = _this.cellRegistry[index];
         var itemData = _this.items[index];
@@ -21,7 +21,7 @@ public static class ___Item视图
 
         if (itemData == null || itemData.Id <= 0) return;
 
-        var itemInstance = 创建(_this, cell);
+        var itemInstance = Create(_this, cell);
         var table = await _this.GetItemTable(itemData.Id.ToString());
 
         if (cell == null || _this == null || _this.cellRegistry == null)
@@ -52,7 +52,7 @@ public static class ___Item视图
             itemInstance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemData.Count.ToString();
     }
 
-    static GameObject 创建(UIResponder _this, GameObject cell)
+    static GameObject Create(UIResponder _this, GameObject cell)
     {
         var iw = _this.itemWidth;
         var go = new GameObject("Item", typeof(RectTransform), typeof(Image));

@@ -7,7 +7,7 @@ namespace Lookloop.ItemManager
 /// 背包 UI 构建 — 生成 Container→Mask→Grid→Cell 完整层级。
 /// 不涉及数据，只管拼 UI。
 /// </summary>
-public static class ___背包构建
+public static class BackpackBuilder
 {
     static Sprite _defaultSprite;
 
@@ -27,7 +27,7 @@ public static class ___背包构建
     }
 
     /// <summary>构建背包 → 返回顶层 Container GameObject</summary>
-    public static GameObject 构建(UIResponder _this)
+    public static GameObject Build(UIResponder _this)
     {
         RectTransform root = _this.transform as RectTransform;
 

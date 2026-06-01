@@ -29,9 +29,9 @@ public partial class UIResponder : MonoBehaviour,
         currentTag = clicked != null ? clicked.tag : null;
 
         if (currentTag == "Item")
-            Item触控.开始点击(this, eventData);
+            ItemTouch.BeginClick(this, eventData);
         else if (currentTag == "Container")
-            Container触控.开始拖拽(this, eventData);
+            ContainerTouch.BeginDrag(this, eventData);
         else
             currentTag = null;
     }
@@ -44,7 +44,7 @@ public partial class UIResponder : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         if (currentTag == "Item")
-            Item触控.开始拖拽(this);
+            ItemTouch.BeginDrag(this);
     }
 
     // ════════════════════════════════════════════════════════════
@@ -55,9 +55,9 @@ public partial class UIResponder : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         if (currentTag == "Item")
-            Item触控.拖拽中(this, eventData);
+            ItemTouch.OnDrag(this, eventData);
         else if (currentTag == "Container")
-            Container触控.拖拽中(this, eventData);
+            ContainerTouch.OnDrag(this, eventData);
     }
 
     // ════════════════════════════════════════════════════════════
@@ -68,9 +68,9 @@ public partial class UIResponder : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         if (currentTag == "Item")
-            Item触控.结算(this, eventData);
+            ItemTouch.EndDrag(this, eventData);
         else if (currentTag == "Container")
-            Container触控.结算(this);
+            ContainerTouch.EndDrag(this);
 
         currentTag = null;
     }
