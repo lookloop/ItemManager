@@ -31,52 +31,31 @@ public partial class UIResponder
         BuildData();
     }
 
-    /// <summary>items = 全量数据集，_this.items = 当前页可见窗口</summary>
+    /// <summary>items = 全量数据集，当前页可见窗口</summary>
     public void BuildData()
     {
-        int dataSize = Mathf.Max(totalItems, cellCount);
-        items = new Item[dataSize];
-        SyncPage();
+        ItemDataManager.构建数据(this);
     }
 
     /// <summary>写入全量数据集。若 index 在当前可见页则同步 UI。</summary>
     public void SetCell(int index, Item item)
     {
-        if (index < 0 || index >= items.Length) return;
-        items[index] = item;
-
-        int pageSize = cellCount;
-        int pageStart = currentPage * pageSize;
-        if (index >= pageStart && index < pageStart + pageSize)
-            ContainerManager.设置格子(this, index - pageStart, item);
+        ItemDataManager.设置Cell(this, index, item);
     }
 
     public void NextPage()
     {
-        int maxPage = Mathf.Max(0, (items.Length - 1) / cellCount);
-        if (currentPage < maxPage) currentPage++;
-        SyncPage();
+        ItemDataManager.下一页(this);
     }
 
     public void PrevPage()
     {
-        if (currentPage > 0) currentPage--;
-        SyncPage();
+        ItemDataManager.上一页(this);
     }
 
     public void SyncPage()
     {
-        int pageSize = cellCount;
-        int pageStart = currentPage * pageSize;
-
-        for (int i = 0; i < cellCount; i++)
-        {
-            int dataIndex = pageStart + i;
-            if (dataIndex < items.Length)
-                ContainerManager.设置格子(this, i, items[dataIndex]);
-            else
-                ContainerManager.设置格子(this, i, null);
-        }
+        ItemDataManager.同步页面(this);
     }
 }
 }

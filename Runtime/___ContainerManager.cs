@@ -1,19 +1,16 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 namespace Lookloop.ItemManager
 {
 /// <summary>
-/// Container 数据管理器 — 注册容器、增删改查格子数据。
-/// 不涉及 UI 构建，只管数据 ↔ 视觉同步。
+/// Container 操控器 — 注册/注销容器、显示/隐藏容器、移动容器位置。
+/// 不涉及 UI 构建，不管格子数据。
 /// </summary>
 public static class ContainerManager
 {
-    /// <summary>
-    /// 注册容器对象 → 分配 ID，初始化 items 数组，写入 containers 列表。
-    /// 返回容器 ID（索引）。
-    /// </summary>
+    // ════════════════════════════════════════════════════════════
+    // 注册 — 构建好的 GameObject → 分配 ID → 加入 containers 列表
+    // ════════════════════════════════════════════════════════════
     public static int 注册(GameObject containerObj, UIResponder _this)
     {
         if (_this.containers == null)
@@ -31,13 +28,48 @@ public static class ContainerManager
         return _this.containers.Count - 1;
     }
 
-    /// <summary>写入数据 → 触发视觉同步</summary>
-    public static void 设置格子(UIResponder _this, int index, Item item)
+    // ════════════════════════════════════════════════════════════
+    // 注销 — 从列表移除，可选销毁 GameObject
+    // ════════════════════════════════════════════════════════════
+    public static void 注销容器(UIResponder _this, int id, bool destroyGO = true)
     {
-        if (_this.containers != null && _this.containers.Count > 0)
-            _this.containers[0].items[index] = item;
-        _this.items[index] = item;
-        ___Item视图.同步(_this, index);
+        if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
+
+        var cd = _this.containers[id];
+        if (destroyGO && cd.container != null)
+            Object.Destroy(cd.container.gameObject);
+
+        _this.containers.RemoveAt(id);
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // 显示 / 隐藏
+    // ════════════════════════════════════════════════════════════
+    public static void 显示容器(UIResponder _this, int id)
+    {
+        if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
+        var cd = _this.containers[id];
+        if (cd.container != null)
+            cd.container.gameObject.SetActive(true);
+    }
+
+    public static void 隐藏容器(UIResponder _this, int id)
+    {
+        if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
+        var cd = _this.containers[id];
+        if (cd.container != null)
+            cd.container.gameObject.SetActive(false);
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // 移动容器到指定位置
+    // ════════════════════════════════════════════════════════════
+    public static void 移动容器到(UIResponder _this, int id, Vector2 anchoredPosition)
+    {
+        if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
+        var cd = _this.containers[id];
+        if (cd.container != null)
+            cd.container.anchoredPosition = anchoredPosition;
     }
 }
 }
