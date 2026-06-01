@@ -5,43 +5,13 @@ using TMPro;
 namespace Lookloop.ItemManager
 {
 /// <summary>
-/// Container 数据管理器 — 注册容器、增删改查格子数据。
-/// 不涉及 UI 构建，只管数据 ↔ 视觉同步。
+/// Item 视觉 — 数据 → 画面同步。
+/// 负责创建/更新/清空 Cell 内的 Item 显示（图标 + 光晕 + 数量文字）。
 /// </summary>
-public static class ContainerManager
+public static class ___Item视图
 {
-    /// <summary>
-    /// 注册容器对象 → 分配 ID，初始化 items 数组，写入 containers 列表。
-    /// 返回容器 ID（索引）。
-    /// </summary>
-    public static int 注册(GameObject containerObj, UIResponder _this)
-    {
-        if (_this.containers == null)
-            _this.containers = new System.Collections.Generic.List<ContainerData>();
-
-        var cd = new ContainerData
-        {
-            container = containerObj.transform as RectTransform,
-            items     = new Item[_this.cellCount]
-        };
-
-        _this.containers.Add(cd);
-        _this.items = cd.items; // 向后兼容快捷引用
-
-        return _this.containers.Count - 1;
-    }
-
-    /// <summary>写入数据并同步画面</summary>
-    public static void 设置格子(UIResponder _this, int index, Item item)
-    {
-        if (_this.containers != null && _this.containers.Count > 0)
-            _this.containers[0].items[index] = item;
-        _this.items[index] = item;
-        同步格子(_this, index);
-    }
-
-    /// <summary>数组 → 视觉同步</summary>
-    static async void 同步格子(UIResponder _this, int index)
+    /// <summary>清空旧 Item → 创建新 Item → 加载 Addressables 资源 → 显示</summary>
+    public static async void 同步(UIResponder _this, int index)
     {
         var cell     = _this.cellRegistry[index];
         var itemData = _this.items[index];
@@ -51,7 +21,7 @@ public static class ContainerManager
 
         if (itemData == null || itemData.Id <= 0) return;
 
-        var itemInstance = 创建Item(_this, cell);
+        var itemInstance = 创建(_this, cell);
         var table = await _this.GetItemTable(itemData.Id.ToString());
 
         if (cell == null || _this == null || _this.cellRegistry == null)
@@ -82,7 +52,7 @@ public static class ContainerManager
             itemInstance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemData.Count.ToString();
     }
 
-    static GameObject 创建Item(UIResponder _this, GameObject cell)
+    static GameObject 创建(UIResponder _this, GameObject cell)
     {
         var iw = _this.itemWidth;
         var go = new GameObject("Item", typeof(RectTransform), typeof(Image));
