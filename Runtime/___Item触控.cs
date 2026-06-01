@@ -52,7 +52,8 @@ public static class Item触控
         source = eventData.pointerCurrentRaycast.gameObject;
         if (source == null) return;
 
-        beginPosition = UI坐标转换.像素转局部(_this.canvas.transform as RectTransform, eventData.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out beginPosition);
 
         // 往上找 Grid（短按拖拽滚 Grid 用）
         Transform t = source.transform;
@@ -158,7 +159,12 @@ public static class Item触控
         {
             RectTransform rt = itemDragging.transform as RectTransform;
             if (rt != null)
-                rt.anchoredPosition = UI坐标转换.像素转局部(_this.canvas.transform as RectTransform, eventData.position);
+            {
+                Vector2 pos;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out pos);
+                rt.anchoredPosition = pos;
+            }
         }
 
         // 射线检测悬停格子
@@ -199,7 +205,8 @@ public static class Item触控
         RectTransform maskRT = gridTarget.parent as RectTransform;
         if (maskRT == null) return;
 
-        Vector2 now = UI坐标转换.像素转局部(_this.canvas.transform as RectTransform, eventData.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out Vector2 now);
         Vector2 delta = now - beginPosition;
 
         float maskHeight  = maskRT.rect.height;
@@ -368,45 +375,28 @@ public static class Item触控
     {
         if (_this.Panel == null || targetObj == null) return;
 
-        RectTransform targetRT = targetObj.transform as RectTransform;
-        RectTransform canvasRT = _this.canvas.transform as RectTransform;
+        var panelRT  = _this.Panel;
+        var canvasRT = _this.canvas.transform as RectTransform;
 
-        Vector2 cellCenterLocal = targetRT.rect.center;
-        Vector2 canvasCenterPos = UI坐标转换.像素转局部(canvasRT, UI坐标转换.局部转像素(targetRT, cellCenterLocal));
-        Vector2 finalPosition;
+        // 挂到 cell 下，锚点居中，归零 → Panel 中心对齐 cell 中心
+        panelRT.SetParent(targetObj.transform, false);
+        panelRT.anchorMin = panelRT.anchorMax = new Vector2(0.5f, 0.5f);
+        panelRT.anchoredPosition = Vector2.zero;
 
-        if (canvasCenterPos.x >= 0)
-        {
-            Vector2 cellLeftLocal = new Vector2(targetRT.rect.xMin, targetRT.rect.center.y);
-            finalPosition = UI坐标转换.像素转局部(canvasRT, UI坐标转换.局部转像素(targetRT, cellLeftLocal));
-            _this.Panel.anchorMin = _this.Panel.anchorMax = new Vector2(0.5f, 0.5f);
-            _this.Panel.pivot = new Vector2(1f, 0.5f);
-        }
-        else
-        {
-            Vector2 cellRightLocal = new Vector2(targetRT.rect.xMax, targetRT.rect.center.y);
-            finalPosition = UI坐标转换.像素转局部(canvasRT, UI坐标转换.局部转像素(targetRT, cellRightLocal));
-            _this.Panel.anchorMin = _this.Panel.anchorMax = new Vector2(0.5f, 0.5f);
-            _this.Panel.pivot = new Vector2(0f, 0.5f);
-        }
+        // 根据 cell 在屏幕左右 → pivot 控制 Panel 向左/右伸出
+        bool onRight = targetObj.transform.position.x > Screen.width * 0.5f;
+        panelRT.pivot = onRight ? new Vector2(1f, 0.5f) : new Vector2(0f, 0.5f);
 
-        float panelHalfHeight = _this.Panel.rect.height / 2f;
-        float canvasMaxY = canvasRT.rect.height / 2f;
-        float canvasMinY = -canvasMaxY;
-        float padding = 2f;
+        // 移回 Canvas（避免 Mask 裁切），保持世界位置
+        panelRT.SetParent(canvasRT, true);
 
-        if (finalPosition.y > 0)
-        {
-            if (canvasMaxY - finalPosition.y < panelHalfHeight)
-                finalPosition.y = canvasMaxY - panelHalfHeight - padding;
-        }
-        else
-        {
-            if (finalPosition.y - canvasMinY < panelHalfHeight)
-                finalPosition.y = canvasMinY + panelHalfHeight + padding;
-        }
-
-        _this.Panel.anchoredPosition = finalPosition;
+        // Y 轴越界钳位
+        float halfH = panelRT.rect.height * 0.5f;
+        float limit = canvasRT.rect.height * 0.5f;
+        float y = panelRT.anchoredPosition.y;
+        if      (y + halfH >  limit) y =  limit - halfH - 2f;
+        else if (y - halfH < -limit) y = -limit + halfH + 2f;
+        panelRT.anchoredPosition = new Vector2(panelRT.anchoredPosition.x, y);
     }
 }
 }

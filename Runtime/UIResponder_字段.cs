@@ -47,6 +47,7 @@ public partial class UIResponder
     [HideInInspector] public System.Collections.Generic.List<ContainerData> containers;
 
     [HideInInspector] public Canvas canvas;
+    [HideInInspector] public Camera uiCamera;
 
     [HideInInspector] public RectTransform gridTransform;
 

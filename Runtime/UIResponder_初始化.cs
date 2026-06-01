@@ -9,9 +9,9 @@ public partial class UIResponder
         if (canvas == null)
             canvas = GetComponentInParent<Canvas>();
 
-        // 缓存 Canvas 摄像机到 UI坐标转换（全局唯一 Canvas）
+        // 缓存 Canvas 摄像机
         if (canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
-            UI坐标转换.camera = canvas.worldCamera;
+            uiCamera = canvas.worldCamera;
     }
 
     void Start()
