@@ -52,7 +52,7 @@ public static class Item触控
         source = eventData.pointerCurrentRaycast.gameObject;
         if (source == null) return;
 
-        beginPosition = UI坐标转换.获取事件局部坐标(_this.canvas.transform as RectTransform, eventData);
+        beginPosition = UI坐标转换.像素转局部(_this.canvas.transform as RectTransform, eventData.position);
 
         // 往上找 Grid（短按拖拽滚 Grid 用）
         Transform t = source.transform;
@@ -158,7 +158,7 @@ public static class Item触控
         {
             RectTransform rt = itemDragging.transform as RectTransform;
             if (rt != null)
-                rt.anchoredPosition = UI坐标转换.获取事件局部坐标(_this.canvas.transform as RectTransform, eventData);
+                rt.anchoredPosition = UI坐标转换.像素转局部(_this.canvas.transform as RectTransform, eventData.position);
         }
 
         // 射线检测悬停格子
@@ -199,7 +199,7 @@ public static class Item触控
         RectTransform maskRT = gridTarget.parent as RectTransform;
         if (maskRT == null) return;
 
-        Vector2 now = UI坐标转换.获取事件局部坐标(_this.canvas.transform as RectTransform, eventData);
+        Vector2 now = UI坐标转换.像素转局部(_this.canvas.transform as RectTransform, eventData.position);
         Vector2 delta = now - beginPosition;
 
         float maskHeight  = maskRT.rect.height;
@@ -372,20 +372,20 @@ public static class Item触控
         RectTransform canvasRT = _this.canvas.transform as RectTransform;
 
         Vector2 cellCenterLocal = targetRT.rect.center;
-        Vector2 canvasCenterPos = UI坐标转换.局部转目标局部(targetRT, canvasRT, cellCenterLocal);
+        Vector2 canvasCenterPos = UI坐标转换.像素转局部(canvasRT, UI坐标转换.局部转像素(targetRT, cellCenterLocal));
         Vector2 finalPosition;
 
         if (canvasCenterPos.x >= 0)
         {
             Vector2 cellLeftLocal = new Vector2(targetRT.rect.xMin, targetRT.rect.center.y);
-            finalPosition = UI坐标转换.局部转目标局部(targetRT, canvasRT, cellLeftLocal);
+            finalPosition = UI坐标转换.像素转局部(canvasRT, UI坐标转换.局部转像素(targetRT, cellLeftLocal));
             _this.Panel.anchorMin = _this.Panel.anchorMax = new Vector2(0.5f, 0.5f);
             _this.Panel.pivot = new Vector2(1f, 0.5f);
         }
         else
         {
             Vector2 cellRightLocal = new Vector2(targetRT.rect.xMax, targetRT.rect.center.y);
-            finalPosition = UI坐标转换.局部转目标局部(targetRT, canvasRT, cellRightLocal);
+            finalPosition = UI坐标转换.像素转局部(canvasRT, UI坐标转换.局部转像素(targetRT, cellRightLocal));
             _this.Panel.anchorMin = _this.Panel.anchorMax = new Vector2(0.5f, 0.5f);
             _this.Panel.pivot = new Vector2(0f, 0.5f);
         }

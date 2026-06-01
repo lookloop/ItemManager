@@ -27,7 +27,7 @@ public static class Container触控
     public static void 开始拖拽(UIResponder _this, PointerEventData eventData)
     {
         source        = eventData.pointerCurrentRaycast.gameObject;
-        beginPosition = UI坐标转换.获取事件局部坐标(_this.canvas.transform as RectTransform, eventData);
+        beginPosition = UI坐标转换.像素转局部(_this.canvas.transform as RectTransform, eventData.position);
         dragStartPos  = (source.transform as RectTransform).anchoredPosition;
     }
 
@@ -38,7 +38,7 @@ public static class Container触控
     {
         if (source == null) return;
 
-        Vector2 now        = UI坐标转换.获取事件局部坐标(_this.canvas.transform as RectTransform, eventData);
+        Vector2 now        = UI坐标转换.像素转局部(_this.canvas.transform as RectTransform, eventData.position);
         Vector2 totalDelta = now - beginPosition;
         (source.transform as RectTransform).anchoredPosition = dragStartPos + totalDelta;
     }
