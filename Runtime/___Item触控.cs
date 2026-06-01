@@ -239,7 +239,7 @@ public static class Item触控
     {
         if (target == null || target == source) return false;
 
-        var cont = _this.GetContainerData(source.transform);
+        var cont = 取容器数据(_this, source.transform);
         if (cont == null || cont.items == null) return false;
 
         int srcIdx = System.Array.IndexOf(_this.cellRegistry, source);
@@ -256,6 +256,27 @@ public static class Item触控
 
         Debug.Log($"交换: {srcIdx} ↔ {dstIdx}");
         return true;
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // ── 内部：从子级往上找 Container，匹配返回 ContainerData ──
+    // ════════════════════════════════════════════════════════════
+    static ContainerData 取容器数据(UIResponder _this, Transform child)
+    {
+        if (_this.containers == null) return null;
+        Transform t = child;
+        while (t != null)
+        {
+            if (t.CompareTag("Container"))
+            {
+                var rt = t as RectTransform;
+                foreach (var cd in _this.containers)
+                    if (cd.container == rt) return cd;
+                return null;
+            }
+            t = t.parent;
+        }
+        return null;
     }
 
     // ════════════════════════════════════════════════════════════
@@ -285,7 +306,7 @@ public static class Item触控
         GameObject clickedObject = eventData.pointerCurrentRaycast.gameObject;
         if (clickedObject == null) return;
 
-        var container = _this.GetContainerData(clickedObject.transform);
+        var container = 取容器数据(_this, clickedObject.transform);
         if (container == null || container.items == null) return;
 
         int index = System.Array.IndexOf(_this.cellRegistry, clickedObject);

@@ -75,39 +75,5 @@ public partial class UIResponder : MonoBehaviour,
         currentTag = null;
     }
 
-    // ════════════════════════════════════════════════════════════
-    // 工具方法
-    // ════════════════════════════════════════════════════════════
-
-    /// <summary>往上遍历父节点，检查是否存在指定 tag</summary>
-    public static bool HasParentTag(Transform child, string tag)
-    {
-        Transform t = child;
-        while (t != null)
-        {
-            if (t.CompareTag(tag)) return true;
-            t = t.parent;
-        }
-        return false;
-    }
-
-    /// <summary>从子级往上找 Container，匹配返回 ContainerData</summary>
-    public ContainerData GetContainerData(Transform child)
-    {
-        if (containers == null) return null;
-        Transform t = child;
-        while (t != null)
-        {
-            if (t.CompareTag("Container"))
-            {
-                var rt = t as RectTransform;
-                foreach (var cd in containers)
-                    if (cd.container == rt) return cd;
-                return null;
-            }
-            t = t.parent;
-        }
-        return null;
-    }
 }
 }
