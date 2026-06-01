@@ -31,52 +31,14 @@ public static class D_LongPressEnd
         }
     }
 
-    // ── 拖拽结算：装备槽 > 格子交换 > 复位 ──
+    // ── 拖拽结算：格子交换 > 复位 ──
     private static void 结算拖拽(UIResponder _this, PointerEventData eventData)
     {
-        // 1. 装备槽检测
-        if (尝试装备(_this, eventData)) return;
-
-        // 2. 格子交换
+        // 1. 格子交换
         if (尝试交换(_this)) return;
 
-        // 3. 都不行 → 复位
+        // 2. 不行 → 复位
         复位(_this);
-    }
-
-    private static bool 尝试装备(UIResponder _this, PointerEventData eventData)
-    {
-        GameObject dropTarget = eventData.pointerCurrentRaycast.gameObject;
-        int slotIndex = GetEquipSlotIndex(_this, dropTarget);
-        if (slotIndex < 0 || _this.sourceObject == null) return false;
-
-        var container = _this.GetContainerData(_this.sourceObject.transform);
-        if (container == null || container.items == null) return false;
-
-        int sourceIndex = System.Array.IndexOf(_this.cellRegistry, _this.sourceObject);
-        if (sourceIndex < 0 || sourceIndex >= container.items.Length) return false;
-
-        Item draggedItem = container.items[sourceIndex];
-        if (draggedItem == null || draggedItem.Type != slotIndex + 1) return false;
-
-        // 交换装备
-        Item oldEquipped = _this.equippedItems[slotIndex];
-        _this.equippedItems[slotIndex] = draggedItem;
-        背包初始化.设置格子(_this, sourceIndex, oldEquipped);
-
-        // 清理装备槽旧物体
-        var slot = _this.equipmentSlots[slotIndex];
-        for (int c = slot.childCount - 1; c >= 0; c--)
-            Object.Destroy(slot.GetChild(c).gameObject);
-
-        // 拖拽物移入装备槽
-        _this.sourceItem.transform.SetParent(slot, false);
-        _this.sourceItem.transform.localScale = Vector3.one;
-        if (_this.sourceItem.transform is RectTransform drt)
-            drt.anchoredPosition = Vector2.zero;
-
-        Debug.Log($"[装备] Type={draggedItem.Type} → 槽位{slotIndex}");
-        return true;
     }
 
     private static bool 尝试交换(UIResponder _this)
@@ -105,14 +67,5 @@ public static class D_LongPressEnd
         return true;
     }
 
-    private static int GetEquipSlotIndex(UIResponder _this, GameObject obj)
-    {
-        if (obj == null || _this.equipmentSlots == null) return -1;
-        RectTransform rt = obj.GetComponent<RectTransform>();
-        if (rt == null) return -1;
-        for (int i = 0; i < _this.equipmentSlots.Length; i++)
-            if (_this.equipmentSlots[i] == rt) return i;
-        return -1;
-    }
 }
 }

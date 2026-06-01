@@ -20,10 +20,6 @@ public partial class UIResponder
         if (autoBuild && gridTransform == null)
             背包生成器.Build(this);
 
-        // 初始化装备槽
-        if (equippedItems == null || equippedItems.Length != 4)
-            equippedItems = new Item[4];
-
         // 数据初始化
         BuildData();
     }
