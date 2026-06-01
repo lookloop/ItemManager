@@ -48,18 +48,6 @@ public partial class UIResponder
 
     [HideInInspector] public Canvas canvas;
 
-    [HideInInspector] public bool isLongPress;
-
-    [HideInInspector] public bool isDrag;
-
-    [HideInInspector] public Vector2 beginPosition;
-
-    [HideInInspector] public Vector2 endPosition;
-
-    [HideInInspector] public RectTransform dragTarget;
-
-    [HideInInspector] public Vector2 dragStartPos;
-
     [HideInInspector] public RectTransform gridTransform;
 
     [HideInInspector] public RectTransform maskTransform;
@@ -76,12 +64,7 @@ public partial class UIResponder
 
     [HideInInspector] public int currentPage;
 
-    [HideInInspector] public GameObject sourceItem;
+    [HideInInspector] public string currentTag;
 
-    [HideInInspector] public GameObject sourceObject;
-
-    [HideInInspector] public GameObject targetObject;
-
-    [HideInInspector] public Coroutine timerCoroutine;
 }
 }
