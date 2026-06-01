@@ -22,7 +22,7 @@ public partial class UIResponder
 
         // 自动构建
         if (autoBuild && gridTransform == null)
-            背包生成器.Build(this);
+            背包初始化.Build(this);
 
         // 数据初始化
         BuildData();
