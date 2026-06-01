@@ -20,9 +20,12 @@ public partial class UIResponder
         cellCount = rows * cols;
         cellsPerRow = cols;
 
-        // 自动构建
+        // 自动构建 + 注册
         if (autoBuild && gridTransform == null)
-            背包初始化.Build(this);
+        {
+            var backpack = ___背包构建.构建(this);
+            ContainerManager.注册(backpack, this);
+        }
 
         // 数据初始化
         BuildData();
@@ -45,7 +48,7 @@ public partial class UIResponder
         int pageSize = cellCount;
         int pageStart = currentPage * pageSize;
         if (index >= pageStart && index < pageStart + pageSize)
-            背包初始化.设置格子(this, index - pageStart, item);
+            ContainerManager.设置格子(this, index - pageStart, item);
     }
 
     public void NextPage()
@@ -70,9 +73,9 @@ public partial class UIResponder
         {
             int dataIndex = pageStart + i;
             if (dataIndex < items.Length)
-                背包初始化.设置格子(this, i, items[dataIndex]);
+                ContainerManager.设置格子(this, i, items[dataIndex]);
             else
-                背包初始化.设置格子(this, i, null);
+                ContainerManager.设置格子(this, i, null);
         }
     }
 }

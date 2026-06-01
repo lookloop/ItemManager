@@ -256,8 +256,8 @@ public static class Item触控
 
         var srcItem = cont.items[srcIdx];
         var dstItem = cont.items[dstIdx];
-        背包初始化.设置格子(_this, srcIdx, dstItem);
-        背包初始化.设置格子(_this, dstIdx, srcItem);
+        ContainerManager.设置格子(_this, srcIdx, dstItem);
+        ContainerManager.设置格子(_this, dstIdx, srcItem);
 
         if (itemDragging != null) Object.Destroy(itemDragging);
 
