@@ -4,7 +4,7 @@
   "displayName": "Item Manager",
   "description": "多 Cell 容器资产管理框架 — Item数据、Cell、GridGenerator、触控全家、跨容器事件总线。\n背包、仓库、装备槽、炼丹炉、锻造台… 所有系统的通用核心。",
   "unity": "2022.3",
-  "keywords": ["item", "inventory", "cell", "grid", "backpack", "equipment", "drag-drop"],
+  "keywords": ["item", "inventory", "cell", "grid", "container", "equipment", "drag-drop"],
   "author": {
     "name": "lookloop",
     "url": "https://github.com/lookloop"

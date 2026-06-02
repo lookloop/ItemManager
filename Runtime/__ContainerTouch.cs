@@ -21,8 +21,8 @@ public static class ContainerTouch
     static Vector2 beginPosition;
     static Vector2 dragStartPos;
 
-    /// <summary>背包面板 RectTransform（由 BackpackBuilder 注入）</summary>
-    public static RectTransform backpackPanel;
+    /// <summary>容器面板 RectTransform（由 ContainerBuilder 注入）</summary>
+    public static RectTransform containerPanel;
 
     // ════════════════════════════════════════════════════════════
     // 1. 开始拖拽 — A 阶段

@@ -32,14 +32,14 @@ namespace Lookloop.ItemManager.Editor
                 Prop(property, "itemWidth");           // 物品图标边长
                 Prop(property, "cellSpacing");         // 格子间距
                 Prop(property, "timerValue");          // 长按计时器阈值
-                Prop(property, "backpackSprite");      // 背包底图
+                Prop(property, "containerSprite");      // 容器底图
                 Prop(property, "maskSprite");          // Mask 区域图
                 Prop(property, "cellSprite");          // 格子底图
                 Prop(property, "itemFont");            // 物品数量字体
                 Prop(property, "maskHeight");          // Mask 可视高度
                 Prop(property, "maskPosY");            // Mask Y 偏移
                 Prop(property, "horizontalPadding");   // 面板水平内边距
-                Prop(property, "backpackExtraHeight"); // 面板额外高度
+                Prop(property, "containerExtraHeight"); // 面板额外高度
                 Prop(property, "showPosition");        // 打开时归位的锚点坐标
                 Prop(property, "shadowItem");          // 拖拽时跟随的阴影预制体
                 Prop(property, "detailPanelPrefab");   // 详情面板预制体（动态 Instantiate）

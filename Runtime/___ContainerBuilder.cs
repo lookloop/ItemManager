@@ -7,7 +7,7 @@ namespace Lookloop.ItemManager
 /// 背包 UI 构建 — 生成 Container→Mask→Grid→Cell 完整层级。
 /// 不涉及数据，只管拼 UI。
 /// </summary>
-public static class BackpackBuilder
+public static class ContainerBuilder
 {
     static Sprite _defaultSprite;
 
@@ -36,12 +36,12 @@ public static class BackpackBuilder
         RectTransform root = _this.transform as RectTransform;
 
         // 1. Container 面板
-        GameObject panelGo = new GameObject("Backpack", typeof(RectTransform), typeof(Image));
+        GameObject panelGo = new GameObject("Container", typeof(RectTransform), typeof(Image));
         panelGo.transform.SetParent(root, false);
         panelGo.tag = "Container";
-        ContainerTouch.backpackPanel = panelGo.transform as RectTransform;
+        ContainerTouch.containerPanel = panelGo.transform as RectTransform;
         Image panelImg = panelGo.GetComponent<Image>();
-        panelImg.sprite = bp.backpackSprite != null ? bp.backpackSprite : DefaultSprite;
+        panelImg.sprite = bp.containerSprite != null ? bp.containerSprite : DefaultSprite;
         panelImg.type = Image.Type.Sliced;
 
         // 2. Mask
@@ -86,12 +86,12 @@ public static class BackpackBuilder
     public static GameObject BuildFromPrefab(UIResponder _this, ContainerSpec bp)
     {
         var instance = Object.Instantiate(bp.prefab, _this.transform);
-        instance.name = "Backpack";
+        instance.name = "Container";
 
         // 提取 Container
         var containerRT = instance.transform as RectTransform;
         if (containerRT == null) containerRT = instance.AddComponent<RectTransform>();
-        ContainerTouch.backpackPanel = containerRT;
+        ContainerTouch.containerPanel = containerRT;
 
         // 提取 Mask（递归找第一个 RectMask2D）
         var mask = instance.GetComponentInChildren<RectMask2D>(true);
@@ -165,10 +165,10 @@ public static class BackpackBuilder
             ItemTouch.maskTransform.anchoredPosition = new Vector2(0, bp.maskPosY);
         }
 
-        if (ContainerTouch.backpackPanel != null)
-            ContainerTouch.backpackPanel.sizeDelta = new Vector2(
+        if (ContainerTouch.containerPanel != null)
+            ContainerTouch.containerPanel.sizeDelta = new Vector2(
                 gridW + bp.horizontalPadding * 2f,
-                bp.maskHeight + bp.backpackExtraHeight);
+                bp.maskHeight + bp.containerExtraHeight);
     }
 }
 }

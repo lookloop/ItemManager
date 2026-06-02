@@ -33,7 +33,7 @@ namespace Lookloop.ItemManager
 
         [Space]
         [Header("视觉")]
-        public Sprite backpackSprite;
+        public Sprite containerSprite;
         public Sprite maskSprite;
         public Sprite cellSprite;
         public TMP_FontAsset itemFont;
@@ -46,7 +46,7 @@ namespace Lookloop.ItemManager
         [Space]
         [Header("面板")]
         public float horizontalPadding = 2f;
-        public float backpackExtraHeight = 12f;
+        public float containerExtraHeight = 12f;
         [Tooltip("打开时自动归位到此坐标")]
         public Vector2 showPosition;
 

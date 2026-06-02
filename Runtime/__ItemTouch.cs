@@ -29,7 +29,7 @@ public static class ItemTouch
     public static GameObject itemDragging;  // 跟随手指的漂浮 Item
 
     // ════════════════════════════════════════════════════════════
-    // Grid 运行时引用（由 BackpackBuilder 注入）
+    // Grid 运行时引用（由 ContainerBuilder 注入）
     // ════════════════════════════════════════════════════════════
     public static RectTransform gridTransform;
     public static RectTransform maskTransform;

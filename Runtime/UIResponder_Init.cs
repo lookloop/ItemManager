@@ -16,13 +16,13 @@ public partial class UIResponder
         {
             foreach (var m in mods)
             {
-                GameObject backpack;
+                GameObject containerObj;
                 if (m.prefab != null)
-                    backpack = BackpackBuilder.BuildFromPrefab(this, m);
+                    containerObj = ContainerBuilder.BuildFromPrefab(this, m);
                 else
-                    backpack = BackpackBuilder.Build(this, m);
+                    containerObj = ContainerBuilder.Build(this, m);
 
-                int id = ContainerManager.Register(backpack, m);
+                int id = ContainerManager.Register(containerObj, m);
             }
         }
 
