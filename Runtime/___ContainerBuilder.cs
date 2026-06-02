@@ -10,30 +10,30 @@ namespace Lookloop.ItemManager
 public static class ContainerBuilder
 {
     /// <summary>遍历 mods 数组，逐项构建 + 注册容器</summary>
-    public static void BuildAll(Core _this, ContainerSpec[] mods)
+    public static void BuildAll(Core core)
     {
-        if (mods == null || mods.Length == 0) return;
+        if (core.mods == null || core.mods.Length == 0) return;
 
-        foreach (var m in mods)
+        foreach (var m in core.mods)
         {
             GameObject containerObj;
             if (m.prefab != null)
-                containerObj = BuildFromPrefab(_this, m);
+                containerObj = BuildFromPrefab(core, m);
             else
-                containerObj = Build(_this, m);
+                containerObj = Build(core, m);
 
             ContainerManager.Register(containerObj, m);
         }
     }
 
     /// <summary>构建容器 → 返回顶层 Container GameObject</summary>
-    public static GameObject Build(Core _this, ContainerSpec bp)
+    public static GameObject Build(Core core, ContainerSpec bp)
     {
         // rows/cols → cellCount/cellsPerRow 自动换算
         ItemTouch.cellCount = bp.rows * bp.cols;
         ItemTouch.cellsPerRow = bp.cols;
 
-        RectTransform root = _this.transform as RectTransform;
+        RectTransform root = core.transform as RectTransform;
 
         // 1. Container 面板
         GameObject panelGo = new GameObject("Container", typeof(RectTransform), typeof(Image));
@@ -83,9 +83,9 @@ public static class ContainerBuilder
     }
 
     /// <summary>从 Prefab 构建 → 返回顶层 Container GameObject</summary>
-    public static GameObject BuildFromPrefab(Core _this, ContainerSpec bp)
+    public static GameObject BuildFromPrefab(Core core, ContainerSpec bp)
     {
-        var instance = Object.Instantiate(bp.prefab, _this.transform);
+        var instance = Object.Instantiate(bp.prefab, core.transform);
         instance.name = "Container";
 
         // 提取 Container

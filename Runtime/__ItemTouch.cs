@@ -54,7 +54,7 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     // 1. 开始点击 — A 阶段
     // ════════════════════════════════════════════════════════════
-    public static void BeginClick(Core _this, PointerEventData eventData)
+    public static void BeginClick(Core core, PointerEventData eventData)
     {
         // 重置状态
         isLongPress = false;
@@ -67,7 +67,7 @@ public static class ItemTouch
         if (source == null) return;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out beginPosition);
+            core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out beginPosition);
 
         // 往上找 Grid（短按拖拽滚 Grid 用）
         Transform t = source.transform;
@@ -86,11 +86,11 @@ public static class ItemTouch
 
         // 启计时器 — 到点自动变长按
         if (timerCoroutine != null)
-            _this.StopCoroutine(timerCoroutine);
-        timerCoroutine = _this.StartCoroutine(Timer(_this));
+            core.StopCoroutine(timerCoroutine);
+        timerCoroutine = core.StartCoroutine(Timer(core));
     }
 
-    static IEnumerator Timer(Core _this)
+    static IEnumerator Timer(Core core)
     {
         float tv = B != null ? B.timerValue : 0.3f;
         yield return new WaitForSeconds(tv);
@@ -101,7 +101,7 @@ public static class ItemTouch
         if (source != null && source.transform.childCount > 0)
         {
             itemDragging = source.transform.GetChild(0).gameObject;
-            itemDragging.transform.SetParent(_this.canvas.transform, false);
+            itemDragging.transform.SetParent(core.canvas.transform, false);
             float cw = B != null ? B.cellWidth : 10f;
             itemDragging.transform.localScale = new Vector3(cw / 10f, cw / 10f, 1f);
             (itemDragging.transform as RectTransform).anchoredPosition = beginPosition;
@@ -117,57 +117,57 @@ public static class ItemTouch
     // 2. 拖拽中 — C 阶段（每帧）
     // 距离判定拖拽 → 分流：长按物品跟随 / 短按滚Grid
     // ════════════════════════════════════════════════════════════
-    public static void OnDrag(Core _this, PointerEventData eventData)
+    public static void OnDrag(Core core, PointerEventData eventData)
     {
         // ── 距离判定拖拽 ──
         if (!isDrag)
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out Vector2 currentPos);
+                core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out Vector2 currentPos);
             if ((currentPos - beginPosition).sqrMagnitude > 0.01f)
                 isDrag = true;
         }
 
         // ── 分流 ──
         if (isLongPress)
-            LongPressFollow(_this, eventData);
+            LongPressFollow(core, eventData);
         else if (isDrag && gridTarget != null)
-            ScrollGrid(_this, eventData);
+            ScrollGrid(core, eventData);
     }
 
     // ════════════════════════════════════════════════════════════
     // 3. 结算 — D 阶段（手指抬起）
     // isLongPress + isDrag 组合判定：交换 / 复位 / 详情 / 滚Grid无结算
     // ════════════════════════════════════════════════════════════
-    public static void EndDrag(Core _this, PointerEventData eventData)
+    public static void EndDrag(Core core, PointerEventData eventData)
     {
         // 先停计时器
         if (timerCoroutine != null)
         {
-            _this.StopCoroutine(timerCoroutine);
+            core.StopCoroutine(timerCoroutine);
             timerCoroutine = null;
         }
 
         if (isLongPress)
         {
-            if (isDrag)  Swap(_this);
-            else         ResetPosition(_this);
+            if (isDrag)  Swap(core);
+            else         ResetPosition(core);
         }
         else if (!isDrag)
         {
-            ShowDetail(_this, eventData);
+            ShowDetail(core, eventData);
         }
         // else: 短按拖拽 — 滚 Grid 最后一帧已到位，无结算
 
-        Cleanup(_this);
+        Cleanup(core);
     }
 
     // ════════════════════════════════════════════════════════════
     // ── 内部：长按物品跟随手指 + 阴影悬停检测 ──
     // ════════════════════════════════════════════════════════════
-    static void LongPressFollow(Core _this, PointerEventData eventData)
+    static void LongPressFollow(Core core, PointerEventData eventData)
     {
-        Debug.Log("UI 长按拖拽: " + _this.gameObject.name);
+        Debug.Log("UI 长按拖拽: " + core.gameObject.name);
 
         // 物品跟随
         if (itemDragging != null)
@@ -177,7 +177,7 @@ public static class ItemTouch
             {
                 Vector2 pos;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out pos);
+                    core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out pos);
                 rt.anchoredPosition = pos;
             }
         }
@@ -207,7 +207,7 @@ public static class ItemTouch
                 if (shadow != null)
                 {
                     shadow.SetActive(false);
-                    shadow.transform.SetParent(_this.canvas.transform, false);
+                    shadow.transform.SetParent(core.canvas.transform, false);
                 }
             }
         }
@@ -216,13 +216,13 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     // ── 内部：短按滚 Grid（X 锁定，Y 钳位）──
     // ════════════════════════════════════════════════════════════
-    static void ScrollGrid(Core _this, PointerEventData eventData)
+    static void ScrollGrid(Core core, PointerEventData eventData)
     {
         RectTransform maskRT = gridTarget.parent as RectTransform;
         if (maskRT == null) return;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out Vector2 now);
+            core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out Vector2 now);
         Vector2 delta = now - beginPosition;
 
         float maskHeight  = maskRT.rect.height;
@@ -238,7 +238,7 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     // ── 内部：复位 — 物品回原格 ──
     // ════════════════════════════════════════════════════════════
-    static void ResetPosition(Core _this)
+    static void ResetPosition(Core core)
     {
         if (itemDragging != null && source != null)
         {
@@ -252,17 +252,17 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     // ── 内部：格子交换 ──
     // ════════════════════════════════════════════════════════════
-    static void Swap(Core _this)
+    static void Swap(Core core)
     {
-        if (!TrySwap(_this))
-            ResetPosition(_this);
+        if (!TrySwap(core))
+            ResetPosition(core);
     }
 
-    static bool TrySwap(Core _this)
+    static bool TrySwap(Core core)
     {
         if (target == null || target == source) return false;
 
-        var cont = GetContainer(_this, source.transform);
+        var cont = GetContainer(core, source.transform);
         if (cont == null || cont.items == null) return false;
 
         int srcIdx = System.Array.IndexOf(cellRegistry, source);
@@ -272,8 +272,8 @@ public static class ItemTouch
 
         var srcItem = cont.items[srcIdx];
         var dstItem = cont.items[dstIdx];
-        ItemDataManager.SetCell(_this, srcIdx, dstItem);
-        ItemDataManager.SetCell(_this, dstIdx, srcItem);
+        ItemDataManager.SetCell(core, srcIdx, dstItem);
+        ItemDataManager.SetCell(core, dstIdx, srcItem);
 
         if (itemDragging != null) Object.Destroy(itemDragging);
 
@@ -284,7 +284,7 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     // ── 内部：从子级往上找 Container，匹配返回 ContainerMod ──
     // ════════════════════════════════════════════════════════════
-    static ContainerMod GetContainer(Core _this, Transform child)
+    static ContainerMod GetContainer(Core core, Transform child)
     {
         if (ContainerManager.containers == null) return null;
         Transform t = child;
@@ -305,13 +305,13 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     // ── 内部：清理状态 ──
     // ════════════════════════════════════════════════════════════
-    static void Cleanup(Core _this)
+    static void Cleanup(Core core)
     {
         var shadow = B != null ? B.shadowItem : null;
         if (shadow != null)
         {
             shadow.SetActive(false);
-            shadow.transform.SetParent(_this.canvas != null ? _this.canvas.transform : _this.transform, false);
+            shadow.transform.SetParent(core.canvas != null ? core.canvas.transform : core.transform, false);
         }
         source        = null;
         target        = null;
@@ -342,13 +342,13 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     // ── 内部：短按点击 → 显示详情面板 ──
     // ════════════════════════════════════════════════════════════
-    static void ShowDetail(Core _this, PointerEventData eventData)
+    static void ShowDetail(Core core, PointerEventData eventData)
     {
         Debug.Log("执行程序：短按普通点击结算 (Short Click)");
         GameObject clickedObject = eventData.pointerCurrentRaycast.gameObject;
         if (clickedObject == null) return;
 
-        var container = GetContainer(_this, clickedObject.transform);
+        var container = GetContainer(core, clickedObject.transform);
         if (container == null || container.items == null) return;
 
         int index = System.Array.IndexOf(cellRegistry, clickedObject);
@@ -358,7 +358,7 @@ public static class ItemTouch
         if (item != null)
         {
             Debug.Log($"点击了索引: {index}, 物品 ID: {item.Id}");
-            ShowItemDetail(_this, container, clickedObject, item.Id.ToString());
+            ShowItemDetail(core, container, clickedObject, item.Id.ToString());
         }
         else
         {
@@ -366,12 +366,12 @@ public static class ItemTouch
         }
     }
 
-    static async void ShowItemDetail(Core _this, ContainerMod container, GameObject targetObj, string id)
+    static async void ShowItemDetail(Core core, ContainerMod container, GameObject targetObj, string id)
     {
         var bp = container.blueprint;
         if (bp == null) return;
 
-        ItemTable table = await _this.GetItemTable(id);
+        ItemTable table = await core.GetItemTable(id);
         if (table == null) return;
 
         // 销毁旧面板（同一容器）
@@ -386,7 +386,7 @@ public static class ItemTouch
         if (bp.detailPanelPrefab != null)
         {
             // ── Prefab 模式：Instantiate ──
-            var instance = Object.Instantiate(bp.detailPanelPrefab, _this.canvas.transform);
+            var instance = Object.Instantiate(bp.detailPanelPrefab, core.canvas.transform);
             container.activeDetailPanel = instance;
             panelRT = instance.transform as RectTransform;
             if (panelRT == null) panelRT = instance.AddComponent<RectTransform>();
@@ -402,7 +402,7 @@ public static class ItemTouch
         }
 
         SetPanelContent(bp, table);
-        SetPanelPosition(_this, panelRT, targetObj);
+        SetPanelPosition(core, panelRT, targetObj);
         panelRT.gameObject.SetActive(true);
     }
 
@@ -435,11 +435,11 @@ public static class ItemTouch
         if (bp.descText != null) bp.descText.text = table.ItemDescription;
     }
 
-    static void SetPanelPosition(Core _this, RectTransform panelRT, GameObject targetObj)
+    static void SetPanelPosition(Core core, RectTransform panelRT, GameObject targetObj)
     {
         if (panelRT == null || targetObj == null) return;
 
-        var canvasRT = _this.canvas.transform as RectTransform;
+        var canvasRT = core.canvas.transform as RectTransform;
 
         // 挂到 cell 下，锚点居中，归零 → Panel 中心对齐 cell 中心
         panelRT.SetParent(targetObj.transform, false);

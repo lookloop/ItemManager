@@ -11,7 +11,7 @@ public partial class Core
 
     void Start()
     {
-        ContainerBuilder.BuildAll(this, mods);
+        ContainerBuilder.BuildAll(this);
         BuildData();
     }
 

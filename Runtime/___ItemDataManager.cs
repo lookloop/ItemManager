@@ -18,17 +18,17 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     // 核心：设置格子 — 数据写入 + 视觉同步
     // ════════════════════════════════════════════════════════════
-    public static void SetCell(Core _this, int index, Item item)
+    public static void SetCell(Core core, int index, Item item)
     {
         if (ContainerManager.containers != null && ContainerManager.containers.Count > 0)
             ContainerManager.containers[0].items[index] = item;
-        ItemView.Sync(_this, index);
+        ItemView.Sync(core, index);
     }
 
     // ════════════════════════════════════════════════════════════
     // 构建数据 — 创建 items[] + 同步首页
     // ════════════════════════════════════════════════════════════
-    public static void BuildData(Core _this)
+    public static void BuildData(Core core)
     {
         var bp = ContainerManager.containers[0].blueprint;
         // Prefab 模式：items 长度 = Cell 数量；动态模式：取 totalItems 和 cellCount 较大值
@@ -36,13 +36,13 @@ public static class ItemDataManager
             ? ItemTouch.cellCount
             : Mathf.Max(bp != null ? bp.totalItems : 20, ItemTouch.cellCount);
         ContainerManager.containers[0].items = new Item[dataSize];
-        SyncPage(_this);
+        SyncPage(core);
     }
 
     // ════════════════════════════════════════════════════════════
     // 设置Cell — 外部入口：写全量数组，若在当前页则刷新视图
     // ════════════════════════════════════════════════════════════
-    public static void SetCellData(Core _this, int index, Item item)
+    public static void SetCellData(Core core, int index, Item item)
     {
         if (index < 0 || index >= ContainerManager.containers[0].items.Length) return;
         ContainerManager.containers[0].items[index] = item;
@@ -50,29 +50,29 @@ public static class ItemDataManager
         int pageSize  = ItemTouch.cellCount;
         int pageStart = ContainerManager.containers[0].currentPage * pageSize;
         if (index >= pageStart && index < pageStart + pageSize)
-            SetCell(_this, index - pageStart, item);
+            SetCell(core, index - pageStart, item);
     }
 
     // ════════════════════════════════════════════════════════════
     // 翻页
     // ════════════════════════════════════════════════════════════
-    public static void NextPage(Core _this)
+    public static void NextPage(Core core)
     {
         int maxPage = Mathf.Max(0, (ContainerManager.containers[0].items.Length - 1) / ItemTouch.cellCount);
         if (ContainerManager.containers[0].currentPage < maxPage) ContainerManager.containers[0].currentPage++;
-        SyncPage(_this);
+        SyncPage(core);
     }
 
-    public static void PrevPage(Core _this)
+    public static void PrevPage(Core core)
     {
         if (ContainerManager.containers[0].currentPage > 0) ContainerManager.containers[0].currentPage--;
-        SyncPage(_this);
+        SyncPage(core);
     }
 
     // ════════════════════════════════════════════════════════════
     // 同步页面 — 整页刷新
     // ════════════════════════════════════════════════════════════
-    public static void SyncPage(Core _this)
+    public static void SyncPage(Core core)
     {
         int pageSize  = ItemTouch.cellCount;
         int pageStart = ContainerManager.containers[0].currentPage * pageSize;
@@ -81,9 +81,9 @@ public static class ItemDataManager
         {
             int dataIndex = pageStart + i;
             if (dataIndex < ContainerManager.containers[0].items.Length)
-                SetCell(_this, i, ContainerManager.containers[0].items[dataIndex]);
+                SetCell(core, i, ContainerManager.containers[0].items[dataIndex]);
             else
-                SetCell(_this, i, null);
+                SetCell(core, i, null);
         }
     }
 }

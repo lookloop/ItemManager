@@ -11,7 +11,7 @@ namespace Lookloop.ItemManager
 public static class ItemView
 {
     /// <summary>清空旧 Item → 创建新 Item → 加载 Addressables 资源 → 显示</summary>
-    public static async void Sync(Core _this, int index)
+    public static async void Sync(Core core, int index)
     {
         var cell     = ItemTouch.cellRegistry[index];
         var itemData = ContainerManager.containers[0].items[index];
@@ -21,10 +21,10 @@ public static class ItemView
 
         if (itemData == null || itemData.Id <= 0) return;
 
-        var itemInstance = Create(_this, cell);
-        var table = await _this.GetItemTable(itemData.Id.ToString());
+        var itemInstance = Create(core, cell);
+        var table = await core.GetItemTable(itemData.Id.ToString());
 
-        if (cell == null || _this == null || ItemTouch.cellRegistry == null)
+        if (cell == null || core == null || ItemTouch.cellRegistry == null)
         {
             if (itemInstance != null) Object.Destroy(itemInstance);
             return;
@@ -52,7 +52,7 @@ public static class ItemView
             itemInstance.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemData.Count.ToString();
     }
 
-    static GameObject Create(Core _this, GameObject cell)
+    static GameObject Create(Core core, GameObject cell)
     {
         var bp = ContainerManager.containers[0].blueprint;
         var iw = bp != null ? bp.itemWidth : 8f;
