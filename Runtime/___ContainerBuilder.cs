@@ -14,37 +14,43 @@ public static class ContainerBuilder
     {
         foreach (var mod in core.mods)
         {
-            GameObject container;
+            ContainerMod containermod = new ContainerMod();
             if (mod.prefab != null)
-                container = BuildFromPrefab(core, mod.prefab);
+                BuildFromPrefab(core, mod.prefab, containermod);
             else
-                container = Build(core, mod);
+                Build(core, mod);
 
             ContainerManager.Register(container, mod);
         }
     }
-    public static GameObject BuildFromPrefab(Core core, GameObject prefab)
+    /// <summary>
+    /// Prefab 模式构建：克隆预制体 → 扫描根下 Cell 子节点 → 注册到全局。
+    /// 设计师在 Prefab 里怎么摆，运行时就是什么样，代码不插手布局。
+    /// </summary>
+    /// <param name="core">Canvas 下的 Core 入口对象</param>
+    /// <param name="prefab">用户在 ContainerSpec 里拖入的预制体</param>
+    /// <returns>实例化后的容器 GameObject，交给 ContainerManager.Register</returns>
+    public static void BuildFromPrefab(Core core, GameObject prefab, ContainerMod containermod)
     {
+        // 克隆预制体，挂到 Core 对象下 → 实例出现在 Canvas 层级中
         var instance = Object.Instantiate(prefab, core.transform);
-
-        // 提取 Cell：扫描实例直接子级中 tag="Cell" 的对象，按 Hierarchy 顺序注册
         {
             var allChildren = instance.GetComponentsInChildren<Transform>(true);
             var list = new System.Collections.Generic.List<GameObject>();
             foreach (var tr in allChildren)
             {
-                if (tr.CompareTag("Cell") && tr.parent == instance.transform)
+                if (tr.CompareTag("Cell"))
                     list.Add(tr.gameObject);
             }
-            list.Sort((a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));
             for (int i = 0; i < list.Count; i++)
                 list[i].name = i.ToString();
-            ItemTouch.cellRegistry = list.ToArray();
+            containermod.cells = list.ToArray();
+            containermod.items = new Item[containermod.cells.Length];
+            containermod.container = instance.transform as RectTransform;
+            ContainerManager.containers.Add(containermod);
         }
-        ItemTouch.cellCount = ItemTouch.cellRegistry.Length;
-        ItemTouch.cellsPerRow = ItemTouch.cellCount; // Prefab 模式不依赖行列计算
 
-        return instance;
+        return;
     }
     public static GameObject Build(Core core, ContainerSpec bp)
     {
