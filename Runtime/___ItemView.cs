@@ -54,7 +54,8 @@ public static class ItemView
 
     static GameObject Create(UIResponder _this, GameObject cell)
     {
-        var iw = _this.itemWidth;
+        var t = ContainerManager.containers[0].template;
+        var iw = t != null ? t.itemWidth : 8f;
         var go = new GameObject("Item", typeof(RectTransform), typeof(Image));
         go.transform.SetParent(cell.transform, false);
         var rt = go.GetComponent<RectTransform>();
@@ -80,7 +81,7 @@ public static class ItemView
         crt.anchorMin = crt.anchorMax = new Vector2(1, 0);
         crt.pivot = new Vector2(1, 0); crt.sizeDelta = new Vector2(10, 5);
         var tmp = count.GetComponent<TextMeshProUGUI>();
-        if (_this.itemFont != null) tmp.font = _this.itemFont;
+        if (t != null && t.itemFont != null) tmp.font = t.itemFont;
         tmp.fontSize = 3.9f;
         tmp.alignment = TextAlignmentOptions.BottomRight;
         tmp.raycastTarget = false;

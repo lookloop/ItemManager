@@ -47,6 +47,10 @@ public static class ItemTouch
     static RectTransform gridTarget;    // 滚 Grid 用
     static Vector2    gridStartPos;
 
+    // 快捷引用
+    static BackpackTemplate T => ContainerManager.containers != null && ContainerManager.containers.Count > 0
+        ? ContainerManager.containers[0].template : null;
+
     // ════════════════════════════════════════════════════════════
     // 1. 开始点击 — A 阶段
     // ════════════════════════════════════════════════════════════
@@ -55,7 +59,7 @@ public static class ItemTouch
         // 重置状态
         isLongPress = false;
         isDrag      = false;
-        if (_this.Panel != null) _this.Panel.gameObject.SetActive(false);
+        if (T != null && T.detailPanel != null) T.detailPanel.gameObject.SetActive(false);
 
         source = eventData.pointerCurrentRaycast.gameObject;
         if (source == null) return;
@@ -86,7 +90,8 @@ public static class ItemTouch
 
     static IEnumerator Timer(UIResponder _this)
     {
-        yield return new WaitForSeconds(_this.timerValue);
+        float tv = T != null ? T.timerValue : 0.3f;
+        yield return new WaitForSeconds(tv);
 
         // ── 长按成功：拾起物品 ──
         isLongPress = true;
@@ -95,7 +100,8 @@ public static class ItemTouch
         {
             itemDragging = source.transform.GetChild(0).gameObject;
             itemDragging.transform.SetParent(_this.canvas.transform, false);
-            itemDragging.transform.localScale = new Vector3(_this.cellWidth / 10f, _this.cellWidth / 10f, 1f);
+            float cw = T != null ? T.cellWidth : 10f;
+            itemDragging.transform.localScale = new Vector3(cw / 10f, cw / 10f, 1f);
             (itemDragging.transform as RectTransform).anchoredPosition = beginPosition;
             itemDragging.transform.SetAsLastSibling();
         }
@@ -175,18 +181,19 @@ public static class ItemTouch
         }
 
         // 射线检测悬停格子
+        var shadow = T != null ? T.shadowItem : null;
         GameObject hoverObj = eventData.pointerCurrentRaycast.gameObject;
         if (hoverObj != null && hoverObj.CompareTag("Item"))
         {
             if (target != hoverObj)
             {
                 target = hoverObj;
-                if (_this.shadowItem != null)
+                if (shadow != null)
                 {
-                    _this.shadowItem.SetActive(true);
-                    _this.shadowItem.transform.SetParent(hoverObj.transform, false);
-                    (_this.shadowItem.transform as RectTransform).anchoredPosition = Vector2.zero;
-                    _this.shadowItem.transform.SetAsLastSibling();
+                    shadow.SetActive(true);
+                    shadow.transform.SetParent(hoverObj.transform, false);
+                    (shadow.transform as RectTransform).anchoredPosition = Vector2.zero;
+                    shadow.transform.SetAsLastSibling();
                 }
             }
         }
@@ -195,10 +202,10 @@ public static class ItemTouch
             if (target != null)
             {
                 target = null;
-                if (_this.shadowItem != null)
+                if (shadow != null)
                 {
-                    _this.shadowItem.SetActive(false);
-                    _this.shadowItem.transform.SetParent(_this.canvas.transform, false);
+                    shadow.SetActive(false);
+                    shadow.transform.SetParent(_this.canvas.transform, false);
                 }
             }
         }
@@ -256,8 +263,8 @@ public static class ItemTouch
         var cont = GetContainerData(_this, source.transform);
         if (cont == null || cont.items == null) return false;
 
-        int srcIdx = System.Array.IndexOf(ItemTouch.cellRegistry, source);
-        int dstIdx = System.Array.IndexOf(ItemTouch.cellRegistry, target);
+        int srcIdx = System.Array.IndexOf(cellRegistry, source);
+        int dstIdx = System.Array.IndexOf(cellRegistry, target);
         if (srcIdx < 0 || dstIdx < 0 || srcIdx >= cont.items.Length || dstIdx >= cont.items.Length)
             return false;
 
@@ -298,10 +305,11 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     static void Cleanup(UIResponder _this)
     {
-        if (_this.shadowItem != null)
+        var shadow = T != null ? T.shadowItem : null;
+        if (shadow != null)
         {
-            _this.shadowItem.SetActive(false);
-            _this.shadowItem.transform.SetParent(_this.canvas != null ? _this.canvas.transform : _this.transform, false);
+            shadow.SetActive(false);
+            shadow.transform.SetParent(_this.canvas != null ? _this.canvas.transform : _this.transform, false);
         }
         source        = null;
         target        = null;
@@ -323,7 +331,7 @@ public static class ItemTouch
         var container = GetContainerData(_this, clickedObject.transform);
         if (container == null || container.items == null) return;
 
-        int index = System.Array.IndexOf(ItemTouch.cellRegistry, clickedObject);
+        int index = System.Array.IndexOf(cellRegistry, clickedObject);
         if (index < 0 || index >= container.items.Length) return;
 
         Item item = container.items[index];
@@ -345,17 +353,18 @@ public static class ItemTouch
         {
             SetPanelPosition(_this, targetObj);
             SetPanelContent(_this, table);
-            if (_this.Panel != null) _this.Panel.gameObject.SetActive(true);
+            if (T != null && T.detailPanel != null) T.detailPanel.gameObject.SetActive(true);
         }
     }
 
     static void SetPanelContent(UIResponder _this, ItemTable table)
     {
-        if (_this.IconImage != null)
+        if (T == null) return;
+        if (T.iconImage != null)
         {
-            if (_this.IconImage.transform.childCount > 0)
+            if (T.iconImage.transform.childCount > 0)
             {
-                Transform itemIconTransform = _this.IconImage.transform.GetChild(0);
+                Transform itemIconTransform = T.iconImage.transform.GetChild(0);
                 Image itemIconImage = itemIconTransform.GetComponent<Image>();
                 if (itemIconImage != null)
                 {
@@ -374,15 +383,15 @@ public static class ItemTouch
                 }
             }
         }
-        if (_this.NameText != null) _this.NameText.text = table.ItemName;
-        if (_this.DescText != null) _this.DescText.text = table.ItemDescription;
+        if (T.nameText != null) T.nameText.text = table.ItemName;
+        if (T.descText != null) T.descText.text = table.ItemDescription;
     }
 
     static void SetPanelPosition(UIResponder _this, GameObject targetObj)
     {
-        if (_this.Panel == null || targetObj == null) return;
+        if (T == null || T.detailPanel == null || targetObj == null) return;
 
-        var panelRT  = _this.Panel;
+        var panelRT  = T.detailPanel;
         var canvasRT = _this.canvas.transform as RectTransform;
 
         // 挂到 cell 下，锚点居中，归零 → Panel 中心对齐 cell 中心

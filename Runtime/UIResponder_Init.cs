@@ -16,15 +16,19 @@ public partial class UIResponder
 
     void Start()
     {
-        // rows/cols → cellCount/cellsPerRow 自动换算
-        ItemTouch.cellCount = rows * cols;
-        ItemTouch.cellsPerRow = cols;
-
-        // 自动构建 + 注册
-        if (autoBuild && ItemTouch.gridTransform == null)
+        // 自动构建 + 注册（遍历模板数组，Prefab / 动态 混用）
+        if (autoBuild && templates != null && templates.Length > 0)
         {
-            var backpack = BackpackBuilder.Build(this);
-            ContainerManager.Register(backpack, this);
+            foreach (var t in templates)
+            {
+                GameObject backpack;
+                if (t.prefab != null)
+                    backpack = BackpackBuilder.BuildFromPrefab(this, t);
+                else
+                    backpack = BackpackBuilder.Build(this, t);
+
+                int id = ContainerManager.Register(backpack, t);
+            }
         }
 
         // 数据初始化

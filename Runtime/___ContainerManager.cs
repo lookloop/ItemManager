@@ -13,9 +13,9 @@ public static class ContainerManager
     public static List<ContainerData> containers;
 
     // ════════════════════════════════════════════════════════════
-    // 注册 — 构建好的 GameObject → 分配 ID → 加入 containers 列表
+    // 注册 — 构建好的 GameObject + 模板 → 加入 containers 列表
     // ════════════════════════════════════════════════════════════
-    public static int Register(GameObject containerObj, UIResponder _this)
+    public static int Register(GameObject containerObj, BackpackTemplate template)
     {
         if (containers == null)
             containers = new List<ContainerData>();
@@ -23,7 +23,8 @@ public static class ContainerManager
         var cd = new ContainerData
         {
             container = containerObj.transform as RectTransform,
-            items     = new Item[ItemTouch.cellCount]
+            items     = new Item[ItemTouch.cellCount],
+            template  = template
         };
 
         containers.Add(cd);
@@ -34,7 +35,7 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     // 注销 — 从列表移除，可选销毁 GameObject
     // ════════════════════════════════════════════════════════════
-    public static void Unregister(UIResponder _this, int id, bool destroyGO = true)
+    public static void Unregister(int id, bool destroyGO = true)
     {
         if (containers == null || id < 0 || id >= containers.Count) return;
 
@@ -48,7 +49,7 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     // 显示 / 隐藏
     // ════════════════════════════════════════════════════════════
-    public static void Show(UIResponder _this, int id)
+    public static void Show(int id)
     {
         if (containers == null || id < 0 || id >= containers.Count) return;
         var cd = containers[id];
@@ -56,7 +57,7 @@ public static class ContainerManager
             cd.container.gameObject.SetActive(true);
     }
 
-    public static void Hide(UIResponder _this, int id)
+    public static void Hide(int id)
     {
         if (containers == null || id < 0 || id >= containers.Count) return;
         var cd = containers[id];
@@ -65,9 +66,24 @@ public static class ContainerManager
     }
 
     // ════════════════════════════════════════════════════════════
+    // 显示并归位到模板预设坐标
+    // ════════════════════════════════════════════════════════════
+    public static void ShowAtPreset(int id)
+    {
+        if (containers == null || id < 0 || id >= containers.Count) return;
+        var cd = containers[id];
+        if (cd.container != null)
+        {
+            cd.container.gameObject.SetActive(true);
+            if (cd.template != null)
+                cd.container.anchoredPosition = cd.template.showPosition;
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════
     // 移动容器到指定位置
     // ════════════════════════════════════════════════════════════
-    public static void MoveTo(UIResponder _this, int id, Vector2 anchoredPosition)
+    public static void MoveTo(int id, Vector2 anchoredPosition)
     {
         if (containers == null || id < 0 || id >= containers.Count) return;
         var cd = containers[id];

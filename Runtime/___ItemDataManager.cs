@@ -30,7 +30,11 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     public static void BuildData(UIResponder _this)
     {
-        int dataSize = Mathf.Max(_this.totalItems, ItemTouch.cellCount);
+        var t = ContainerManager.containers[0].template;
+        // Prefab 模式：items 长度 = Cell 数量；动态模式：取 totalItems 和 cellCount 较大值
+        int dataSize = (t != null && t.prefab != null)
+            ? ItemTouch.cellCount
+            : Mathf.Max(t != null ? t.totalItems : 20, ItemTouch.cellCount);
         ContainerManager.containers[0].items = new Item[dataSize];
         SyncPage(_this);
     }
