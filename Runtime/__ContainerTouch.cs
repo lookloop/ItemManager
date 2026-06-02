@@ -5,7 +5,7 @@ namespace Lookloop.ItemManager
 {
 /// <summary>
 /// Container 触控总成 — 面板拖拽。
-/// UIResponder 只做路由：Container → 调这 3 个方法。
+/// Core 只做路由：Container → 调这 3 个方法。
 ///
 /// ─── 字段 ───
 ///   source  被拖拽的面板
@@ -27,7 +27,7 @@ public static class ContainerTouch
     // ════════════════════════════════════════════════════════════
     // 1. 开始拖拽 — A 阶段
     // ════════════════════════════════════════════════════════════
-    public static void BeginDrag(UIResponder _this, PointerEventData eventData)
+    public static void BeginDrag(Core _this, PointerEventData eventData)
     {
         source        = eventData.pointerCurrentRaycast.gameObject;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -39,7 +39,7 @@ public static class ContainerTouch
     // 2. 拖拽中 — C 阶段（每帧）
     // 距离判定：相对位移驱动面板移动
     // ════════════════════════════════════════════════════════════
-    public static void OnDrag(UIResponder _this, PointerEventData eventData)
+    public static void OnDrag(Core _this, PointerEventData eventData)
     {
         if (source == null) return;
 
@@ -55,7 +55,7 @@ public static class ContainerTouch
     // ════════════════════════════════════════════════════════════
     // 3. 结算 — D 阶段（手指抬起）
     // ════════════════════════════════════════════════════════════
-    public static void EndDrag(UIResponder _this)
+    public static void EndDrag(Core _this)
     {
         source = null;
     }

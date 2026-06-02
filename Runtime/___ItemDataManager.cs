@@ -18,7 +18,7 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     // 核心：设置格子 — 数据写入 + 视觉同步
     // ════════════════════════════════════════════════════════════
-    public static void SetCell(UIResponder _this, int index, Item item)
+    public static void SetCell(Core _this, int index, Item item)
     {
         if (ContainerManager.containers != null && ContainerManager.containers.Count > 0)
             ContainerManager.containers[0].items[index] = item;
@@ -28,7 +28,7 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     // 构建数据 — 创建 items[] + 同步首页
     // ════════════════════════════════════════════════════════════
-    public static void BuildData(UIResponder _this)
+    public static void BuildData(Core _this)
     {
         var bp = ContainerManager.containers[0].blueprint;
         // Prefab 模式：items 长度 = Cell 数量；动态模式：取 totalItems 和 cellCount 较大值
@@ -42,7 +42,7 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     // 设置Cell — 外部入口：写全量数组，若在当前页则刷新视图
     // ════════════════════════════════════════════════════════════
-    public static void SetCellData(UIResponder _this, int index, Item item)
+    public static void SetCellData(Core _this, int index, Item item)
     {
         if (index < 0 || index >= ContainerManager.containers[0].items.Length) return;
         ContainerManager.containers[0].items[index] = item;
@@ -56,14 +56,14 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     // 翻页
     // ════════════════════════════════════════════════════════════
-    public static void NextPage(UIResponder _this)
+    public static void NextPage(Core _this)
     {
         int maxPage = Mathf.Max(0, (ContainerManager.containers[0].items.Length - 1) / ItemTouch.cellCount);
         if (ContainerManager.containers[0].currentPage < maxPage) ContainerManager.containers[0].currentPage++;
         SyncPage(_this);
     }
 
-    public static void PrevPage(UIResponder _this)
+    public static void PrevPage(Core _this)
     {
         if (ContainerManager.containers[0].currentPage > 0) ContainerManager.containers[0].currentPage--;
         SyncPage(_this);
@@ -72,7 +72,7 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     // 同步页面 — 整页刷新
     // ════════════════════════════════════════════════════════════
-    public static void SyncPage(UIResponder _this)
+    public static void SyncPage(Core _this)
     {
         int pageSize  = ItemTouch.cellCount;
         int pageStart = ContainerManager.containers[0].currentPage * pageSize;

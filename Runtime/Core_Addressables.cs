@@ -5,7 +5,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Lookloop.ItemManager
 {
-public partial class UIResponder
+public partial class Core
 {
     /// <summary>
     /// 加载 ItemTable 资源 (Addressables async/await)
@@ -20,7 +20,7 @@ public partial class UIResponder
             return handle.Result;
         }
 
-        Debug.LogError($"[UIResponder] ItemTable 加载失败: {key}");
+        Debug.LogError($"[Core] ItemTable 加载失败: {key}");
         Addressables.Release(handle);
         return null;
     }

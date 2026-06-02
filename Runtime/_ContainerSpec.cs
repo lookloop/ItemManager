@@ -7,7 +7,7 @@ namespace Lookloop.ItemManager
 {
     /// <summary>
     /// 容器规格 — 构建容器的配方。
-    /// 填入 UIResponder.mods[] 数组，每项生成一个独立容器。
+    /// 填入 Core.mods[] 数组，每项生成一个独立容器。
     /// </summary>
     [Serializable]
     public class ContainerSpec

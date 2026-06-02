@@ -10,7 +10,7 @@ namespace Lookloop.ItemManager
 public static class ContainerBuilder
 {
     /// <summary>遍历 mods 数组，逐项构建 + 注册容器</summary>
-    public static void BuildAll(UIResponder _this, ContainerSpec[] mods)
+    public static void BuildAll(Core _this, ContainerSpec[] mods)
     {
         if (mods == null || mods.Length == 0) return;
 
@@ -27,7 +27,7 @@ public static class ContainerBuilder
     }
 
     /// <summary>构建容器 → 返回顶层 Container GameObject</summary>
-    public static GameObject Build(UIResponder _this, ContainerSpec bp)
+    public static GameObject Build(Core _this, ContainerSpec bp)
     {
         // rows/cols → cellCount/cellsPerRow 自动换算
         ItemTouch.cellCount = bp.rows * bp.cols;
@@ -83,7 +83,7 @@ public static class ContainerBuilder
     }
 
     /// <summary>从 Prefab 构建 → 返回顶层 Container GameObject</summary>
-    public static GameObject BuildFromPrefab(UIResponder _this, ContainerSpec bp)
+    public static GameObject BuildFromPrefab(Core _this, ContainerSpec bp)
     {
         var instance = Object.Instantiate(bp.prefab, _this.transform);
         instance.name = "Container";

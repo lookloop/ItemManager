@@ -15,7 +15,7 @@ namespace Lookloop.ItemManager
 ///   Item/Container 各自在 OnDrag 中对比起手坐标与当前坐标，
 ///   不一致则视为拖拽（isDrag），不再依赖 Unity IBeginDragHandler。
 /// </summary>
-public partial class UIResponder : MonoBehaviour,
+public partial class Core : MonoBehaviour,
     IPointerDownHandler,   // A — 手指按下
     IDragHandler,          // C — 拖拽中（每帧）
     IPointerUpHandler      // D — 手指抬起

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Lookloop.ItemManager
 {
-public partial class UIResponder
+public partial class Core
 {
     void Awake()
     {
