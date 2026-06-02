@@ -9,10 +9,11 @@ namespace Lookloop.ItemManager
     public class ContainerMod
     {
         public RectTransform container;
-        public Item[] items;
+        public RectTransform detail;
         public RectTransform[] cells;
+        public Item[] items;
+        //翻译:当前页面
         public int currentPage;
-        public ContainerSpec blueprint;
-        public GameObject activeDetailPanel;
+        
     }
 }

@@ -12,13 +12,13 @@ public static class ContainerBuilder
     /// <summary>遍历 mods 数组，逐项构建 + 注册容器</summary>
     public static void BuildAll(Core core)
     {
-        foreach (var mod in core.mods)
+        foreach (var spec in core.specs)
         {
             ContainerMod containermod = new ContainerMod();
-            if (mod.prefab != null)
-                BuildFromPrefab(core, mod.prefab, containermod);
+            if (spec.prefab != null)
+                BuildFromPrefab(core, spec.prefab, containermod);
             else
-                Build(core, mod);
+                Build(core, spec);
         }
     }
     public static void BuildFromPrefab(Core core, RectTransform prefab, ContainerMod containermod)
@@ -40,98 +40,9 @@ public static class ContainerBuilder
             ContainerManager.containers.Add(containermod);
         }
     }
-    public static GameObject Build(Core core, ContainerSpec mod)
+    public static GameObject Build(Core core, ContainerSpec spec)
     {
-        // rows/cols → cellCount/cellsPerRow 自动换算
-        ItemTouch.cellCount = mod.rows * mod.cols;
-        ItemTouch.cellsPerRow = mod.cols;
-
-        RectTransform root = core.transform as RectTransform;
-
-        // 1. Container 面板
-        GameObject panelGo = new GameObject("Container", typeof(RectTransform), typeof(Image));
-        panelGo.transform.SetParent(root, false);
-        panelGo.tag = "Container";
-        var panel = panelGo.transform as RectTransform;
-        Image panelImg = panelGo.GetComponent<Image>();
-        panelImg.sprite = mod.containerSprite;
-        panelImg.type = Image.Type.Sliced;
-
-        // 2. Mask
-        GameObject maskGo = new GameObject("Mask", typeof(RectTransform), typeof(Image), typeof(RectMask2D));
-        maskGo.transform.SetParent(panelGo.transform, false);
-        ItemTouch.maskTransform = maskGo.transform as RectTransform;
-        Image maskImg = maskGo.GetComponent<Image>();
-        maskImg.sprite = mod.maskSprite;
-        ItemTouch.maskTransform.anchorMin = ItemTouch.maskTransform.anchorMax = new Vector2(0.5f, 1f);
-        ItemTouch.maskTransform.pivot = new Vector2(0.5f, 1f);
-
-        // 3. Grid
-        GameObject gridGo = new GameObject("Grid", typeof(RectTransform));
-        gridGo.tag = "Grid";
-        gridGo.transform.SetParent(maskGo.transform, false);
-        ItemTouch.gridTransform = gridGo.transform as RectTransform;
-        ItemTouch.gridTransform.anchorMin = ItemTouch.gridTransform.anchorMax = new Vector2(0.5f, 1f);
-        ItemTouch.gridTransform.pivot = new Vector2(0.5f, 1f);
-        ItemTouch.gridTransform.anchoredPosition = Vector2.zero;
-
-        // 4. Cell
-        ItemTouch.cellRegistry = new GameObject[ItemTouch.cellCount];
-        for (int i = 0; i < ItemTouch.cellCount; i++)
-        {
-            GameObject cell = new GameObject(i.ToString(), typeof(RectTransform), typeof(Image));
-            cell.transform.SetParent(ItemTouch.gridTransform, false);
-            RectTransform crt = cell.GetComponent<RectTransform>();
-            crt.sizeDelta = new Vector2(mod.cellWidth, mod.cellWidth);
-            cell.GetComponent<Image>().sprite = mod.cellSprite;
-            cell.tag = "Cell";
-            ItemTouch.cellRegistry[i] = cell;
-        }
-
-        // 5. 排列 Cell + 设定 Grid/Mask 尺寸
-        ApplyCellPositions(mod);
-        ApplyGridSize(mod, panel);
-
-        return panelGo;
-    }
-
-    static void ApplyCellPositions(ContainerSpec mod)
-    {
-        float size = mod.cellWidth;
-        float scale = size / 10f;
-        for (int i = 0; i < ItemTouch.cellRegistry.Length; i++)
-        {
-            ItemTouch.cellRegistry[i].name = i.ToString();
-            var go = ItemTouch.cellRegistry[i];
-            int row = i / ItemTouch.cellsPerRow;
-            int col = i % ItemTouch.cellsPerRow;
-            var rt = go.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0, 1);
-            rt.anchorMax = new Vector2(0, 1);
-            rt.pivot = new Vector2(0, 1);
-            rt.anchoredPosition = new Vector2(col * size, -row * size);
-            rt.localScale = new Vector3(scale, scale, 1f);
-        }
-    }
-
-    static void ApplyGridSize(ContainerSpec mod, RectTransform panel)
-    {
-        float size = mod.cellWidth;
-        int totalRows = ItemTouch.cellCount / ItemTouch.cellsPerRow + (ItemTouch.cellCount % ItemTouch.cellsPerRow != 0 ? 1 : 0);
-        float gridW = ItemTouch.cellsPerRow * size;
-        float gridH = totalRows * size;
-
-        ItemTouch.gridTransform.sizeDelta = new Vector2(gridW, gridH);
-
-        if (ItemTouch.maskTransform != null)
-        {
-            ItemTouch.maskTransform.sizeDelta = new Vector2(gridW, mod.maskHeight);
-            ItemTouch.maskTransform.anchoredPosition = new Vector2(0, mod.maskPosY);
-        }
-
-        panel.sizeDelta = new Vector2(
-            gridW + mod.horizontalPadding * 2f,
-            mod.maskHeight + mod.containerExtraHeight);
+        
     }
 }
 }
