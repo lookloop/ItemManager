@@ -47,8 +47,6 @@ namespace Lookloop.ItemManager
         [Header("面板")]
         public float horizontalPadding = 2f;
         public float containerExtraHeight = 12f;
-        [Tooltip("打开时自动归位到此坐标")]
-        public Vector2 showPosition;
 
         [Space]
         [Header("拖拽视觉")]

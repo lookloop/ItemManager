@@ -19,8 +19,6 @@ public static class ContainerBuilder
                 BuildFromPrefab(core, mod.prefab, containermod);
             else
                 Build(core, mod);
-
-            ContainerManager.Register(container, mod);
         }
     }
     /// <summary>
@@ -32,7 +30,6 @@ public static class ContainerBuilder
     /// <returns>实例化后的容器 GameObject，交给 ContainerManager.Register</returns>
     public static void BuildFromPrefab(Core core, GameObject prefab, ContainerMod containermod)
     {
-        // 克隆预制体，挂到 Core 对象下 → 实例出现在 Canvas 层级中
         var instance = Object.Instantiate(prefab, core.transform);
         {
             var allChildren = instance.GetComponentsInChildren<Transform>(true);
@@ -49,8 +46,6 @@ public static class ContainerBuilder
             containermod.container = instance.transform as RectTransform;
             ContainerManager.containers.Add(containermod);
         }
-
-        return;
     }
     public static GameObject Build(Core core, ContainerSpec bp)
     {
