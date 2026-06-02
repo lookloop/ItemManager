@@ -14,7 +14,7 @@ public static class ItemView
     public static async void Sync(UIResponder _this, int index)
     {
         var cell     = ItemTouch.cellRegistry[index];
-        var itemData = _this.items[index];
+        var itemData = _this.containers[0].items[index];
 
         var oldItem = cell.transform.Find("Item");
         if (oldItem != null) Object.Destroy(oldItem.gameObject);

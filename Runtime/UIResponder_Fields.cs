@@ -51,11 +51,7 @@ public partial class UIResponder
 
 
 
-    [HideInInspector] public Item[] items;
-
-    [HideInInspector] public int currentPage;
-
-    [HideInInspector] public string PressTag;
+    [HideInInspector] public string PointerDownTag;
 
 }
 }

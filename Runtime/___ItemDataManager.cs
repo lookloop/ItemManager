@@ -22,7 +22,6 @@ public static class ItemDataManager
     {
         if (_this.containers != null && _this.containers.Count > 0)
             _this.containers[0].items[index] = item;
-        _this.items[index] = item;
         ItemView.Sync(_this, index);
     }
 
@@ -32,7 +31,7 @@ public static class ItemDataManager
     public static void BuildData(UIResponder _this)
     {
         int dataSize = Mathf.Max(_this.totalItems, ItemTouch.cellCount);
-        _this.items = new Item[dataSize];
+        _this.containers[0].items = new Item[dataSize];
         SyncPage(_this);
     }
 
@@ -41,11 +40,11 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     public static void SetCellData(UIResponder _this, int index, Item item)
     {
-        if (index < 0 || index >= _this.items.Length) return;
-        _this.items[index] = item;
+        if (index < 0 || index >= _this.containers[0].items.Length) return;
+        _this.containers[0].items[index] = item;
 
         int pageSize  = ItemTouch.cellCount;
-        int pageStart = _this.currentPage * pageSize;
+        int pageStart = _this.containers[0].currentPage * pageSize;
         if (index >= pageStart && index < pageStart + pageSize)
             SetCell(_this, index - pageStart, item);
     }
@@ -55,14 +54,14 @@ public static class ItemDataManager
     // ════════════════════════════════════════════════════════════
     public static void NextPage(UIResponder _this)
     {
-        int maxPage = Mathf.Max(0, (_this.items.Length - 1) / ItemTouch.cellCount);
-        if (_this.currentPage < maxPage) _this.currentPage++;
+        int maxPage = Mathf.Max(0, (_this.containers[0].items.Length - 1) / ItemTouch.cellCount);
+        if (_this.containers[0].currentPage < maxPage) _this.containers[0].currentPage++;
         SyncPage(_this);
     }
 
     public static void PrevPage(UIResponder _this)
     {
-        if (_this.currentPage > 0) _this.currentPage--;
+        if (_this.containers[0].currentPage > 0) _this.containers[0].currentPage--;
         SyncPage(_this);
     }
 
@@ -72,13 +71,13 @@ public static class ItemDataManager
     public static void SyncPage(UIResponder _this)
     {
         int pageSize  = ItemTouch.cellCount;
-        int pageStart = _this.currentPage * pageSize;
+        int pageStart = _this.containers[0].currentPage * pageSize;
 
         for (int i = 0; i < ItemTouch.cellCount; i++)
         {
             int dataIndex = pageStart + i;
-            if (dataIndex < _this.items.Length)
-                SetCell(_this, i, _this.items[dataIndex]);
+            if (dataIndex < _this.containers[0].items.Length)
+                SetCell(_this, i, _this.containers[0].items[dataIndex]);
             else
                 SetCell(_this, i, null);
         }

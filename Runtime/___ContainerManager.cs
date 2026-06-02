@@ -23,7 +23,6 @@ public static class ContainerManager
         };
 
         _this.containers.Add(cd);
-        _this.items = cd.items; // 向后兼容快捷引用
 
         return _this.containers.Count - 1;
     }

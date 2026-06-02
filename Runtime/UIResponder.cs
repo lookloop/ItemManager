@@ -29,14 +29,14 @@ public partial class UIResponder : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
-        PressTag = clicked != null ? clicked.tag : null;
+        PointerDownTag = clicked != null ? clicked.tag : null;
 
-        if (PressTag == "Item")
+        if (PointerDownTag == "Item")
             ItemTouch.BeginClick(this, eventData);
-        else if (PressTag == "Container")
+        else if (PointerDownTag == "Container")
             ContainerTouch.BeginDrag(this, eventData);
         else
-            PressTag = null;
+            PointerDownTag = null;
     }
 
     // ════════════════════════════════════════════════════════════
@@ -46,9 +46,9 @@ public partial class UIResponder : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        if (PressTag == "Item")
+        if (PointerDownTag == "Item")
             ItemTouch.OnDrag(this, eventData);
-        else if (PressTag == "Container")
+        else if (PointerDownTag == "Container")
             ContainerTouch.OnDrag(this, eventData);
     }
 
@@ -59,12 +59,12 @@ public partial class UIResponder : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        if (PressTag == "Item")
+        if (PointerDownTag == "Item")
             ItemTouch.EndDrag(this, eventData);
-        else if (PressTag == "Container")
+        else if (PointerDownTag == "Container")
             ContainerTouch.EndDrag(this);
 
-        PressTag = null;
+        PointerDownTag = null;
     }
 
 }
