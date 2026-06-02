@@ -12,86 +12,20 @@ public static class ContainerBuilder
     /// <summary>遍历 mods 数组，逐项构建 + 注册容器</summary>
     public static void BuildAll(Core core)
     {
-        if (core.mods == null || core.mods.Length == 0) return;
-
-        foreach (var m in core.mods)
+        foreach (var mod in core.mods)
         {
-            GameObject containerObj;
-            if (m.prefab != null)
-                containerObj = BuildFromPrefab(core, m);
+            GameObject container;
+            if (mod.prefab != null)
+                container = BuildFromPrefab(core, mod.prefab);
             else
-                containerObj = Build(core, m);
+                container = Build(core, mod);
 
-            ContainerManager.Register(containerObj, m);
+            ContainerManager.Register(container, mod);
         }
     }
-
-    /// <summary>构建容器 → 返回顶层 Container GameObject</summary>
-    public static GameObject Build(Core core, ContainerSpec bp)
+    public static GameObject BuildFromPrefab(Core core, GameObject prefab)
     {
-        // rows/cols → cellCount/cellsPerRow 自动换算
-        ItemTouch.cellCount = bp.rows * bp.cols;
-        ItemTouch.cellsPerRow = bp.cols;
-
-        RectTransform root = core.transform as RectTransform;
-
-        // 1. Container 面板
-        GameObject panelGo = new GameObject("Container", typeof(RectTransform), typeof(Image));
-        panelGo.transform.SetParent(root, false);
-        panelGo.tag = "Container";
-        ContainerTouch.containerPanel = panelGo.transform as RectTransform;
-        Image panelImg = panelGo.GetComponent<Image>();
-        panelImg.sprite = bp.containerSprite;
-        panelImg.type = Image.Type.Sliced;
-
-        // 2. Mask
-        GameObject maskGo = new GameObject("Mask", typeof(RectTransform), typeof(Image), typeof(RectMask2D));
-        maskGo.transform.SetParent(panelGo.transform, false);
-        ItemTouch.maskTransform = maskGo.transform as RectTransform;
-        Image maskImg = maskGo.GetComponent<Image>();
-        maskImg.sprite = bp.maskSprite;
-        ItemTouch.maskTransform.anchorMin = ItemTouch.maskTransform.anchorMax = new Vector2(0.5f, 1f);
-        ItemTouch.maskTransform.pivot = new Vector2(0.5f, 1f);
-
-        // 3. Grid
-        GameObject gridGo = new GameObject("Grid", typeof(RectTransform));
-        gridGo.tag = "Grid";
-        gridGo.transform.SetParent(maskGo.transform, false);
-        ItemTouch.gridTransform = gridGo.transform as RectTransform;
-        ItemTouch.gridTransform.anchorMin = ItemTouch.gridTransform.anchorMax = new Vector2(0.5f, 1f);
-        ItemTouch.gridTransform.pivot = new Vector2(0.5f, 1f);
-        ItemTouch.gridTransform.anchoredPosition = Vector2.zero;
-
-        // 4. Cell
-        ItemTouch.cellRegistry = new GameObject[ItemTouch.cellCount];
-        for (int i = 0; i < ItemTouch.cellCount; i++)
-        {
-            GameObject cell = new GameObject(i.ToString(), typeof(RectTransform), typeof(Image));
-            cell.transform.SetParent(ItemTouch.gridTransform, false);
-            RectTransform crt = cell.GetComponent<RectTransform>();
-            crt.sizeDelta = new Vector2(bp.cellWidth, bp.cellWidth);
-            cell.GetComponent<Image>().sprite = bp.cellSprite;
-            cell.tag = "Item";
-            ItemTouch.cellRegistry[i] = cell;
-        }
-
-        // 5. 排列 Cell + 设定 Grid/Mask 尺寸
-        ApplyCellPositions(bp);
-        ApplyGridSize(bp);
-
-        return panelGo;
-    }
-
-    /// <summary>从 Prefab 构建 → 返回顶层 Container GameObject</summary>
-    public static GameObject BuildFromPrefab(Core core, ContainerSpec bp)
-    {
-        var instance = Object.Instantiate(bp.prefab, core.transform);
-        instance.name = "Container";
-
-        // 提取 Container
-        var containerRT = instance.transform as RectTransform;
-        if (containerRT == null) containerRT = instance.AddComponent<RectTransform>();
-        ContainerTouch.containerPanel = containerRT;
+        var instance = Object.Instantiate(prefab, core.transform);
 
         // 提取 Mask（递归找第一个 RectMask2D）
         var mask = instance.GetComponentInChildren<RectMask2D>(true);
@@ -130,6 +64,60 @@ public static class ContainerBuilder
 
         return instance;
     }
+    public static GameObject Build(Core core, ContainerSpec bp)
+    {
+        // rows/cols → cellCount/cellsPerRow 自动换算
+        ItemTouch.cellCount = bp.rows * bp.cols;
+        ItemTouch.cellsPerRow = bp.cols;
+
+        RectTransform root = core.transform as RectTransform;
+
+        // 1. Container 面板
+        GameObject panelGo = new GameObject("Container", typeof(RectTransform), typeof(Image));
+        panelGo.transform.SetParent(root, false);
+        panelGo.tag = "Container";
+        var panel = panelGo.transform as RectTransform;
+        Image panelImg = panelGo.GetComponent<Image>();
+        panelImg.sprite = bp.containerSprite;
+        panelImg.type = Image.Type.Sliced;
+
+        // 2. Mask
+        GameObject maskGo = new GameObject("Mask", typeof(RectTransform), typeof(Image), typeof(RectMask2D));
+        maskGo.transform.SetParent(panelGo.transform, false);
+        ItemTouch.maskTransform = maskGo.transform as RectTransform;
+        Image maskImg = maskGo.GetComponent<Image>();
+        maskImg.sprite = bp.maskSprite;
+        ItemTouch.maskTransform.anchorMin = ItemTouch.maskTransform.anchorMax = new Vector2(0.5f, 1f);
+        ItemTouch.maskTransform.pivot = new Vector2(0.5f, 1f);
+
+        // 3. Grid
+        GameObject gridGo = new GameObject("Grid", typeof(RectTransform));
+        gridGo.tag = "Grid";
+        gridGo.transform.SetParent(maskGo.transform, false);
+        ItemTouch.gridTransform = gridGo.transform as RectTransform;
+        ItemTouch.gridTransform.anchorMin = ItemTouch.gridTransform.anchorMax = new Vector2(0.5f, 1f);
+        ItemTouch.gridTransform.pivot = new Vector2(0.5f, 1f);
+        ItemTouch.gridTransform.anchoredPosition = Vector2.zero;
+
+        // 4. Cell
+        ItemTouch.cellRegistry = new GameObject[ItemTouch.cellCount];
+        for (int i = 0; i < ItemTouch.cellCount; i++)
+        {
+            GameObject cell = new GameObject(i.ToString(), typeof(RectTransform), typeof(Image));
+            cell.transform.SetParent(ItemTouch.gridTransform, false);
+            RectTransform crt = cell.GetComponent<RectTransform>();
+            crt.sizeDelta = new Vector2(bp.cellWidth, bp.cellWidth);
+            cell.GetComponent<Image>().sprite = bp.cellSprite;
+            cell.tag = "Item";
+            ItemTouch.cellRegistry[i] = cell;
+        }
+
+        // 5. 排列 Cell + 设定 Grid/Mask 尺寸
+        ApplyCellPositions(bp);
+        ApplyGridSize(bp, panel);
+
+        return panelGo;
+    }
 
     static void ApplyCellPositions(ContainerSpec bp)
     {
@@ -150,7 +138,7 @@ public static class ContainerBuilder
         }
     }
 
-    static void ApplyGridSize(ContainerSpec bp)
+    static void ApplyGridSize(ContainerSpec bp, RectTransform panel)
     {
         float size = bp.cellWidth;
         int totalRows = ItemTouch.cellCount / ItemTouch.cellsPerRow + (ItemTouch.cellCount % ItemTouch.cellsPerRow != 0 ? 1 : 0);
@@ -165,10 +153,9 @@ public static class ContainerBuilder
             ItemTouch.maskTransform.anchoredPosition = new Vector2(0, bp.maskPosY);
         }
 
-        if (ContainerTouch.containerPanel != null)
-            ContainerTouch.containerPanel.sizeDelta = new Vector2(
-                gridW + bp.horizontalPadding * 2f,
-                bp.maskHeight + bp.containerExtraHeight);
+        panel.sizeDelta = new Vector2(
+            gridW + bp.horizontalPadding * 2f,
+            bp.maskHeight + bp.containerExtraHeight);
     }
 }
 }
