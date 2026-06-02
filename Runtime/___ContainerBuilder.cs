@@ -27,9 +27,6 @@ public static class ContainerBuilder
     {
         var instance = Object.Instantiate(prefab, core.transform);
 
-        // 提取 Mask（递归找第一个 RectMask2D）
-        var mask = instance.GetComponentInChildren<RectMask2D>(true);
-        ItemTouch.maskTransform = mask != null ? mask.transform as RectTransform : null;
 
         // 提取 Grid（tag = "Grid"）
         var grids = instance.GetComponentsInChildren<Transform>(true);
