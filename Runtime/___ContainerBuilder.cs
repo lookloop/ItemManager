@@ -27,28 +27,13 @@ public static class ContainerBuilder
     {
         var instance = Object.Instantiate(prefab, core.transform);
 
-
-        // 提取 Grid（tag = "Grid"）
-        var grids = instance.GetComponentsInChildren<Transform>(true);
-        RectTransform gridRT = null;
-        foreach (var tr in grids)
+        // 提取 Cell：扫描实例直接子级中 tag="Cell" 的对象，按 Hierarchy 顺序注册
         {
-            if (tr.CompareTag("Grid"))
-            {
-                gridRT = tr as RectTransform;
-                break;
-            }
-        }
-        ItemTouch.gridTransform = gridRT;
-        Transform gridParent = gridRT;
-
-        // 提取 Cell：扫描 Grid 直接子级中 tag="Cell" 的对象，按 Hierarchy 顺序注册
-        {
-            var allChildren = gridParent.GetComponentsInChildren<Transform>(true);
+            var allChildren = instance.GetComponentsInChildren<Transform>(true);
             var list = new System.Collections.Generic.List<GameObject>();
             foreach (var tr in allChildren)
             {
-                if (tr.CompareTag("Cell") && tr.parent == gridParent)
+                if (tr.CompareTag("Cell") && tr.parent == instance.transform)
                     list.Add(tr.gameObject);
             }
             list.Sort((a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));

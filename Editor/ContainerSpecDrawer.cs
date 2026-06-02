@@ -10,7 +10,7 @@ namespace Lookloop.ItemManager.Editor
     /// 分组间距由 ContainerSpec 自身的 [Header]/[Space] 控制，这里不干预。
     /// </summary>
     [CustomPropertyDrawer(typeof(ContainerSpec))] // 注册：告诉 Unity "碰到 ContainerSpec 就用我画"
-    public class ContainerModDrawer : PropertyDrawer
+    public class ContainerSpecDrawer : PropertyDrawer
     {
         // key = propertyPath（如 "mods.Array.data[0]"），保证数组里每个 mod 各自折叠
         static readonly Dictionary<string, bool> Foldouts = new();
