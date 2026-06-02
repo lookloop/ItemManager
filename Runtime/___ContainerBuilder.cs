@@ -42,13 +42,13 @@ public static class ContainerBuilder
         ItemTouch.gridTransform = gridRT;
         Transform gridParent = gridRT;
 
-        // 提取 Cell：扫描 Grid 直接子级中 tag="Item" 的对象，按 Hierarchy 顺序注册
+        // 提取 Cell：扫描 Grid 直接子级中 tag="Cell" 的对象，按 Hierarchy 顺序注册
         {
             var allChildren = gridParent.GetComponentsInChildren<Transform>(true);
             var list = new System.Collections.Generic.List<GameObject>();
             foreach (var tr in allChildren)
             {
-                if (tr.CompareTag("Item") && tr.parent == gridParent)
+                if (tr.CompareTag("Cell") && tr.parent == gridParent)
                     list.Add(tr.gameObject);
             }
             list.Sort((a, b) => a.transform.GetSiblingIndex().CompareTo(b.transform.GetSiblingIndex()));
@@ -105,7 +105,7 @@ public static class ContainerBuilder
             RectTransform crt = cell.GetComponent<RectTransform>();
             crt.sizeDelta = new Vector2(bp.cellWidth, bp.cellWidth);
             cell.GetComponent<Image>().sprite = bp.cellSprite;
-            cell.tag = "Item";
+            cell.tag = "Cell";
             ItemTouch.cellRegistry[i] = cell;
         }
 

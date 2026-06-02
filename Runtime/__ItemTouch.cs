@@ -185,7 +185,7 @@ public static class ItemTouch
         // 射线检测悬停格子
         var shadow = B != null ? B.shadowItem : null;
         GameObject hoverObj = eventData.pointerCurrentRaycast.gameObject;
-        if (hoverObj != null && hoverObj.CompareTag("Item"))
+        if (hoverObj != null && hoverObj.CompareTag("Cell"))
         {
             if (target != hoverObj)
             {

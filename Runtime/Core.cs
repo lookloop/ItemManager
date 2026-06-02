@@ -7,7 +7,7 @@ namespace Lookloop.ItemManager
 /// ItemManager 唯一入口 — 挂载于 Canvas 下空对象。
 ///
 /// ─── 两大 tag，两路由 ───
-///   "Item"      → Item触控（长按/短按/交换/滚Grid/详情）
+///   "Cell"      → Item触控（长按/短按/交换/滚Grid/详情）
 ///   "Container" → Container触控（拖拽移动面板）
 ///   其他 tag   → 忽略
 ///
@@ -30,7 +30,7 @@ public partial class Core : MonoBehaviour,
         GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
         PointerDownTag = clicked != null ? clicked.tag : null;
 
-        if (PointerDownTag == "Item")
+        if (PointerDownTag == "Cell")
             ItemTouch.BeginClick(this, eventData);
         else if (PointerDownTag == "Container")
             ContainerTouch.BeginDrag(this, eventData);
@@ -45,7 +45,7 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        if (PointerDownTag == "Item")
+        if (PointerDownTag == "Cell")
             ItemTouch.OnDrag(this, eventData);
         else if (PointerDownTag == "Container")
             ContainerTouch.OnDrag(this, eventData);
@@ -58,7 +58,7 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        if (PointerDownTag == "Item")
+        if (PointerDownTag == "Cell")
             ItemTouch.EndDrag(this, eventData);
         else if (PointerDownTag == "Container")
             ContainerTouch.EndDrag(this);
