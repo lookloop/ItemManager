@@ -16,14 +16,14 @@ public static class ContainerBuilder
         {
             ContainerMod containermod = new ContainerMod();
             if (spec.prefab != null)
-                BuildFromPrefab(core, spec.prefab, containermod);
+                BuildFromPrefab(core, spec, containermod);
             else
                 Build(core, spec, containermod);
         }
     }
-    public static void BuildFromPrefab(Core core, RectTransform prefab, ContainerMod containermod)
+    public static void BuildFromPrefab(Core core, ContainerSpec spec, ContainerMod containermod)
     {
-        var instance = Object.Instantiate(prefab, core.transform);
+        var instance = Object.Instantiate(spec.prefab, core.transform);
         {
             var allChildren = instance.GetComponentsInChildren<RectTransform>(true);
             var list = new System.Collections.Generic.List<RectTransform>();
@@ -37,6 +37,8 @@ public static class ContainerBuilder
             containermod.cells = list.ToArray();
             containermod.items = new Item[containermod.cells.Length];
             containermod.container = instance;
+            //detail存入mod
+            containermod.detail = spec.detail;
             ContainerManager.containers.Add(containermod);
         }
     }
@@ -56,6 +58,34 @@ public static class ContainerBuilder
         //设置标签为Grid
         grid.tag = "Grid";
         //根据每一页的格子数量进行生成
+        var gridRect = grid.GetComponent<RectTransform>();
+        gridRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.everyPageTotal / spec.rows * spec.cellWidth);
+        var maskRect = mask.GetComponent<RectTransform>();
+        maskRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.maskHeight);
+        //设置container高度宽度，宽度为mask宽度+水平内边距*2，高度为mask高度+
+        var containerRect = container.GetComponent<RectTransform>();
+        containerRect.sizeDelta = new Vector2(maskRect.sizeDelta.x + spec.containerFillHorizontal * 2, maskRect.sizeDelta.y + spec.containerFillUp + spec.containerFillDown);
+        maskRect.anchorMin = new Vector2(0.5f, 1);
+        maskRect.anchorMax = new Vector2(0.5f, 1);
+        maskRect.pivot = new Vector2(0.5f, 1);
+        //设置mask位置，x=0，y=-面板上边距
+        maskRect.anchoredPosition = new Vector2(0, -spec.containerFillUp);
+        //设置grid的轴心和锚点，和mask一样
+        gridRect.anchorMin = new Vector2(0.5f, 1);
+        gridRect.anchorMax = new Vector2(0.5f, 1);
+        gridRect.pivot = new Vector2(0.5f, 1);
+        gridRect.anchoredPosition = Vector2.zero;
+        //
+        //
+        //将containerRect存入mod
+        containermod.container = containerRect;
+        //将cells列表存入mod
+        containermod.cells = new RectTransform[spec.everyPageTotal];
+        containermod.items = new Item[spec.totalCells];
+        containermod.detail = spec.detail;
+
+
+
         for (int i = 0; i < spec.everyPageTotal; i++)
         {
             //新建一个对象,命名为 Cell，设置父对象为 Grid，名为i（从0开始）
@@ -75,20 +105,8 @@ public static class ContainerBuilder
             //加入cells列表
             containermod.cells[i] = rect;
         }
-        //基于当前cells列表的长度，初始化items列表
-        containermod.items = new Item[containermod.cells.Length];
-        var gridRect = grid.GetComponent<RectTransform>();
-        gridRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.everyPageTotal / spec.rows * spec.cellWidth);
-        var maskRect = mask.GetComponent<RectTransform>();
-        maskRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.maskHeight);
-        //设置container高度宽度，宽度为mask宽度+水平内边距*2，高度为mask高度+
-        var containerRect = container.GetComponent<RectTransform>();
-        containerRect.sizeDelta = new Vector2(maskRect.sizeDelta.x + spec.containerFillHorizontal * 2, maskRect.sizeDelta.y + spec.containerFillUp + spec.containerFillDown);
-        maskRect.anchorMin = new Vector2(0.5f, 1);
-        maskRect.anchorMax = new Vector2(0.5f, 1);
-        maskRect.pivot = new Vector2(0.5f, 1);
-        //设置mask位置，x=0，y=-面板上边距
-        maskRect.anchoredPosition = new Vector2(0, -spec.containerFillUp);
-    }
+        ContainerManager.containers.Add(containermod);
+        
+ }
 }
 }
