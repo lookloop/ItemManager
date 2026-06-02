@@ -48,8 +48,8 @@ public static class ItemTouch
     static Vector2    gridStartPos;
 
     // 快捷引用
-    static ContainerMod M => ContainerManager.containers != null && ContainerManager.containers.Count > 0
-        ? ContainerManager.containers[0].mod : null;
+    static ContainerSpec B => ContainerManager.containers != null && ContainerManager.containers.Count > 0
+        ? ContainerManager.containers[0].blueprint : null;
 
     // ════════════════════════════════════════════════════════════
     // 1. 开始点击 — A 阶段
@@ -92,7 +92,7 @@ public static class ItemTouch
 
     static IEnumerator Timer(UIResponder _this)
     {
-        float tv = M != null ? M.timerValue : 0.3f;
+        float tv = B != null ? B.timerValue : 0.3f;
         yield return new WaitForSeconds(tv);
 
         // ── 长按成功：拾起物品 ──
@@ -102,7 +102,7 @@ public static class ItemTouch
         {
             itemDragging = source.transform.GetChild(0).gameObject;
             itemDragging.transform.SetParent(_this.canvas.transform, false);
-            float cw = M != null ? M.cellWidth : 10f;
+            float cw = B != null ? B.cellWidth : 10f;
             itemDragging.transform.localScale = new Vector3(cw / 10f, cw / 10f, 1f);
             (itemDragging.transform as RectTransform).anchoredPosition = beginPosition;
             itemDragging.transform.SetAsLastSibling();
@@ -183,7 +183,7 @@ public static class ItemTouch
         }
 
         // 射线检测悬停格子
-        var shadow = M != null ? M.shadowItem : null;
+        var shadow = B != null ? B.shadowItem : null;
         GameObject hoverObj = eventData.pointerCurrentRaycast.gameObject;
         if (hoverObj != null && hoverObj.CompareTag("Item"))
         {
@@ -262,7 +262,7 @@ public static class ItemTouch
     {
         if (target == null || target == source) return false;
 
-        var cont = GetContainerData(_this, source.transform);
+        var cont = GetContainer(_this, source.transform);
         if (cont == null || cont.items == null) return false;
 
         int srcIdx = System.Array.IndexOf(cellRegistry, source);
@@ -282,9 +282,9 @@ public static class ItemTouch
     }
 
     // ════════════════════════════════════════════════════════════
-    // ── 内部：从子级往上找 Container，匹配返回 ContainerData ──
+    // ── 内部：从子级往上找 Container，匹配返回 ContainerMod ──
     // ════════════════════════════════════════════════════════════
-    static ContainerData GetContainerData(UIResponder _this, Transform child)
+    static ContainerMod GetContainer(UIResponder _this, Transform child)
     {
         if (ContainerManager.containers == null) return null;
         Transform t = child;
@@ -293,8 +293,8 @@ public static class ItemTouch
             if (t.CompareTag("Container"))
             {
                 var rt = t as RectTransform;
-                foreach (var cd in ContainerManager.containers)
-                    if (cd.container == rt) return cd;
+                foreach (var item in ContainerManager.containers)
+                    if (item.container == rt) return item;
                 return null;
             }
             t = t.parent;
@@ -307,7 +307,7 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     static void Cleanup(UIResponder _this)
     {
-        var shadow = M != null ? M.shadowItem : null;
+        var shadow = B != null ? B.shadowItem : null;
         if (shadow != null)
         {
             shadow.SetActive(false);
@@ -334,8 +334,8 @@ public static class ItemTouch
                 Object.Destroy(cd.activeDetailPanel);
                 cd.activeDetailPanel = null;
             }
-            if (cd.mod != null && cd.mod.detailPanel != null)
-                cd.mod.detailPanel.gameObject.SetActive(false);
+            if (cd.blueprint != null && cd.blueprint.detailPanel != null)
+                cd.blueprint.detailPanel.gameObject.SetActive(false);
         }
     }
 
@@ -348,7 +348,7 @@ public static class ItemTouch
         GameObject clickedObject = eventData.pointerCurrentRaycast.gameObject;
         if (clickedObject == null) return;
 
-        var container = GetContainerData(_this, clickedObject.transform);
+        var container = GetContainer(_this, clickedObject.transform);
         if (container == null || container.items == null) return;
 
         int index = System.Array.IndexOf(cellRegistry, clickedObject);
@@ -366,10 +366,10 @@ public static class ItemTouch
         }
     }
 
-    static async void ShowItemDetail(UIResponder _this, ContainerData container, GameObject targetObj, string id)
+    static async void ShowItemDetail(UIResponder _this, ContainerMod container, GameObject targetObj, string id)
     {
-        var m = container.mod;
-        if (m == null) return;
+        var bp = container.blueprint;
+        if (bp == null) return;
 
         ItemTable table = await _this.GetItemTable(id);
         if (table == null) return;
@@ -383,36 +383,36 @@ public static class ItemTouch
 
         RectTransform panelRT;
 
-        if (m.detailPanelPrefab != null)
+        if (bp.detailPanelPrefab != null)
         {
             // ── Prefab 模式：Instantiate ──
-            var instance = Object.Instantiate(m.detailPanelPrefab, _this.canvas.transform);
+            var instance = Object.Instantiate(bp.detailPanelPrefab, _this.canvas.transform);
             container.activeDetailPanel = instance;
             panelRT = instance.transform as RectTransform;
             if (panelRT == null) panelRT = instance.AddComponent<RectTransform>();
         }
-        else if (m.detailPanel != null)
+        else if (bp.detailPanel != null)
         {
             // ── 场景引用模式 ──
-            panelRT = m.detailPanel;
+            panelRT = bp.detailPanel;
         }
         else
         {
             return; // 无可用面板
         }
 
-        SetPanelContent(m, table);
+        SetPanelContent(bp, table);
         SetPanelPosition(_this, panelRT, targetObj);
         panelRT.gameObject.SetActive(true);
     }
 
-    static void SetPanelContent(ContainerMod m, ItemTable table)
+    static void SetPanelContent(ContainerSpec bp, ItemTable table)
     {
-        if (m.iconImage != null)
+        if (bp.iconImage != null)
         {
-            if (m.iconImage.transform.childCount > 0)
+            if (bp.iconImage.transform.childCount > 0)
             {
-                Transform itemIconTransform = m.iconImage.transform.GetChild(0);
+                Transform itemIconTransform = bp.iconImage.transform.GetChild(0);
                 Image itemIconImage = itemIconTransform.GetComponent<Image>();
                 if (itemIconImage != null)
                 {
@@ -431,8 +431,8 @@ public static class ItemTouch
                 }
             }
         }
-        if (m.nameText != null) m.nameText.text = table.ItemName;
-        if (m.descText != null) m.descText.text = table.ItemDescription;
+        if (bp.nameText != null) bp.nameText.text = table.ItemName;
+        if (bp.descText != null) bp.descText.text = table.ItemDescription;
     }
 
     static void SetPanelPosition(UIResponder _this, RectTransform panelRT, GameObject targetObj)

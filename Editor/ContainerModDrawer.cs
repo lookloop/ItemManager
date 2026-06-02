@@ -5,11 +5,11 @@ using UnityEngine;
 namespace Lookloop.ItemManager.Editor
 {
     /// <summary>
-    /// ContainerMod 的自定义 Inspector 显示。
+    /// ContainerSpec 的自定义 Inspector 显示。
     /// 只做一件事：prefab 始终可见，其余字段收到三角折叠下面。
-    /// 分组间距由 ContainerMod 自身的 [Header]/[Space] 控制，这里不干预。
+    /// 分组间距由 ContainerSpec 自身的 [Header]/[Space] 控制，这里不干预。
     /// </summary>
-    [CustomPropertyDrawer(typeof(ContainerMod))] // 注册：告诉 Unity "碰到 ContainerMod 就用我画"
+    [CustomPropertyDrawer(typeof(ContainerSpec))] // 注册：告诉 Unity "碰到 ContainerSpec 就用我画"
     public class ContainerModDrawer : PropertyDrawer
     {
         // key = propertyPath（如 "mods.Array.data[0]"），保证数组里每个 mod 各自折叠

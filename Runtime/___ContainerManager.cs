@@ -10,21 +10,21 @@ namespace Lookloop.ItemManager
 public static class ContainerManager
 {
     /// <summary>所有容器数据列表</summary>
-    public static List<ContainerData> containers;
+    public static List<ContainerMod> containers;
 
     // ════════════════════════════════════════════════════════════
     // 注册 — 构建好的 GameObject + 模板 → 加入 containers 列表
     // ════════════════════════════════════════════════════════════
-    public static int Register(GameObject containerObj, ContainerMod mod)
+    public static int Register(GameObject containerObj, ContainerSpec blueprint)
     {
         if (containers == null)
-            containers = new List<ContainerData>();
+            containers = new List<ContainerMod>();
 
-        var cd = new ContainerData
+        var cd = new ContainerMod
         {
-            container = containerObj.transform as RectTransform,
-            items     = new Item[ItemTouch.cellCount],
-            mod       = mod
+            container   = containerObj.transform as RectTransform,
+            items       = new Item[ItemTouch.cellCount],
+            blueprint   = blueprint
         };
 
         containers.Add(cd);
@@ -75,8 +75,8 @@ public static class ContainerManager
         if (cd.container != null)
         {
             cd.container.gameObject.SetActive(true);
-            if (cd.mod != null)
-                cd.container.anchoredPosition = cd.mod.showPosition;
+            if (cd.blueprint != null)
+                cd.container.anchoredPosition = cd.blueprint.showPosition;
         }
     }
 
