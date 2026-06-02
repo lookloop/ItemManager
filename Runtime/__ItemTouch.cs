@@ -59,7 +59,9 @@ public static class ItemTouch
         // 重置状态
         isLongPress = false;
         isDrag      = false;
-        if (T != null && T.detailPanel != null) T.detailPanel.gameObject.SetActive(false);
+
+        // 隐藏所有容器的详情面板
+        HideAllDetailPanels();
 
         source = eventData.pointerCurrentRaycast.gameObject;
         if (source == null) return;
@@ -320,6 +322,24 @@ public static class ItemTouch
     }
 
     // ════════════════════════════════════════════════════════════
+    // ── 内部：隐藏所有容器的详情面板 ──
+    // ════════════════════════════════════════════════════════════
+    static void HideAllDetailPanels()
+    {
+        if (ContainerManager.containers == null) return;
+        foreach (var cd in ContainerManager.containers)
+        {
+            if (cd.activeDetailPanel != null)
+            {
+                Object.Destroy(cd.activeDetailPanel);
+                cd.activeDetailPanel = null;
+            }
+            if (cd.template != null && cd.template.detailPanel != null)
+                cd.template.detailPanel.gameObject.SetActive(false);
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════
     // ── 内部：短按点击 → 显示详情面板 ──
     // ════════════════════════════════════════════════════════════
     static void ShowDetail(UIResponder _this, PointerEventData eventData)
@@ -338,7 +358,7 @@ public static class ItemTouch
         if (item != null)
         {
             Debug.Log($"点击了索引: {index}, 物品 ID: {item.Id}");
-            ShowItemDetail(_this, clickedObject, item.Id.ToString());
+            ShowItemDetail(_this, container, clickedObject, item.Id.ToString());
         }
         else
         {
@@ -346,25 +366,53 @@ public static class ItemTouch
         }
     }
 
-    static async void ShowItemDetail(UIResponder _this, GameObject targetObj, string id)
+    static async void ShowItemDetail(UIResponder _this, ContainerData container, GameObject targetObj, string id)
     {
+        var t = container.template;
+        if (t == null) return;
+
         ItemTable table = await _this.GetItemTable(id);
-        if (table != null)
+        if (table == null) return;
+
+        // 销毁旧面板（同一容器）
+        if (container.activeDetailPanel != null)
         {
-            SetPanelPosition(_this, targetObj);
-            SetPanelContent(_this, table);
-            if (T != null && T.detailPanel != null) T.detailPanel.gameObject.SetActive(true);
+            Object.Destroy(container.activeDetailPanel);
+            container.activeDetailPanel = null;
         }
+
+        RectTransform panelRT;
+
+        if (t.detailPanelPrefab != null)
+        {
+            // ── Prefab 模式：Instantiate ──
+            var instance = Object.Instantiate(t.detailPanelPrefab, _this.canvas.transform);
+            container.activeDetailPanel = instance;
+            panelRT = instance.transform as RectTransform;
+            if (panelRT == null) panelRT = instance.AddComponent<RectTransform>();
+        }
+        else if (t.detailPanel != null)
+        {
+            // ── 场景引用模式 ──
+            panelRT = t.detailPanel;
+        }
+        else
+        {
+            return; // 无可用面板
+        }
+
+        SetPanelContent(t, table);
+        SetPanelPosition(_this, panelRT, targetObj);
+        panelRT.gameObject.SetActive(true);
     }
 
-    static void SetPanelContent(UIResponder _this, ItemTable table)
+    static void SetPanelContent(BackpackTemplate t, ItemTable table)
     {
-        if (T == null) return;
-        if (T.iconImage != null)
+        if (t.iconImage != null)
         {
-            if (T.iconImage.transform.childCount > 0)
+            if (t.iconImage.transform.childCount > 0)
             {
-                Transform itemIconTransform = T.iconImage.transform.GetChild(0);
+                Transform itemIconTransform = t.iconImage.transform.GetChild(0);
                 Image itemIconImage = itemIconTransform.GetComponent<Image>();
                 if (itemIconImage != null)
                 {
@@ -383,15 +431,14 @@ public static class ItemTouch
                 }
             }
         }
-        if (T.nameText != null) T.nameText.text = table.ItemName;
-        if (T.descText != null) T.descText.text = table.ItemDescription;
+        if (t.nameText != null) t.nameText.text = table.ItemName;
+        if (t.descText != null) t.descText.text = table.ItemDescription;
     }
 
-    static void SetPanelPosition(UIResponder _this, GameObject targetObj)
+    static void SetPanelPosition(UIResponder _this, RectTransform panelRT, GameObject targetObj)
     {
-        if (T == null || T.detailPanel == null || targetObj == null) return;
+        if (panelRT == null || targetObj == null) return;
 
-        var panelRT  = T.detailPanel;
         var canvasRT = _this.canvas.transform as RectTransform;
 
         // 挂到 cell 下，锚点居中，归零 → Panel 中心对齐 cell 中心

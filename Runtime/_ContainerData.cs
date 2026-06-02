@@ -14,5 +14,7 @@ namespace Lookloop.ItemManager
         public int currentPage;
         /// <summary>关联的背包模板</summary>
         public BackpackTemplate template;
+        /// <summary>当前激活的详情面板实例（Prefab 模式下）</summary>
+        public GameObject activeDetailPanel;
     }
 }

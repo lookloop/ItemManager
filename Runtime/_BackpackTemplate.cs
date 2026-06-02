@@ -49,6 +49,9 @@ namespace Lookloop.ItemManager
         public GameObject shadowItem;
 
         [Header("详情面板")]
+        [Tooltip("详情面板预制体（可选）。不为空则点物品时 Instantiate，点空时销毁")]
+        public GameObject detailPanelPrefab;
+        [Tooltip("↓↓↓ 预制体模式下可留空；非预制体模式下拖入场景引用")]
         public RectTransform detailPanel;
         public TextMeshProUGUI nameText;
         public TextMeshProUGUI descText;
