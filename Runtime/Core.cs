@@ -31,7 +31,8 @@ public partial class Core : MonoBehaviour,
         PointerDownTag = clicked != null ? clicked.tag : null;
 
         if (PointerDownTag == "Cell")
-            ItemTouch.BeginClick(this, eventData);
+            //临时重构：先输出文本，后续再调用 ItemTouch.BeginDrag(this, eventData);
+            Debug.Log("临时重构");
         else if (PointerDownTag == "Container")
             ContainerTouch.BeginDrag(this, eventData);
         else
@@ -46,7 +47,8 @@ public partial class Core : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         if (PointerDownTag == "Cell")
-            ItemTouch.OnDrag(this, eventData);
+            //临时重构：先输出文本，后续再调用 ItemTouch.OnDrag(this, eventData);
+            Debug.Log("临时重构");
         else if (PointerDownTag == "Container")
             ContainerTouch.OnDrag(this, eventData);
     }
@@ -59,7 +61,8 @@ public partial class Core : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         if (PointerDownTag == "Cell")
-            ItemTouch.EndDrag(this, eventData);
+            //输出文本
+            Debug.Log("临时重构") ;
         else if (PointerDownTag == "Container")
             ContainerTouch.EndDrag(this);
 

@@ -111,7 +111,6 @@ public static class ContainerBuilder
             containermod.cells[i] = rect;
         }
         ContainerManager.containers.Add(containermod);
-        
- }
+    }
 }
 }
