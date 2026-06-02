@@ -9,24 +9,7 @@ namespace Lookloop.ItemManager
 /// </summary>
 public static class ContainerBuilder
 {
-    static Sprite _defaultSprite;
-
-    static Sprite DefaultSprite
-    {
-        get
-        {
-            if (_defaultSprite == null)
-            {
-                var tex = new Texture2D(1, 1);
-                tex.SetPixel(0, 0, new Color(0.2f, 0.2f, 0.2f, 0.6f));
-                tex.Apply();
-                _defaultSprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f));
-            }
-            return _defaultSprite;
-        }
-    }
-
-    /// <summary>构建背包 → 返回顶层 Container GameObject</summary>
+    /// <summary>构建容器 → 返回顶层 Container GameObject</summary>
     public static GameObject Build(UIResponder _this, ContainerSpec bp)
     {
         // rows/cols → cellCount/cellsPerRow 自动换算
@@ -41,7 +24,7 @@ public static class ContainerBuilder
         panelGo.tag = "Container";
         ContainerTouch.containerPanel = panelGo.transform as RectTransform;
         Image panelImg = panelGo.GetComponent<Image>();
-        panelImg.sprite = bp.containerSprite != null ? bp.containerSprite : DefaultSprite;
+        panelImg.sprite = bp.containerSprite;
         panelImg.type = Image.Type.Sliced;
 
         // 2. Mask
@@ -49,7 +32,7 @@ public static class ContainerBuilder
         maskGo.transform.SetParent(panelGo.transform, false);
         ItemTouch.maskTransform = maskGo.transform as RectTransform;
         Image maskImg = maskGo.GetComponent<Image>();
-        maskImg.sprite = bp.maskSprite != null ? bp.maskSprite : DefaultSprite;
+        maskImg.sprite = bp.maskSprite;
         ItemTouch.maskTransform.anchorMin = ItemTouch.maskTransform.anchorMax = new Vector2(0.5f, 1f);
         ItemTouch.maskTransform.pivot = new Vector2(0.5f, 1f);
 
@@ -70,7 +53,7 @@ public static class ContainerBuilder
             cell.transform.SetParent(ItemTouch.gridTransform, false);
             RectTransform crt = cell.GetComponent<RectTransform>();
             crt.sizeDelta = new Vector2(bp.cellWidth, bp.cellWidth);
-            cell.GetComponent<Image>().sprite = bp.cellSprite != null ? bp.cellSprite : DefaultSprite;
+            cell.GetComponent<Image>().sprite = bp.cellSprite;
             cell.tag = "Item";
             ItemTouch.cellRegistry[i] = cell;
         }
