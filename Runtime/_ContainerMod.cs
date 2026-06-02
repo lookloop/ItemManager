@@ -10,7 +10,7 @@ namespace Lookloop.ItemManager
     {
         public RectTransform container;
         public Item[] items;
-        public GameObject[] cells;
+        public RectTransform[] cells;
         public int currentPage;
         public ContainerSpec blueprint;
         public GameObject activeDetailPanel;

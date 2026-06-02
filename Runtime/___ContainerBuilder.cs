@@ -28,16 +28,16 @@ public static class ContainerBuilder
     /// <param name="core">Canvas 下的 Core 入口对象</param>
     /// <param name="prefab">用户在 ContainerSpec 里拖入的预制体</param>
     /// <returns>实例化后的容器 GameObject，交给 ContainerManager.Register</returns>
-    public static void BuildFromPrefab(Core core, GameObject prefab, ContainerMod containermod)
+    public static void BuildFromPrefab(Core core, RectTransform prefab, ContainerMod containermod)
     {
         var instance = Object.Instantiate(prefab, core.transform);
         {
-            var allChildren = instance.GetComponentsInChildren<Transform>(true);
-            var list = new System.Collections.Generic.List<GameObject>();
+            var allChildren = instance.GetComponentsInChildren<RectTransform>(true);
+            var list = new System.Collections.Generic.List<RectTransform>();
             foreach (var tr in allChildren)
             {
                 if (tr.CompareTag("Cell"))
-                    list.Add(tr.gameObject);
+                    list.Add(tr as RectTransform);
             }
             for (int i = 0; i < list.Count; i++)
                 list[i].name = i.ToString();
