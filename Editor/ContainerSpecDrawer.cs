@@ -16,36 +16,27 @@ namespace Lookloop.ItemManager.Editor
         static readonly Dictionary<string, bool> Foldouts = new();
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            // ① prefab — 永远在第一行，不参与折叠
+            // prefab + detail — 始终可见，不参与折叠
             EditorGUILayout.PropertyField(property.FindPropertyRelative("prefab"));
-            // ② 三角折叠按钮
-            string key = property.propertyPath;                      // 每个属性的唯一路径标识
-            if (!Foldouts.ContainsKey(key)) Foldouts[key] = false;    // 初次默认展开
-            Foldouts[key] = EditorGUILayout.Foldout(Foldouts[key], "参数"); // 画三角
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("detail"));
+            // 三角折叠按钮
+            string key = property.propertyPath;
+            if (!Foldouts.ContainsKey(key)) Foldouts[key] = false;
+            Foldouts[key] = EditorGUILayout.Foldout(Foldouts[key], "参数");
 
-            if (Foldouts[key]) // 展开时才画以下字段
+            if (Foldouts[key])
             {
-                Prop(property, "rows");                // 行数
-                Prop(property, "cols");                // 列数
-                Prop(property, "totalItems");          // 物品总数
-                Prop(property, "cellWidth");           // 格子边长
-                Prop(property, "itemWidth");           // 物品图标边长
-                Prop(property, "cellSpacing");         // 格子间距
-                Prop(property, "timerValue");          // 长按计时器阈值
-                Prop(property, "containerSprite");      // 容器底图
-                Prop(property, "maskSprite");          // Mask 区域图
-                Prop(property, "cellSprite");          // 格子底图
-                Prop(property, "itemFont");            // 物品数量字体
-                Prop(property, "maskHeight");          // Mask 可视高度
-                Prop(property, "maskPosY");            // Mask Y 偏移
-                Prop(property, "horizontalPadding");   // 面板水平内边距
-                Prop(property, "containerExtraHeight"); // 面板额外高度
-                Prop(property, "shadowItem");          // 拖拽时跟随的阴影预制体
-                Prop(property, "detailPanelPrefab");   // 详情面板预制体（动态 Instantiate）
-                Prop(property, "detailPanel");         // 详情面板场景引用（非预制体模式）
-                Prop(property, "nameText");            // 详情面板 — 物品名文本
-                Prop(property, "descText");            // 详情面板 — 描述文本
-                Prop(property, "iconImage");           // 详情面板 — 图标 Image
+                Prop(property, "totalCells");
+                Prop(property, "everyPageTotal");
+                Prop(property, "rows");
+                Prop(property, "cellWidth");
+                Prop(property, "maskHeight");
+                Prop(property, "containerFillHorizontal");
+                Prop(property, "containerFillUp");
+                Prop(property, "containerFillDown");
+                Prop(property, "containerSprite");
+                Prop(property, "maskSprite");
+                Prop(property, "cellSprite");
             }
         }
         static void Prop(SerializedProperty parent, string name)
