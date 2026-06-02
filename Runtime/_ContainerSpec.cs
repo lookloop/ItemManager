@@ -33,6 +33,5 @@ namespace Lookloop.ItemManager
         public Sprite containerSprite;
         public Sprite maskSprite;
         public Sprite cellSprite;
-        public TMP_FontAsset itemFont;
     }
 }

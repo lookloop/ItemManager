@@ -59,7 +59,7 @@ public static class ContainerBuilder
         grid.tag = "Grid";
         //根据每一页的格子数量进行生成
         var gridRect = grid.GetComponent<RectTransform>();
-        gridRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.everyPageTotal / spec.rows * spec.cellWidth);
+        gridRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, Mathf.CeilToInt((float)spec.everyPageTotal / spec.rows) * spec.cellWidth);
         var maskRect = mask.GetComponent<RectTransform>();
         maskRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.maskHeight);
         //设置container高度宽度，宽度为mask宽度+水平内边距*2，高度为mask高度+
@@ -77,7 +77,10 @@ public static class ContainerBuilder
         gridRect.anchoredPosition = Vector2.zero;
         //
         //
-        //将containerRect存入mod
+        //给containerrect的图片精灵改了
+        container.GetComponent<Image>().sprite = spec.containerSprite;
+        //给mask的图片精灵改了
+        mask.GetComponent<Image>().sprite = spec.maskSprite;
         containermod.container = containerRect;
         //将cells列表存入mod
         containermod.cells = new RectTransform[spec.everyPageTotal];
@@ -102,6 +105,8 @@ public static class ContainerBuilder
             rect.sizeDelta = new Vector2(spec.cellWidth, spec.cellWidth);
             //设置位置，x=totalCells%rows=余，y=totalCells/rows=商，乘以格子边长
             rect.anchoredPosition = new Vector2((i % spec.rows) * spec.cellWidth, -(i / spec.rows) * spec.cellWidth);
+            //设置cell的图片精灵为规格里的cell精灵
+            cell.GetComponent<Image>().sprite = spec.cellSprite;
             //加入cells列表
             containermod.cells[i] = rect;
         }
