@@ -4,11 +4,28 @@ using UnityEngine.UI;
 namespace Lookloop.ItemManager
 {
 /// <summary>
-/// 背包 UI 构建 — 生成 Container→Mask→Grid→Cell 完整层级。
+/// 容器 UI 构建 — 生成 Container→Mask→Grid→Cell 完整层级。
 /// 不涉及数据，只管拼 UI。
 /// </summary>
 public static class ContainerBuilder
 {
+    /// <summary>遍历 mods 数组，逐项构建 + 注册容器</summary>
+    public static void BuildAll(UIResponder _this, ContainerSpec[] mods)
+    {
+        if (mods == null || mods.Length == 0) return;
+
+        foreach (var m in mods)
+        {
+            GameObject containerObj;
+            if (m.prefab != null)
+                containerObj = BuildFromPrefab(_this, m);
+            else
+                containerObj = Build(_this, m);
+
+            ContainerManager.Register(containerObj, m);
+        }
+    }
+
     /// <summary>构建容器 → 返回顶层 Container GameObject</summary>
     public static GameObject Build(UIResponder _this, ContainerSpec bp)
     {

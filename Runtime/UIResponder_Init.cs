@@ -11,22 +11,7 @@ public partial class UIResponder
 
     void Start()
     {
-        // 自动构建 + 注册（遍历模板数组，Prefab / 动态 混用）
-        if (mods != null && mods.Length > 0)
-        {
-            foreach (var m in mods)
-            {
-                GameObject containerObj;
-                if (m.prefab != null)
-                    containerObj = ContainerBuilder.BuildFromPrefab(this, m);
-                else
-                    containerObj = ContainerBuilder.Build(this, m);
-
-                int id = ContainerManager.Register(containerObj, m);
-            }
-        }
-
-        // 数据初始化
+        ContainerBuilder.BuildAll(this, mods);
         BuildData();
     }
 
