@@ -6,8 +6,7 @@ public partial class UIResponder
 {
     void Awake()
     {
-        if (canvas == null)
-            canvas = GetComponentInParent<Canvas>();
+        canvas = GetComponentInParent<Canvas>();
     }
 
     void Start()
