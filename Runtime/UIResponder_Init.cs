@@ -17,11 +17,11 @@ public partial class UIResponder
     void Start()
     {
         // rows/cols → cellCount/cellsPerRow 自动换算
-        cellCount = rows * cols;
-        cellsPerRow = cols;
+        ItemTouch.cellCount = rows * cols;
+        ItemTouch.cellsPerRow = cols;
 
         // 自动构建 + 注册
-        if (autoBuild && gridTransform == null)
+        if (autoBuild && ItemTouch.gridTransform == null)
         {
             var backpack = BackpackBuilder.Build(this);
             ContainerManager.Register(backpack, this);

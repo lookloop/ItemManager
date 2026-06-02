@@ -13,7 +13,7 @@ public static class ItemView
     /// <summary>清空旧 Item → 创建新 Item → 加载 Addressables 资源 → 显示</summary>
     public static async void Sync(UIResponder _this, int index)
     {
-        var cell     = _this.cellRegistry[index];
+        var cell     = ItemTouch.cellRegistry[index];
         var itemData = _this.items[index];
 
         var oldItem = cell.transform.Find("Item");
@@ -24,7 +24,7 @@ public static class ItemView
         var itemInstance = Create(_this, cell);
         var table = await _this.GetItemTable(itemData.Id.ToString());
 
-        if (cell == null || _this == null || _this.cellRegistry == null)
+        if (cell == null || _this == null || ItemTouch.cellRegistry == null)
         {
             if (itemInstance != null) Object.Destroy(itemInstance);
             return;

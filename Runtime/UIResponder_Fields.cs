@@ -49,23 +49,13 @@ public partial class UIResponder
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public Camera uiCamera;
 
-    [HideInInspector] public RectTransform gridTransform;
 
-    [HideInInspector] public RectTransform maskTransform;
-
-    [HideInInspector] public RectTransform backpackPanel;
-
-    [HideInInspector] public int cellCount;
-
-    [HideInInspector] public int cellsPerRow;
-
-    [HideInInspector] public GameObject[] cellRegistry;
 
     [HideInInspector] public Item[] items;
 
     [HideInInspector] public int currentPage;
 
-    [HideInInspector] public string currentTag;
+    [HideInInspector] public string PressTag;
 
 }
 }

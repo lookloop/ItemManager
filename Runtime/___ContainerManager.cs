@@ -19,7 +19,7 @@ public static class ContainerManager
         var cd = new ContainerData
         {
             container = containerObj.transform as RectTransform,
-            items     = new Item[_this.cellCount]
+            items     = new Item[ItemTouch.cellCount]
         };
 
         _this.containers.Add(cd);

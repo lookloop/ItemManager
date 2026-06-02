@@ -11,10 +11,13 @@ namespace Lookloop.ItemManager
 ///   "Item"      → Item触控（长按/短按/交换/滚Grid/详情）
 ///   "Container" → Container触控（拖拽移动面板）
 ///   其他 tag   → 忽略
+///
+/// ─── 拖拽判定：距离判定，非 BeginDrag 事件 ───
+///   Item/Container 各自在 OnDrag 中对比起手坐标与当前坐标，
+///   不一致则视为拖拽（isDrag），不再依赖 Unity IBeginDragHandler。
 /// </summary>
 public partial class UIResponder : MonoBehaviour,
     IPointerDownHandler,   // A — 手指按下
-    IBeginDragHandler,     // B — 开始拖拽
     IDragHandler,          // C — 拖拽中（每帧）
     IPointerUpHandler      // D — 手指抬起
 {
@@ -26,25 +29,14 @@ public partial class UIResponder : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
-        currentTag = clicked != null ? clicked.tag : null;
+        PressTag = clicked != null ? clicked.tag : null;
 
-        if (currentTag == "Item")
+        if (PressTag == "Item")
             ItemTouch.BeginClick(this, eventData);
-        else if (currentTag == "Container")
+        else if (PressTag == "Container")
             ContainerTouch.BeginDrag(this, eventData);
         else
-            currentTag = null;
-    }
-
-    // ════════════════════════════════════════════════════════════
-    // B 阶段 — 开始拖拽
-    // ════════════════════════════════════════════════════════════
-    public virtual void OnBeginDrag(PointerEventData eventData)
-    {
-        if (eventData.pointerId != 0) return;
-
-        if (currentTag == "Item")
-            ItemTouch.BeginDrag(this);
+            PressTag = null;
     }
 
     // ════════════════════════════════════════════════════════════
@@ -54,9 +46,9 @@ public partial class UIResponder : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        if (currentTag == "Item")
+        if (PressTag == "Item")
             ItemTouch.OnDrag(this, eventData);
-        else if (currentTag == "Container")
+        else if (PressTag == "Container")
             ContainerTouch.OnDrag(this, eventData);
     }
 
@@ -67,12 +59,12 @@ public partial class UIResponder : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        if (currentTag == "Item")
+        if (PressTag == "Item")
             ItemTouch.EndDrag(this, eventData);
-        else if (currentTag == "Container")
+        else if (PressTag == "Container")
             ContainerTouch.EndDrag(this);
 
-        currentTag = null;
+        PressTag = null;
     }
 
 }

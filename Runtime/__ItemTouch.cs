@@ -7,18 +7,17 @@ namespace Lookloop.ItemManager
 {
 /// <summary>
 /// Item 触控总成 — 黑盒处理所有 Item 交互。
-/// UIResponder 只做路由：Item → 调这 4 个方法；Container → 自理。
+/// UIResponder 只做路由：Item → 调这 3 个方法；Container → 自理。
 ///
 /// ─── 3 个核心字段 ───
 ///   source       来源 cell
 ///   target       目标 cell
 ///   itemDragging 跟随手指的 Item
 ///
-/// ─── 4 个公开方法 ───
-///   开始点击  → 记录 source，启计时器
-///   开始拖拽  → 停计时器，标 isDrag
-///   拖拽中    → 内部判断长按/短按：物品跟随 或 滚Grid
-///   结算      → 内部判断：交换/复位/详情面板
+/// ─── 3 个公开方法（距离判定拖拽，不再依赖 BeginDrag）───
+///   开始点击  → 记录 source + 起手坐标，启计时器
+///   拖拽中    → 距离判定 → isDrag；分流：长按跟随 / 滚Grid
+///   结算      → isLongPress + isDrag 组合：交换/复位/详情
 /// </summary>
 public static class ItemTouch
 {
@@ -28,6 +27,15 @@ public static class ItemTouch
     public static GameObject source;        // 来源 cell
     public static GameObject target;        // 目标 cell（悬停到的格子）
     public static GameObject itemDragging;  // 跟随手指的漂浮 Item
+
+    // ════════════════════════════════════════════════════════════
+    // Grid 运行时引用（由 BackpackBuilder 注入）
+    // ════════════════════════════════════════════════════════════
+    public static RectTransform gridTransform;
+    public static RectTransform maskTransform;
+    public static GameObject[]  cellRegistry;
+    public static int           cellCount;
+    public static int           cellsPerRow;
 
     // ════════════════════════════════════════════════════════════
     // 内部状态（外部不可见）
@@ -98,31 +106,30 @@ public static class ItemTouch
     }
 
     // ════════════════════════════════════════════════════════════
-    // 2. 开始拖拽 — B 阶段
-    // ════════════════════════════════════════════════════════════
-    public static void BeginDrag(UIResponder _this)
-    {
-        if (timerCoroutine != null)
-        {
-            _this.StopCoroutine(timerCoroutine);
-            timerCoroutine = null;
-        }
-        isDrag = true;
-    }
-
-    // ════════════════════════════════════════════════════════════
-    // 3. 拖拽中 — C 阶段（每帧）
+    // 2. 拖拽中 — C 阶段（每帧）
+    // 距离判定拖拽 → 分流：长按物品跟随 / 短按滚Grid
     // ════════════════════════════════════════════════════════════
     public static void OnDrag(UIResponder _this, PointerEventData eventData)
     {
+        // ── 距离判定拖拽 ──
+        if (!isDrag)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out Vector2 currentPos);
+            if ((currentPos - beginPosition).sqrMagnitude > 0.01f)
+                isDrag = true;
+        }
+
+        // ── 分流 ──
         if (isLongPress)
             LongPressFollow(_this, eventData);
-        else if (gridTarget != null)
+        else if (isDrag && gridTarget != null)
             ScrollGrid(_this, eventData);
     }
 
     // ════════════════════════════════════════════════════════════
-    // 4. 结算 — D 阶段（手指抬起）
+    // 3. 结算 — D 阶段（手指抬起）
+    // isLongPress + isDrag 组合判定：交换 / 复位 / 详情 / 滚Grid无结算
     // ════════════════════════════════════════════════════════════
     public static void EndDrag(UIResponder _this, PointerEventData eventData)
     {
@@ -249,8 +256,8 @@ public static class ItemTouch
         var cont = GetContainerData(_this, source.transform);
         if (cont == null || cont.items == null) return false;
 
-        int srcIdx = System.Array.IndexOf(_this.cellRegistry, source);
-        int dstIdx = System.Array.IndexOf(_this.cellRegistry, target);
+        int srcIdx = System.Array.IndexOf(ItemTouch.cellRegistry, source);
+        int dstIdx = System.Array.IndexOf(ItemTouch.cellRegistry, target);
         if (srcIdx < 0 || dstIdx < 0 || srcIdx >= cont.items.Length || dstIdx >= cont.items.Length)
             return false;
 
@@ -316,7 +323,7 @@ public static class ItemTouch
         var container = GetContainerData(_this, clickedObject.transform);
         if (container == null || container.items == null) return;
 
-        int index = System.Array.IndexOf(_this.cellRegistry, clickedObject);
+        int index = System.Array.IndexOf(ItemTouch.cellRegistry, clickedObject);
         if (index < 0 || index >= container.items.Length) return;
 
         Item item = container.items[index];

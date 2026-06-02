@@ -10,9 +10,9 @@ namespace Lookloop.ItemManager
 /// ─── 字段 ───
 ///   source  被拖拽的面板
 ///
-/// ─── 3 个公开方法 ───
-///   开始拖拽  → 记录起始状态
-///   拖拽中    → 面板跟随手指
+/// ─── 3 个公开方法（距离判定拖拽）───
+///   开始拖拽  → 记录起始状态 + 起手坐标
+///   拖拽中    → 距离判定 → 面板跟随相对位移
 ///   结算      → 清理
 /// </summary>
 public static class ContainerTouch
@@ -20,6 +20,9 @@ public static class ContainerTouch
     public static GameObject source;
     static Vector2 beginPosition;
     static Vector2 dragStartPos;
+
+    /// <summary>背包面板 RectTransform（由 BackpackBuilder 注入）</summary>
+    public static RectTransform backpackPanel;
 
     // ════════════════════════════════════════════════════════════
     // 1. 开始拖拽 — A 阶段
@@ -34,6 +37,7 @@ public static class ContainerTouch
 
     // ════════════════════════════════════════════════════════════
     // 2. 拖拽中 — C 阶段（每帧）
+    // 距离判定：相对位移驱动面板移动
     // ════════════════════════════════════════════════════════════
     public static void OnDrag(UIResponder _this, PointerEventData eventData)
     {
@@ -42,7 +46,10 @@ public static class ContainerTouch
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out Vector2 now);
         Vector2 totalDelta = now - beginPosition;
-        (source.transform as RectTransform).anchoredPosition = dragStartPos + totalDelta;
+
+        // 距离判定：移动超过阈值才拖拽
+        if (totalDelta.sqrMagnitude > 0.01f)
+            (source.transform as RectTransform).anchoredPosition = dragStartPos + totalDelta;
     }
 
     // ════════════════════════════════════════════════════════════
