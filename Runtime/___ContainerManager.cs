@@ -9,6 +9,6 @@ namespace Lookloop.ItemManager
 /// </summary>
 public static class ContainerManager
 {
-    public static List<ContainerMod> containers;
+    public static List<ContainerMod> containers = new List<ContainerMod>();
 }
 }

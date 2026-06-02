@@ -46,15 +46,15 @@ public static class ContainerBuilder
     {
         //新建一个对象，命名为 Container
         var container = new GameObject("Container", typeof(RectTransform), typeof(Image));
-        container.transform.SetParent(core.transform);
+        container.transform.SetParent(core.transform, false);//加false以保持预设的缩放
         //设置tag为Container
         container.tag = "Container";
         //新建一个对象,命名为 Mask，设置父对象为 Container
         var mask = new GameObject("Mask", typeof(RectTransform), typeof(Image), typeof(Mask));
-        mask.transform.SetParent(container.transform);
+        mask.transform.SetParent(container.transform, false);
         //新建一个对象,命名为 Grid，设置父对象为 Mask
         var grid = new GameObject("Grid", typeof(RectTransform));
-        grid.transform.SetParent(mask.transform);
+        grid.transform.SetParent(mask.transform, false);
         //设置标签为Grid
         grid.tag = "Grid";
         //根据每一页的格子数量进行生成
@@ -93,7 +93,7 @@ public static class ContainerBuilder
         {
             //新建一个对象,命名为 Cell，设置父对象为 Grid，名为i（从0开始）
             var cell = new GameObject("Cell" + i, typeof(RectTransform), typeof(Image));
-            cell.transform.SetParent(grid.transform);
+            cell.transform.SetParent(grid.transform, false);
             //设置cell的tag为cell
             cell.tag = "Cell";
             //设置cell的锚点x都是0，y都是1。轴心x是0y是1
