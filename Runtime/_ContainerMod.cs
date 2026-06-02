@@ -7,10 +7,10 @@ namespace Lookloop.ItemManager
 {
     /// <summary>
     /// 背包模板 — 玩家可配置的视窗样板。
-    /// 填入 UIResponder.templates[] 数组，每项生成一个独立容器。
+    /// 填入 UIResponder.mods[] 数组，每项生成一个独立容器。
     /// </summary>
     [Serializable]
-    public class BackpackTemplate
+    public class ContainerMod
     {
         [Header("预制体 (可选)")]
         [Tooltip("不为空则直接 Instantiate，自动扫描 tag='Item' 的子对象作为 Cell 注册表")]

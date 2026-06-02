@@ -8,26 +8,22 @@ public partial class UIResponder
     {
         if (canvas == null)
             canvas = GetComponentInParent<Canvas>();
-
-        // 缓存 Canvas 摄像机
-        if (canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
-            uiCamera = canvas.worldCamera;
     }
 
     void Start()
     {
         // 自动构建 + 注册（遍历模板数组，Prefab / 动态 混用）
-        if (autoBuild && templates != null && templates.Length > 0)
+        if (mods != null && mods.Length > 0)
         {
-            foreach (var t in templates)
+            foreach (var m in mods)
             {
                 GameObject backpack;
-                if (t.prefab != null)
-                    backpack = BackpackBuilder.BuildFromPrefab(this, t);
+                if (m.prefab != null)
+                    backpack = BackpackBuilder.BuildFromPrefab(this, m);
                 else
-                    backpack = BackpackBuilder.Build(this, t);
+                    backpack = BackpackBuilder.Build(this, m);
 
-                int id = ContainerManager.Register(backpack, t);
+                int id = ContainerManager.Register(backpack, m);
             }
         }
 

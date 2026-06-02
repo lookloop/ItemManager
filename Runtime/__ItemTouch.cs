@@ -48,8 +48,8 @@ public static class ItemTouch
     static Vector2    gridStartPos;
 
     // 快捷引用
-    static BackpackTemplate T => ContainerManager.containers != null && ContainerManager.containers.Count > 0
-        ? ContainerManager.containers[0].template : null;
+    static ContainerMod M => ContainerManager.containers != null && ContainerManager.containers.Count > 0
+        ? ContainerManager.containers[0].mod : null;
 
     // ════════════════════════════════════════════════════════════
     // 1. 开始点击 — A 阶段
@@ -67,7 +67,7 @@ public static class ItemTouch
         if (source == null) return;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out beginPosition);
+            _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out beginPosition);
 
         // 往上找 Grid（短按拖拽滚 Grid 用）
         Transform t = source.transform;
@@ -92,7 +92,7 @@ public static class ItemTouch
 
     static IEnumerator Timer(UIResponder _this)
     {
-        float tv = T != null ? T.timerValue : 0.3f;
+        float tv = M != null ? M.timerValue : 0.3f;
         yield return new WaitForSeconds(tv);
 
         // ── 长按成功：拾起物品 ──
@@ -102,7 +102,7 @@ public static class ItemTouch
         {
             itemDragging = source.transform.GetChild(0).gameObject;
             itemDragging.transform.SetParent(_this.canvas.transform, false);
-            float cw = T != null ? T.cellWidth : 10f;
+            float cw = M != null ? M.cellWidth : 10f;
             itemDragging.transform.localScale = new Vector3(cw / 10f, cw / 10f, 1f);
             (itemDragging.transform as RectTransform).anchoredPosition = beginPosition;
             itemDragging.transform.SetAsLastSibling();
@@ -123,7 +123,7 @@ public static class ItemTouch
         if (!isDrag)
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out Vector2 currentPos);
+                _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out Vector2 currentPos);
             if ((currentPos - beginPosition).sqrMagnitude > 0.01f)
                 isDrag = true;
         }
@@ -177,13 +177,13 @@ public static class ItemTouch
             {
                 Vector2 pos;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out pos);
+                    _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out pos);
                 rt.anchoredPosition = pos;
             }
         }
 
         // 射线检测悬停格子
-        var shadow = T != null ? T.shadowItem : null;
+        var shadow = M != null ? M.shadowItem : null;
         GameObject hoverObj = eventData.pointerCurrentRaycast.gameObject;
         if (hoverObj != null && hoverObj.CompareTag("Item"))
         {
@@ -222,7 +222,7 @@ public static class ItemTouch
         if (maskRT == null) return;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out Vector2 now);
+            _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out Vector2 now);
         Vector2 delta = now - beginPosition;
 
         float maskHeight  = maskRT.rect.height;
@@ -307,7 +307,7 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     static void Cleanup(UIResponder _this)
     {
-        var shadow = T != null ? T.shadowItem : null;
+        var shadow = M != null ? M.shadowItem : null;
         if (shadow != null)
         {
             shadow.SetActive(false);
@@ -334,8 +334,8 @@ public static class ItemTouch
                 Object.Destroy(cd.activeDetailPanel);
                 cd.activeDetailPanel = null;
             }
-            if (cd.template != null && cd.template.detailPanel != null)
-                cd.template.detailPanel.gameObject.SetActive(false);
+            if (cd.mod != null && cd.mod.detailPanel != null)
+                cd.mod.detailPanel.gameObject.SetActive(false);
         }
     }
 
@@ -368,8 +368,8 @@ public static class ItemTouch
 
     static async void ShowItemDetail(UIResponder _this, ContainerData container, GameObject targetObj, string id)
     {
-        var t = container.template;
-        if (t == null) return;
+        var m = container.mod;
+        if (m == null) return;
 
         ItemTable table = await _this.GetItemTable(id);
         if (table == null) return;
@@ -383,36 +383,36 @@ public static class ItemTouch
 
         RectTransform panelRT;
 
-        if (t.detailPanelPrefab != null)
+        if (m.detailPanelPrefab != null)
         {
             // ── Prefab 模式：Instantiate ──
-            var instance = Object.Instantiate(t.detailPanelPrefab, _this.canvas.transform);
+            var instance = Object.Instantiate(m.detailPanelPrefab, _this.canvas.transform);
             container.activeDetailPanel = instance;
             panelRT = instance.transform as RectTransform;
             if (panelRT == null) panelRT = instance.AddComponent<RectTransform>();
         }
-        else if (t.detailPanel != null)
+        else if (m.detailPanel != null)
         {
             // ── 场景引用模式 ──
-            panelRT = t.detailPanel;
+            panelRT = m.detailPanel;
         }
         else
         {
             return; // 无可用面板
         }
 
-        SetPanelContent(t, table);
+        SetPanelContent(m, table);
         SetPanelPosition(_this, panelRT, targetObj);
         panelRT.gameObject.SetActive(true);
     }
 
-    static void SetPanelContent(BackpackTemplate t, ItemTable table)
+    static void SetPanelContent(ContainerMod m, ItemTable table)
     {
-        if (t.iconImage != null)
+        if (m.iconImage != null)
         {
-            if (t.iconImage.transform.childCount > 0)
+            if (m.iconImage.transform.childCount > 0)
             {
-                Transform itemIconTransform = t.iconImage.transform.GetChild(0);
+                Transform itemIconTransform = m.iconImage.transform.GetChild(0);
                 Image itemIconImage = itemIconTransform.GetComponent<Image>();
                 if (itemIconImage != null)
                 {
@@ -431,8 +431,8 @@ public static class ItemTouch
                 }
             }
         }
-        if (t.nameText != null) t.nameText.text = table.ItemName;
-        if (t.descText != null) t.descText.text = table.ItemDescription;
+        if (m.nameText != null) m.nameText.text = table.ItemName;
+        if (m.descText != null) m.descText.text = table.ItemDescription;
     }
 
     static void SetPanelPosition(UIResponder _this, RectTransform panelRT, GameObject targetObj)

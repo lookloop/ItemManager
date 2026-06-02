@@ -12,8 +12,8 @@ namespace Lookloop.ItemManager
         public Item[] items;
         /// <summary>当前可见页码（每个容器独立翻页）</summary>
         public int currentPage;
-        /// <summary>关联的背包模板</summary>
-        public BackpackTemplate template;
+        /// <summary>关联的容器模块</summary>
+        public ContainerMod mod;
         /// <summary>当前激活的详情面板实例（Prefab 模式下）</summary>
         public GameObject activeDetailPanel;
     }

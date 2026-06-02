@@ -27,11 +27,11 @@ public static class BackpackBuilder
     }
 
     /// <summary>构建背包 → 返回顶层 Container GameObject</summary>
-    public static GameObject Build(UIResponder _this, BackpackTemplate t)
+    public static GameObject Build(UIResponder _this, ContainerMod m)
     {
         // rows/cols → cellCount/cellsPerRow 自动换算
-        ItemTouch.cellCount = t.rows * t.cols;
-        ItemTouch.cellsPerRow = t.cols;
+        ItemTouch.cellCount = m.rows * m.cols;
+        ItemTouch.cellsPerRow = m.cols;
 
         RectTransform root = _this.transform as RectTransform;
 
@@ -41,7 +41,7 @@ public static class BackpackBuilder
         panelGo.tag = "Container";
         ContainerTouch.backpackPanel = panelGo.transform as RectTransform;
         Image panelImg = panelGo.GetComponent<Image>();
-        panelImg.sprite = t.backpackSprite != null ? t.backpackSprite : DefaultSprite;
+        panelImg.sprite = m.backpackSprite != null ? m.backpackSprite : DefaultSprite;
         panelImg.type = Image.Type.Sliced;
 
         // 2. Mask
@@ -49,7 +49,7 @@ public static class BackpackBuilder
         maskGo.transform.SetParent(panelGo.transform, false);
         ItemTouch.maskTransform = maskGo.transform as RectTransform;
         Image maskImg = maskGo.GetComponent<Image>();
-        maskImg.sprite = t.maskSprite != null ? t.maskSprite : DefaultSprite;
+        maskImg.sprite = m.maskSprite != null ? m.maskSprite : DefaultSprite;
         ItemTouch.maskTransform.anchorMin = ItemTouch.maskTransform.anchorMax = new Vector2(0.5f, 1f);
         ItemTouch.maskTransform.pivot = new Vector2(0.5f, 1f);
 
@@ -69,23 +69,23 @@ public static class BackpackBuilder
             GameObject cell = new GameObject(i.ToString(), typeof(RectTransform), typeof(Image));
             cell.transform.SetParent(ItemTouch.gridTransform, false);
             RectTransform crt = cell.GetComponent<RectTransform>();
-            crt.sizeDelta = new Vector2(t.cellWidth, t.cellWidth);
-            cell.GetComponent<Image>().sprite = t.cellSprite != null ? t.cellSprite : DefaultSprite;
+            crt.sizeDelta = new Vector2(m.cellWidth, m.cellWidth);
+            cell.GetComponent<Image>().sprite = m.cellSprite != null ? m.cellSprite : DefaultSprite;
             cell.tag = "Item";
             ItemTouch.cellRegistry[i] = cell;
         }
 
         // 5. 排列 Cell + 设定 Grid/Mask 尺寸
-        ApplyCellPositions(t);
-        ApplyGridSize(t);
+        ApplyCellPositions(m);
+        ApplyGridSize(m);
 
         return panelGo;
     }
 
     /// <summary>从 Prefab 构建 → 返回顶层 Container GameObject</summary>
-    public static GameObject BuildFromPrefab(UIResponder _this, BackpackTemplate t)
+    public static GameObject BuildFromPrefab(UIResponder _this, ContainerMod m)
     {
-        var instance = Object.Instantiate(t.prefab, _this.transform);
+        var instance = Object.Instantiate(m.prefab, _this.transform);
         instance.name = "Backpack";
 
         // 提取 Container
@@ -131,9 +131,9 @@ public static class BackpackBuilder
         return instance;
     }
 
-    static void ApplyCellPositions(BackpackTemplate t)
+    static void ApplyCellPositions(ContainerMod m)
     {
-        float size = t.cellWidth;
+        float size = m.cellWidth;
         float scale = size / 10f;
         for (int i = 0; i < ItemTouch.cellRegistry.Length; i++)
         {
@@ -150,9 +150,9 @@ public static class BackpackBuilder
         }
     }
 
-    static void ApplyGridSize(BackpackTemplate t)
+    static void ApplyGridSize(ContainerMod m)
     {
-        float size = t.cellWidth;
+        float size = m.cellWidth;
         int totalRows = ItemTouch.cellCount / ItemTouch.cellsPerRow + (ItemTouch.cellCount % ItemTouch.cellsPerRow != 0 ? 1 : 0);
         float gridW = ItemTouch.cellsPerRow * size;
         float gridH = totalRows * size;
@@ -161,14 +161,14 @@ public static class BackpackBuilder
 
         if (ItemTouch.maskTransform != null)
         {
-            ItemTouch.maskTransform.sizeDelta = new Vector2(gridW, t.maskHeight);
-            ItemTouch.maskTransform.anchoredPosition = new Vector2(0, t.maskPosY);
+            ItemTouch.maskTransform.sizeDelta = new Vector2(gridW, m.maskHeight);
+            ItemTouch.maskTransform.anchoredPosition = new Vector2(0, m.maskPosY);
         }
 
         if (ContainerTouch.backpackPanel != null)
             ContainerTouch.backpackPanel.sizeDelta = new Vector2(
-                gridW + t.horizontalPadding * 2f,
-                t.maskHeight + t.backpackExtraHeight);
+                gridW + m.horizontalPadding * 2f,
+                m.maskHeight + m.backpackExtraHeight);
     }
 }
 }

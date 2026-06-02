@@ -31,7 +31,7 @@ public static class ContainerTouch
     {
         source        = eventData.pointerCurrentRaycast.gameObject;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out beginPosition);
+            _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out beginPosition);
         dragStartPos  = (source.transform as RectTransform).anchoredPosition;
     }
 
@@ -44,7 +44,7 @@ public static class ContainerTouch
         if (source == null) return;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _this.canvas.transform as RectTransform, eventData.position, _this.uiCamera, out Vector2 now);
+            _this.canvas.transform as RectTransform, eventData.position, _this.canvas?.worldCamera, out Vector2 now);
         Vector2 totalDelta = now - beginPosition;
 
         // 距离判定：移动超过阈值才拖拽

@@ -15,7 +15,7 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     // 注册 — 构建好的 GameObject + 模板 → 加入 containers 列表
     // ════════════════════════════════════════════════════════════
-    public static int Register(GameObject containerObj, BackpackTemplate template)
+    public static int Register(GameObject containerObj, ContainerMod mod)
     {
         if (containers == null)
             containers = new List<ContainerData>();
@@ -24,7 +24,7 @@ public static class ContainerManager
         {
             container = containerObj.transform as RectTransform,
             items     = new Item[ItemTouch.cellCount],
-            template  = template
+            mod       = mod
         };
 
         containers.Add(cd);
@@ -75,8 +75,8 @@ public static class ContainerManager
         if (cd.container != null)
         {
             cd.container.gameObject.SetActive(true);
-            if (cd.template != null)
-                cd.container.anchoredPosition = cd.template.showPosition;
+            if (cd.mod != null)
+                cd.container.anchoredPosition = cd.mod.showPosition;
         }
     }
 
