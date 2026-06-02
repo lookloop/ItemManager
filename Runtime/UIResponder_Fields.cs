@@ -8,11 +8,8 @@ public partial class UIResponder
     public BackpackTemplate[] templates;
 
     public bool autoBuild = true;
-
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public Camera uiCamera;
-
     [HideInInspector] public string PointerDownTag;
-
 }
 }
