@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Lookloop.ItemManager
 {
@@ -8,13 +9,16 @@ namespace Lookloop.ItemManager
 /// </summary>
 public static class ContainerManager
 {
+    /// <summary>所有容器数据列表</summary>
+    public static List<ContainerData> containers;
+
     // ════════════════════════════════════════════════════════════
     // 注册 — 构建好的 GameObject → 分配 ID → 加入 containers 列表
     // ════════════════════════════════════════════════════════════
     public static int Register(GameObject containerObj, UIResponder _this)
     {
-        if (_this.containers == null)
-            _this.containers = new System.Collections.Generic.List<ContainerData>();
+        if (containers == null)
+            containers = new List<ContainerData>();
 
         var cd = new ContainerData
         {
@@ -22,9 +26,9 @@ public static class ContainerManager
             items     = new Item[ItemTouch.cellCount]
         };
 
-        _this.containers.Add(cd);
+        containers.Add(cd);
 
-        return _this.containers.Count - 1;
+        return containers.Count - 1;
     }
 
     // ════════════════════════════════════════════════════════════
@@ -32,13 +36,13 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     public static void Unregister(UIResponder _this, int id, bool destroyGO = true)
     {
-        if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
+        if (containers == null || id < 0 || id >= containers.Count) return;
 
-        var cd = _this.containers[id];
+        var cd = containers[id];
         if (destroyGO && cd.container != null)
             Object.Destroy(cd.container.gameObject);
 
-        _this.containers.RemoveAt(id);
+        containers.RemoveAt(id);
     }
 
     // ════════════════════════════════════════════════════════════
@@ -46,16 +50,16 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     public static void Show(UIResponder _this, int id)
     {
-        if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
-        var cd = _this.containers[id];
+        if (containers == null || id < 0 || id >= containers.Count) return;
+        var cd = containers[id];
         if (cd.container != null)
             cd.container.gameObject.SetActive(true);
     }
 
     public static void Hide(UIResponder _this, int id)
     {
-        if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
-        var cd = _this.containers[id];
+        if (containers == null || id < 0 || id >= containers.Count) return;
+        var cd = containers[id];
         if (cd.container != null)
             cd.container.gameObject.SetActive(false);
     }
@@ -65,8 +69,8 @@ public static class ContainerManager
     // ════════════════════════════════════════════════════════════
     public static void MoveTo(UIResponder _this, int id, Vector2 anchoredPosition)
     {
-        if (_this.containers == null || id < 0 || id >= _this.containers.Count) return;
-        var cd = _this.containers[id];
+        if (containers == null || id < 0 || id >= containers.Count) return;
+        var cd = containers[id];
         if (cd.container != null)
             cd.container.anchoredPosition = anchoredPosition;
     }

@@ -44,8 +44,6 @@ public partial class UIResponder
     public TMPro.TextMeshProUGUI DescText;
     public Image IconImage;
 
-    [HideInInspector] public System.Collections.Generic.List<ContainerData> containers;
-
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public Camera uiCamera;
 

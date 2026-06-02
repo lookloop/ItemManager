@@ -277,14 +277,14 @@ public static class ItemTouch
     // ════════════════════════════════════════════════════════════
     static ContainerData GetContainerData(UIResponder _this, Transform child)
     {
-        if (_this.containers == null) return null;
+        if (ContainerManager.containers == null) return null;
         Transform t = child;
         while (t != null)
         {
             if (t.CompareTag("Container"))
             {
                 var rt = t as RectTransform;
-                foreach (var cd in _this.containers)
+                foreach (var cd in ContainerManager.containers)
                     if (cd.container == rt) return cd;
                 return null;
             }
