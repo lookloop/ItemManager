@@ -1,5 +1,7 @@
 using System.Runtime.Serialization.Formatters;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 namespace Lookloop.ItemManager
 {
@@ -43,6 +45,22 @@ public static class ItemsController
             }
         }
     }
-    //设置一个方法，使用container.cells，参数为cellkey，使用这个参数，得到一个实际上的cell对象。访问它有没有子对象，如果没有就新建一个，使用预制体新建。然后这个预制体是个空白的带图像的东西
+    //设置一个方法，使用container.cells，参数为cellkey，使用这个参数，得到一个实际上的cell对象。访问它有没有子对象，如果没有就新建一个，使用预制体新建。然后这个预制体是个空白的带图像的东
+    public static void ItemSelfBuild(ContainerMod containermod, RectTransform item)
+        {
+            var edge = new GameObject("edge", typeof(RectTransform), typeof(Image));
+            edge.transform.SetParent(item.transform, false);
+            var edgeRect = edge.GetComponent<RectTransform>();
+            edgeRect.sizeDelta = new Vector2(item.sizeDelta.x, item.sizeDelta.y);
+
+            var count = new GameObject("count", typeof(RectTransform), typeof(TextMeshProUGUI));
+            count.transform.SetParent(item.transform, false);
+            var countRect = count.GetComponent<RectTransform>();
+            countRect.anchorMin = new Vector2(0.5f, 0);
+            countRect.anchorMax = new Vector2(0.5f, 0);
+            countRect.pivot = new Vector2(0.5f, 0);
+            countRect.sizeDelta = new Vector2(item.sizeDelta.x, item.sizeDelta.y/4);
+            countRect.anchoredPosition = new Vector2(0, 0);
+        }
 }
 }

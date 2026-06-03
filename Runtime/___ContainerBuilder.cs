@@ -110,7 +110,6 @@ public static class ContainerBuilder
             pageTextRect.anchoredPosition = new Vector2(0, 0);
             pageText.tag = "TurnPage";
 
-
             var tmp = pageText.GetComponent<TextMeshProUGUI>();
             tmp.text = "1/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
             tmp.fontSize = spec.containerFillDown;
