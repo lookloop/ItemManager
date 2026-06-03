@@ -104,12 +104,13 @@ public static class ContainerBuilder
         pageTextRect.anchorMax = new Vector2(0.5f, 0);
         pageTextRect.pivot = new Vector2(0.5f, 0);
         pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
-        pageTextRect.anchoredPosition = new Vector2(spec.containerFillDown / 2, 0);
+        pageTextRect.anchoredPosition = new Vector2(0, 0);
         var tmp = pageText.GetComponent<TextMeshProUGUI>();
         tmp.text = "1/1";
         tmp.fontSize = spec.containerFillDown;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = Color.white;
+        pageText.tag = "PageText";
 
         //生成左右两个按钮，加图片
         var prevButton = new GameObject("PrevButton", typeof(RectTransform), typeof(Image));
@@ -120,7 +121,7 @@ public static class ContainerBuilder
         prevButtonRect.anchorMax = new Vector2(0, 0.5f);
         prevButtonRect.pivot = new Vector2(0, 0.5f);
         prevButtonRect.anchoredPosition = new Vector2(-spec.containerFillDown, 0);
-
+        prevButton.tag = "PrevButton";
         var nextButton = new GameObject("NextButton", typeof(RectTransform), typeof(Image));
         nextButton.transform.SetParent(pageText.transform, false);
         var nextButtonRect = nextButton.GetComponent<RectTransform>();
@@ -129,6 +130,7 @@ public static class ContainerBuilder
         nextButtonRect.anchorMax = new Vector2(1, 0.5f);
         nextButtonRect.pivot = new Vector2(1, 0.5f);
         nextButtonRect.anchoredPosition = new Vector2(spec.containerFillDown, 0);
+        nextButton.tag = "NextButton";
 
         ContainerManager.containers.Add(containermod);
     }
