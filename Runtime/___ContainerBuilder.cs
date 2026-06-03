@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Lookloop.ItemManager
 {
@@ -95,39 +96,39 @@ public static class ContainerBuilder
             containermod.cells[i] = rect;
         }
 
-        var pagination = new GameObject("Pagination", typeof(RectTransform));
-        pagination.transform.SetParent(container.transform, false);
-        var paginationRect = pagination.GetComponent<RectTransform>();
-        paginationRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.containerFillDown);
-        paginationRect.anchorMin = new Vector2(0.5f, 0);
-        paginationRect.anchorMax = new Vector2(0.5f, 0);
-        paginationRect.pivot = new Vector2(0.5f, 0);
-        paginationRect.anchoredPosition = new Vector2(0, 0);
+        // 页数文本
+        var pageText = new GameObject("PageText", typeof(RectTransform), typeof(TextMeshProUGUI));
+        pageText.transform.SetParent(container.transform, false);
+        var pageTextRect = pageText.GetComponent<RectTransform>();
+        pageTextRect.anchorMin = new Vector2(0.5f, 0.5f);
+        pageTextRect.anchorMax = new Vector2(0.5f, 0.5f);
+        pageTextRect.pivot = new Vector2(0.5f, 0.5f);
+        pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
+        pageTextRect.anchoredPosition = new Vector2(spec.containerFillDown / 2, 0);
+        var tmp = pageText.GetComponent<TextMeshProUGUI>();
+        tmp.text = "1/1";
+        tmp.fontSize = 12;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.color = Color.white;
 
         //生成左右两个按钮，加图片
         var prevButton = new GameObject("PrevButton", typeof(RectTransform), typeof(Image));
-        prevButton.transform.SetParent(pagination.transform, false);
+        prevButton.transform.SetParent(pageText.transform, false);
         var prevButtonRect = prevButton.GetComponent<RectTransform>();
         prevButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
         prevButtonRect.anchorMin = new Vector2(0, 0.5f);
         prevButtonRect.anchorMax = new Vector2(0, 0.5f);
         prevButtonRect.pivot = new Vector2(0, 0.5f);
-        prevButtonRect.anchoredPosition = new Vector2(3 * spec.containerFillDown, 0);
+        prevButtonRect.anchoredPosition = new Vector2(-spec.containerFillDown, 0);
 
         var nextButton = new GameObject("NextButton", typeof(RectTransform), typeof(Image));
-        nextButton.transform.SetParent(pagination.transform, false);
+        nextButton.transform.SetParent(pageText.transform, false);
         var nextButtonRect = nextButton.GetComponent<RectTransform>();
         nextButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
         nextButtonRect.anchorMin = new Vector2(1, 0.5f);
         nextButtonRect.anchorMax = new Vector2(1, 0.5f);
         nextButtonRect.pivot = new Vector2(1, 0.5f);
-        nextButtonRect.anchoredPosition = new Vector2(-3 * spec.containerFillDown, 0);
-
-
-
-
-
-
+        nextButtonRect.anchoredPosition = new Vector2(spec.containerFillDown, 0);
 
         ContainerManager.containers.Add(containermod);
     }
