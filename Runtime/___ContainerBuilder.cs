@@ -100,14 +100,14 @@ public static class ContainerBuilder
         var pageText = new GameObject("PageText", typeof(RectTransform), typeof(TextMeshProUGUI));
         pageText.transform.SetParent(container.transform, false);
         var pageTextRect = pageText.GetComponent<RectTransform>();
-        pageTextRect.anchorMin = new Vector2(0.5f, 0.5f);
-        pageTextRect.anchorMax = new Vector2(0.5f, 0.5f);
-        pageTextRect.pivot = new Vector2(0.5f, 0.5f);
+        pageTextRect.anchorMin = new Vector2(0.5f, 0);
+        pageTextRect.anchorMax = new Vector2(0.5f, 0);
+        pageTextRect.pivot = new Vector2(0.5f, 0);
         pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
         pageTextRect.anchoredPosition = new Vector2(spec.containerFillDown / 2, 0);
         var tmp = pageText.GetComponent<TextMeshProUGUI>();
         tmp.text = "1/1";
-        tmp.fontSize = 12;
+        tmp.fontSize = spec.containerFillDown;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = Color.white;
 
