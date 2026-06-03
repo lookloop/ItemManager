@@ -110,7 +110,7 @@ public static class ContainerBuilder
         tmp.fontSize = spec.containerFillDown;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = Color.white;
-        pageText.tag = "PageText";
+        pageText.tag = "TurnPage";
 
         //生成左右两个按钮，加图片
         var prevButton = new GameObject("PrevButton", typeof(RectTransform), typeof(Image));
@@ -121,7 +121,8 @@ public static class ContainerBuilder
         prevButtonRect.anchorMax = new Vector2(0, 0.5f);
         prevButtonRect.pivot = new Vector2(0, 0.5f);
         prevButtonRect.anchoredPosition = new Vector2(-spec.containerFillDown, 0);
-        prevButton.tag = "PrevButton";
+        prevButton.tag = "TurnPage";
+        
         var nextButton = new GameObject("NextButton", typeof(RectTransform), typeof(Image));
         nextButton.transform.SetParent(pageText.transform, false);
         var nextButtonRect = nextButton.GetComponent<RectTransform>();
@@ -130,7 +131,7 @@ public static class ContainerBuilder
         nextButtonRect.anchorMax = new Vector2(1, 0.5f);
         nextButtonRect.pivot = new Vector2(1, 0.5f);
         nextButtonRect.anchoredPosition = new Vector2(spec.containerFillDown, 0);
-        nextButton.tag = "NextButton";
+        nextButton.tag = "TurnPage";
 
         ContainerManager.containers.Add(containermod);
     }
