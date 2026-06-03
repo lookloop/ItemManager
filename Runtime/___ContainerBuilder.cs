@@ -44,45 +44,36 @@ public static class ContainerBuilder
     }
     public static void Build(Core core, ContainerSpec spec, ContainerMod containermod)
     {
-        //新建一个对象，命名为 Container
+        // Container新建，设置父物体为core，设置tag，设置RectTransform大小，设置Image组件的sprite，存入mod
         var container = new GameObject("Container", typeof(RectTransform), typeof(Image));
-        container.transform.SetParent(core.transform, false);//加false以保持预设的缩放
-        //设置tag为Container
-        container.tag = "Container";
-        //新建一个对象,命名为 Mask，设置父对象为 Container
+        container.transform.SetParent(core.transform, false);
+        var containerRect = container.GetComponent<RectTransform>();
+        containerRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth + spec.containerFillHorizontal * 2, spec.maskHeight + spec.containerFillUp + spec.containerFillDown);
+        //新建Mask，设置父物体为Container，设置RectTransform大小和位置，设置Image组件的sprite，添加Mask组件。不设置tag，不存入mod
         var mask = new GameObject("Mask", typeof(RectTransform), typeof(Image), typeof(Mask));
         mask.transform.SetParent(container.transform, false);
-        //新建一个对象,命名为 Grid，设置父对象为 Mask
-        var grid = new GameObject("Grid", typeof(RectTransform));
-        grid.transform.SetParent(mask.transform, false);
-        //设置标签为Grid
-        grid.tag = "Grid";
-        //根据每一页的格子数量进行生成
-        var gridRect = grid.GetComponent<RectTransform>();
-        gridRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, Mathf.CeilToInt((float)spec.everyPageTotal / spec.rows) * spec.cellWidth);
         var maskRect = mask.GetComponent<RectTransform>();
         maskRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.maskHeight);
-        //设置container高度宽度，宽度为mask宽度+水平内边距*2，高度为mask高度+
-        var containerRect = container.GetComponent<RectTransform>();
-        containerRect.sizeDelta = new Vector2(maskRect.sizeDelta.x + spec.containerFillHorizontal * 2, maskRect.sizeDelta.y + spec.containerFillUp + spec.containerFillDown);
         maskRect.anchorMin = new Vector2(0.5f, 1);
         maskRect.anchorMax = new Vector2(0.5f, 1);
         maskRect.pivot = new Vector2(0.5f, 1);
-        //设置mask位置，x=0，y=-面板上边距
         maskRect.anchoredPosition = new Vector2(0, -spec.containerFillUp);
-        //设置grid的轴心和锚点，和mask一样
+        //新建Grid，设置父物体为Mask，设置tag，设置RectTransform大小和位置，不设置Image组件，不存入mod
+        var grid = new GameObject("Grid", typeof(RectTransform));
+        grid.transform.SetParent(mask.transform, false);
+        var gridRect = grid.GetComponent<RectTransform>();
+        gridRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, Mathf.CeilToInt((float)spec.everyPageTotal / spec.rows) * spec.cellWidth);
         gridRect.anchorMin = new Vector2(0.5f, 1);
         gridRect.anchorMax = new Vector2(0.5f, 1);
         gridRect.pivot = new Vector2(0.5f, 1);
         gridRect.anchoredPosition = Vector2.zero;
-        //
-        //
-        //给containerrect的图片精灵改了
+        
+
+        container.tag = "Container";
+        grid.tag = "Grid";
         container.GetComponent<Image>().sprite = spec.containerSprite;
-        //给mask的图片精灵改了
         mask.GetComponent<Image>().sprite = spec.maskSprite;
         containermod.container = containerRect;
-        //将cells列表存入mod
         containermod.cells = new RectTransform[spec.everyPageTotal];
         containermod.items = new Item[spec.totalCells];
         containermod.detail = spec.detail;
@@ -91,23 +82,16 @@ public static class ContainerBuilder
 
         for (int i = 0; i < spec.everyPageTotal; i++)
         {
-            //新建一个对象,命名为 Cell，设置父对象为 Grid，名为i（从0开始）
             var cell = new GameObject("Cell" + i, typeof(RectTransform), typeof(Image));
             cell.transform.SetParent(grid.transform, false);
-            //设置cell的tag为cell
-            cell.tag = "Cell";
-            //设置cell的锚点x都是0，y都是1。轴心x是0y是1
             var rect = cell.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0, 1);
             rect.anchorMax = new Vector2(0, 1);
             rect.pivot = new Vector2(0, 1);
-            //设置cell的大小为规格里的格子边长
             rect.sizeDelta = new Vector2(spec.cellWidth, spec.cellWidth);
-            //设置位置，x=totalCells%rows=余，y=totalCells/rows=商，乘以格子边长
             rect.anchoredPosition = new Vector2((i % spec.rows) * spec.cellWidth, -(i / spec.rows) * spec.cellWidth);
-            //设置cell的图片精灵为规格里的cell精灵
+            cell.tag = "Cell";
             cell.GetComponent<Image>().sprite = spec.cellSprite;
-            //加入cells列表
             containermod.cells[i] = rect;
         }
         ContainerManager.containers.Add(containermod);
