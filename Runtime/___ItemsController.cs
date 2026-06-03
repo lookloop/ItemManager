@@ -13,7 +13,7 @@ namespace Lookloop.ItemManager
 ///   下一页      → 翻页 + 刷新
 ///   上一页      → 翻页 + 刷新
 /// </summary>
-public static class ItemDataManager
+public static class ItemsController
     {
         
     }
