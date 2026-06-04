@@ -20,6 +20,7 @@ namespace Lookloop.ItemManager
 ///   结算      → isLongPress + isDrag 组合：交换/复位/详情
 /// </summary>
 public static class ItemTouch
-{
-}
+    {
+
+    }
 }

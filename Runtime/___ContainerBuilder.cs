@@ -68,6 +68,50 @@ public static class ContainerBuilder
         gridRect.anchorMax = new Vector2(0.5f, 1);
         gridRect.pivot = new Vector2(0.5f, 1);
         gridRect.anchoredPosition = Vector2.zero;
+
+
+
+        if (spec.totalCells > spec.everyPageTotal)
+        {
+            //ai帮我对齐一下
+            var pageText = new GameObject("PageText", typeof(RectTransform), typeof(TextMeshProUGUI));
+            pageText.transform.SetParent(container.transform, false);
+            var pageTextRect = pageText.GetComponent<RectTransform>();
+            pageTextRect.anchorMin = new Vector2(0.5f, 0);
+            pageTextRect.anchorMax = new Vector2(0.5f, 0);
+            pageTextRect.pivot = new Vector2(0.5f, 0);
+            pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
+            pageTextRect.anchoredPosition = new Vector2(0, 0);
+            pageText.tag = "TurnPage";
+
+            var tmp = pageText.GetComponent<TextMeshProUGUI>();
+            tmp.text = "1/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+            tmp.fontSize = spec.containerFillDown;
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.color = Color.white;
+            
+
+            //生成左右两个按钮，加图片
+            var prevButton = new GameObject("PrevButton", typeof(RectTransform), typeof(Image));
+            prevButton.transform.SetParent(pageText.transform, false);
+            var prevButtonRect = prevButton.GetComponent<RectTransform>();
+            prevButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
+            prevButtonRect.anchorMin = new Vector2(0, 0.5f);
+            prevButtonRect.anchorMax = new Vector2(0, 0.5f);
+            prevButtonRect.pivot = new Vector2(0, 0.5f);
+            prevButtonRect.anchoredPosition = new Vector2(-spec.containerFillDown, 0);
+            prevButton.tag = "TurnPage";
+
+            var nextButton = new GameObject("NextButton", typeof(RectTransform), typeof(Image));
+            nextButton.transform.SetParent(pageText.transform, false);
+            var nextButtonRect = nextButton.GetComponent<RectTransform>();
+            nextButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
+            nextButtonRect.anchorMin = new Vector2(1, 0.5f);
+            nextButtonRect.anchorMax = new Vector2(1, 0.5f);
+            nextButtonRect.pivot = new Vector2(1, 0.5f);
+            nextButtonRect.anchoredPosition = new Vector2(spec.containerFillDown, 0);
+            nextButton.tag = "TurnPage";
+        }
         
 
         container.tag = "Container";
@@ -97,49 +141,7 @@ public static class ContainerBuilder
         }
 
 
-        if (spec.totalCells > spec.everyPageTotal)
-        {
-            //ai帮我对齐一下
-            var pageText = new GameObject("PageText", typeof(RectTransform), typeof(TextMeshProUGUI));
-            pageText.transform.SetParent(container.transform, false);
-            var pageTextRect = pageText.GetComponent<RectTransform>();
-            pageTextRect.anchorMin = new Vector2(0.5f, 0);
-            pageTextRect.anchorMax = new Vector2(0.5f, 0);
-            pageTextRect.pivot = new Vector2(0.5f, 0);
-            pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
-            pageTextRect.anchoredPosition = new Vector2(0, 0);
-            pageText.tag = "TurnPage";
-
-            var tmp = pageText.GetComponent<TextMeshProUGUI>();
-            tmp.text = "1/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
-            tmp.fontSize = spec.containerFillDown;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.color = Color.white;
-            
-
-
-
-            //生成左右两个按钮，加图片
-            var prevButton = new GameObject("PrevButton", typeof(RectTransform), typeof(Image));
-            prevButton.transform.SetParent(pageText.transform, false);
-            var prevButtonRect = prevButton.GetComponent<RectTransform>();
-            prevButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
-            prevButtonRect.anchorMin = new Vector2(0, 0.5f);
-            prevButtonRect.anchorMax = new Vector2(0, 0.5f);
-            prevButtonRect.pivot = new Vector2(0, 0.5f);
-            prevButtonRect.anchoredPosition = new Vector2(-spec.containerFillDown, 0);
-            prevButton.tag = "TurnPage";
-
-            var nextButton = new GameObject("NextButton", typeof(RectTransform), typeof(Image));
-            nextButton.transform.SetParent(pageText.transform, false);
-            var nextButtonRect = nextButton.GetComponent<RectTransform>();
-            nextButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
-            nextButtonRect.anchorMin = new Vector2(1, 0.5f);
-            nextButtonRect.anchorMax = new Vector2(1, 0.5f);
-            nextButtonRect.pivot = new Vector2(1, 0.5f);
-            nextButtonRect.anchoredPosition = new Vector2(spec.containerFillDown, 0);
-            nextButton.tag = "TurnPage";
-        }
+        
 
         
 
