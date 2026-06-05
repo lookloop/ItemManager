@@ -6,7 +6,7 @@ namespace Lookloop.ItemManager
     public static class ItemsController
     {
         /// <summary>写入 Item。若在当前页则刷 active/count + 异步加载 Sprite</summary>
-        public static async void SetItem(Core core, ContainerMod mod, int itemKey,
+        public static void SetItem(Core core, ContainerMod mod, int itemKey,
             int id, int type, int tier, int count, int[] data)
         {
             if (itemKey < 0 || itemKey >= mod.items.Length)
