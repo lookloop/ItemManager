@@ -11,9 +11,8 @@ namespace Lookloop.ItemManager
         public RectTransform container;
         public RectTransform detail;
         public RectTransform[] cells;
+        public ItemUIMod[] itemUIs;
         public Item[] items;
-        //翻译:当前页面
-        public int currentPage;
-        
+        public int currentPage = 1;
     }
 }

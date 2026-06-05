@@ -15,38 +15,40 @@ public static class ContainerBuilder
     {
         foreach (var spec in core.specs)
         {
-            ContainerMod containermod = new ContainerMod();
+            var mod = new ContainerMod();
             if (spec.prefab != null)
-                BuildFromPrefab(core, spec, containermod);
+                BuildFromPrefab(core, spec, mod);
             else
-                Build(core, spec, containermod);
+                Build(core, spec, mod);
         }
     }
 
-    static void BuildFromPrefab(Core core, ContainerSpec spec, ContainerMod containermod)
+    static void BuildFromPrefab(Core core, ContainerSpec spec, ContainerMod mod)
     {
         var instance = Object.Instantiate(spec.prefab, core.transform);
+
+        var allChildren = instance.GetComponentsInChildren<RectTransform>(true);
+        var list = new System.Collections.Generic.List<RectTransform>();
+        foreach (var tr in allChildren)
         {
-            var allChildren = instance.GetComponentsInChildren<RectTransform>(true);
-            var list = new System.Collections.Generic.List<RectTransform>();
-            foreach (var tr in allChildren)
-            {
-                if (tr.CompareTag("Cell"))
-                    list.Add(tr);
-            }
-            for (int i = 0; i < list.Count; i++)
-                list[i].name = i.ToString();
-            containermod.cells = list.ToArray();
-            containermod.items = new Item[containermod.cells.Length];
-            containermod.container = instance;
-            containermod.detail = spec.detail;
-            ContainerManager.containers.Add(containermod);
+            if (tr.CompareTag("Cell"))
+                list.Add(tr);
         }
+        for (int i = 0; i < list.Count; i++)
+            list[i].name = i.ToString();
+
+        mod.cells = list.ToArray();
+        mod.items = new Item[mod.cells.Length];
+        mod.container = instance;
+        mod.detail = spec.detail;
+
+        BuildItemUIs(mod);
+        ContainerManager.containers.Add(mod);
     }
 
-    static void Build(Core core, ContainerSpec spec, ContainerMod containermod)
+    static void Build(Core core, ContainerSpec spec, ContainerMod mod)
     {
-        // Container（无锚点轴心设置，直接用默认）
+        // Container
         var containerRect = CreateRect("Container", core.transform, typeof(Image));
         containerRect.sizeDelta = new Vector2(
             spec.rows * spec.cellWidth + spec.containerFillHorizontal * 2,
@@ -101,10 +103,10 @@ public static class ContainerBuilder
         containerRect.GetComponent<Image>().sprite = spec.containerSprite;
         maskRect.GetComponent<Image>().sprite = spec.maskSprite;
 
-        containermod.container = containerRect;
-        containermod.cells = new RectTransform[spec.everyPageTotal];
-        containermod.items = new Item[spec.totalCells];
-        containermod.detail = spec.detail;
+        mod.container = containerRect;
+        mod.cells = new RectTransform[spec.everyPageTotal];
+        mod.items = new Item[spec.totalCells];
+        mod.detail = spec.detail;
 
         for (int i = 0; i < spec.everyPageTotal; i++)
         {
@@ -116,13 +118,49 @@ public static class ContainerBuilder
             rect.sizeDelta = new Vector2(spec.cellWidth, spec.cellWidth);
             rect.gameObject.tag = "Cell";
             rect.GetComponent<Image>().sprite = spec.cellSprite;
-            containermod.cells[i] = rect;
+            mod.cells[i] = rect;
         }
 
-        ContainerManager.containers.Add(containermod);
+        BuildItemUIs(mod);
+        ContainerManager.containers.Add(mod);
     }
 
     // ─── 内部快捷方法 ───
+
+    /// <summary>遍历 cells[]，为每个 Cell 创建 ItemUI（含 edge + count 子元素）</summary>
+    static void BuildItemUIs(ContainerMod mod)
+    {
+        mod.itemUIs = new ItemUIMod[mod.cells.Length];
+        for (int i = 0; i < mod.cells.Length; i++)
+        {
+            var cell = mod.cells[i];
+
+            var itemUIRect = CreateRect("ItemUI", cell, typeof(Image));
+            SetAnchorPivot(itemUIRect, 0f, 1f, 0f, 1f, 0f, 1f);
+            itemUIRect.anchoredPosition = Vector2.zero;
+            itemUIRect.sizeDelta = cell.sizeDelta;
+
+            var itemImage = itemUIRect.GetComponent<Image>();
+            itemImage.raycastTarget = false;
+
+            var edgeRect = CreateRect("edge", itemUIRect, typeof(Image));
+            SetAnchorPivot(edgeRect, 0f, 1f, 0f, 1f, 0f, 1f);
+            edgeRect.anchoredPosition = Vector2.zero;
+            edgeRect.sizeDelta = cell.sizeDelta;
+
+            var countRect = CreateRect("count", itemUIRect, typeof(TextMeshProUGUI));
+            SetAnchorPivot(countRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
+            countRect.anchoredPosition = Vector2.zero;
+            countRect.sizeDelta = new Vector2(cell.sizeDelta.x, cell.sizeDelta.y / 4f);
+
+            mod.itemUIs[i] = new ItemUIMod
+            {
+                itemImage = itemImage,
+                edge = edgeRect.GetComponent<Image>(),
+                count = countRect.GetComponent<TextMeshProUGUI>()
+            };
+        }
+    }
 
     /// <summary>创建带 RectTransform 的 GameObject，设父物体，返回 RectTransform</summary>
     static RectTransform CreateRect(string name, Transform parent, params System.Type[] components)
@@ -138,7 +176,7 @@ public static class ContainerBuilder
     }
 
     /// <summary>
-    /// 一行设 anchorMin + anchorMax + pivot 三个点（6 个值）
+    /// 一行设 anchorMin + anchorMax + pivot（6 个值）
     /// </summary>
     static void SetAnchorPivot(RectTransform rect,
         float aMinX, float aMinY,
