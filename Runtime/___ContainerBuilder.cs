@@ -82,6 +82,9 @@ public static class ContainerBuilder
             tmp.fontSize = spec.containerFillDown;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = Color.white;
+            tmp.font = core.font;
+            //font = core.font
+            
 
             // PrevButton
             var prevButtonRect = CreateRect("PrevButton", pageTextRect, typeof(Image));
