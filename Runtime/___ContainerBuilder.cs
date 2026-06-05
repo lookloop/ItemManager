@@ -155,6 +155,7 @@ public static class ContainerBuilder
             var countText = countRect.GetComponent<TextMeshProUGUI>();
             countText.fontSize = 3.9f;
             countText.font = core.font;
+            countText.alignment = TextAlignmentOptions.TopRight;
 
             mod.itemUIs[i] = new ItemUI
             {
