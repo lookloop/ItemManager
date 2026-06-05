@@ -143,11 +143,12 @@ public static class ContainerBuilder
             var itemImage = itemUIRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
 
-            var edgeRect = CreateRect("edge", itemUIRect, typeof(Image));
+            var edgeRect = CreateRect("edge", cell, typeof(Image));
             SetAnchorPivot(edgeRect, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
             edgeRect.anchoredPosition = Vector2.zero;
             edgeRect.sizeDelta = cell.sizeDelta * 0.8f;
-            var countRect = CreateRect("count", itemUIRect, typeof(TextMeshProUGUI));
+
+            var countRect = CreateRect("count", cell, typeof(TextMeshProUGUI));
             SetAnchorPivot(countRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
             countRect.anchoredPosition = Vector2.zero;
             countRect.sizeDelta = new Vector2(cell.sizeDelta.x, cell.sizeDelta.y / 4f);
@@ -155,7 +156,7 @@ public static class ContainerBuilder
             var countText = countRect.GetComponent<TextMeshProUGUI>();
             countText.fontSize = 3.9f;
             countText.font = core.font;
-            countText.alignment = TextAlignmentOptions.TopRight;
+            countText.alignment = TextAlignmentOptions.MidlineRight;
 
             mod.itemUIs[i] = new ItemUI
             {
