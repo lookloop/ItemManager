@@ -14,13 +14,15 @@ namespace Lookloop.ItemManager
                 Debug.LogError($"[ItemsController] itemKey {itemKey} 越界");
                 return;
             }
-            mod.items[itemKey] = new Item(id, type, tier, count, data);
-            //使用下面那个方法
-            SetViewItem(core,mod,itemKey);
-            
-            
+            // id==0 → 视为空
+            if (id == 0)
+                mod.items[itemKey] = null;
+            else
+                mod.items[itemKey] = new Item(id, type, tier, count, data);
+
+            SetViewItem(core, mod, itemKey);
         }
-        //设置一个itemview方法，像上面那个一样
+
         public static async void SetViewItem(Core core, ContainerMod mod, int itemKey)
         {
             int pageIndex = itemKey / mod.cells.Length + 1;
@@ -28,15 +30,11 @@ namespace Lookloop.ItemManager
 
             if (pageIndex != mod.currentPage) return;
 
-            var item = mod.items[itemKey];
-            if (item == null) return;
-
-            int id = item.Id;
-            int count = item.Count;
             var ui = mod.itemUIs[cellIndex];
+            var item = mod.items[itemKey];
 
-            // id == 0 视为空 — 三件套全隐藏
-            if (id == 0)
+            // null → 三件套全隐藏
+            if (item == null)
             {
                 ui.itemImage.gameObject.SetActive(false);
                 ui.edge.gameObject.SetActive(false);
@@ -47,9 +45,9 @@ namespace Lookloop.ItemManager
             ui.itemImage.gameObject.SetActive(true);
             ui.edge.gameObject.SetActive(true);
             ui.count.gameObject.SetActive(true);
-            ui.count.text = count > 0 ? count.ToString() : "";
+            ui.count.text = item.Count > 0 ? item.Count.ToString() : "";
 
-            var table = await core.GetItemTable(id.ToString());
+            var table = await core.GetItemTable(item.Id.ToString());
             if (table != null)
             {
                 ui.itemImage.sprite = table.ItemSprite;
