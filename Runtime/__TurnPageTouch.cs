@@ -40,6 +40,7 @@ public static class TurnPageTouch
         if (mod.currentPage >= totalPages) return;
         mod.currentPage++;
         RefreshPage(core, mod);
+        UpdatePageText(mod);
     }
 
     static void PrevPage(Core core, ContainerMod mod)
@@ -47,6 +48,7 @@ public static class TurnPageTouch
         if (mod.currentPage <= 1) return;
         mod.currentPage--;
         RefreshPage(core, mod);
+        UpdatePageText(mod);
     }
 
     static void RefreshPage(Core core, ContainerMod mod)
@@ -94,6 +96,7 @@ public static class TurnPageTouch
         _input = go.GetComponent<TMP_InputField>();
         _input.textViewport = ta;
         _input.textComponent = textCmp;
+        _input.contentType = TMP_InputField.ContentType.IntegerNumber;
         _input.text = mod.currentPage.ToString();
         _input.onSubmit.AddListener(val =>
         {
@@ -113,6 +116,20 @@ public static class TurnPageTouch
         page = Mathf.Clamp(page, 1, totalPages);
         mod.currentPage = page;
         RefreshPage(core, mod);
+        UpdatePageText(mod);
+    }
+
+    static void UpdatePageText(ContainerMod mod)
+    {
+        int totalPages = Mathf.CeilToInt((float)mod.items.Length / mod.cells.Length);
+        foreach (var t in mod.container.GetComponentsInChildren<TextMeshProUGUI>())
+        {
+            if (t.gameObject.name == "PageText")
+            {
+                t.text = mod.currentPage + "/" + totalPages;
+                return;
+            }
+        }
     }
 
     static ContainerMod GetContainerMod(Transform t)
