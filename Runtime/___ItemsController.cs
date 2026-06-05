@@ -1,3 +1,4 @@
+using System.Data.Common;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -16,13 +17,31 @@ namespace Lookloop.ItemManager
             }
             mod.items[itemKey] = new Item(id, type, tier, count, data);
             
+            
+        }
+        //设置一个itemview方法，像上面那个一样
+        public static async void SetViewItem(Core core, ContainerMod mod, int itemKey)
+        {
             int pageIndex = itemKey / mod.cells.Length + 1;
             int cellIndex = itemKey % mod.cells.Length;
 
             if (pageIndex != mod.currentPage) return;
-
+            int id = mod.items[itemKey].Id;
+            int count = mod.items[itemKey].Count;
             var ui = mod.itemUIs[cellIndex];
+
+            // id == 0 视为空 — 三件套全隐藏
+            if (id == 0)
+            {
+                ui.itemImage.gameObject.SetActive(false);
+                ui.edge.gameObject.SetActive(false);
+                ui.count.gameObject.SetActive(false);
+                return;
+            }
+
             ui.itemImage.gameObject.SetActive(true);
+            ui.edge.gameObject.SetActive(true);
+            ui.count.gameObject.SetActive(true);
             ui.count.text = count > 0 ? count.ToString() : "";
 
             var table = await core.GetItemTable(id.ToString());
@@ -32,6 +51,7 @@ namespace Lookloop.ItemManager
                 ui.edge.sprite = table.GlowSprite;
             }
         }
+
 
     }
 }
