@@ -12,37 +12,25 @@ public static class ContainerTouch
     static Vector2 beginPosition;
     static Vector2 dragStartPos;
 
-    // ════════════════════════════════════════════════════════════
-    // 1. 开始拖拽 — A 阶段
-    // ════════════════════════════════════════════════════════════
+
     public static void BeginDrag(Core core, PointerEventData eventData)
     {
-        source        = eventData.pointerCurrentRaycast.gameObject;
+        source = eventData.pointerCurrentRaycast.gameObject;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out beginPosition);
         dragStartPos  = (source.transform as RectTransform).anchoredPosition;
     }
 
-    // ════════════════════════════════════════════════════════════
-    // 2. 拖拽中 — C 阶段（每帧）
-    // 距离判定：相对位移驱动面板移动
-    // ════════════════════════════════════════════════════════════
+
     public static void OnDrag(Core core, PointerEventData eventData)
     {
         if (source == null) return;
-
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out Vector2 now);
         Vector2 totalDelta = now - beginPosition;
-
-        // 距离判定：移动超过阈值才拖拽
         if (totalDelta.sqrMagnitude > 0.01f)
             (source.transform as RectTransform).anchoredPosition = dragStartPos + totalDelta;
     }
-
-    // ════════════════════════════════════════════════════════════
-    // 3. 结算 — D 阶段（手指抬起）
-    // ════════════════════════════════════════════════════════════
     public static void EndDrag(Core core)
     {
         source = null;
