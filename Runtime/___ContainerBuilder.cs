@@ -130,7 +130,7 @@ public static class ContainerBuilder
     /// <summary>遍历 cells[]，为每个 Cell 创建 ItemUI（含 edge + count 子元素）</summary>
     static void BuildItemUIs(ContainerMod mod)
     {
-        mod.itemUIs = new ItemUIMod[mod.cells.Length];
+        mod.itemUIs = new ItemUI[mod.cells.Length];
         for (int i = 0; i < mod.cells.Length; i++)
         {
             var cell = mod.cells[i];
@@ -153,7 +153,7 @@ public static class ContainerBuilder
             countRect.anchoredPosition = Vector2.zero;
             countRect.sizeDelta = new Vector2(cell.sizeDelta.x, cell.sizeDelta.y / 4f);
 
-            mod.itemUIs[i] = new ItemUIMod
+            mod.itemUIs[i] = new ItemUI
             {
                 itemImage = itemImage,
                 edge = edgeRect.GetComponent<Image>(),

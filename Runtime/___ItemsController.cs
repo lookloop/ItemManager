@@ -91,7 +91,7 @@ namespace Lookloop.ItemManager
         }
 
         /// <summary>把 Item 刷到 ItemUI 上。null → SetActive false。</summary>
-        static void ApplyItemUI(ItemUIMod ui, Item item)
+        static void ApplyItemUI(ItemUI ui, Item item)
         {
             if (item == null)
             {

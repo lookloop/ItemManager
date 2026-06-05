@@ -9,7 +9,7 @@ namespace Lookloop.ItemManager
     /// 只存组件不存 Rect，布局在创建时一次完成。
     /// </summary>
     [System.Serializable]
-    public class ItemUIMod
+    public class ItemUI
     {
         public Image itemImage;          // ItemUI 自身的 Image（父级图标）
         public Image edge;               // 子级：物品边框/图标
