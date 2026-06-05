@@ -136,18 +136,17 @@ public static class ContainerBuilder
             var cell = mod.cells[i];
 
             var itemUIRect = CreateRect("ItemUI", cell, typeof(Image));
-            SetAnchorPivot(itemUIRect, 0f, 1f, 0f, 1f, 0f, 1f);
+            SetAnchorPivot(itemUIRect, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
             itemUIRect.anchoredPosition = Vector2.zero;
-            itemUIRect.sizeDelta = cell.sizeDelta;
+            itemUIRect.sizeDelta = cell.sizeDelta * 0.8f;
 
             var itemImage = itemUIRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
 
             var edgeRect = CreateRect("edge", itemUIRect, typeof(Image));
-            SetAnchorPivot(edgeRect, 0f, 1f, 0f, 1f, 0f, 1f);
+            SetAnchorPivot(edgeRect, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
             edgeRect.anchoredPosition = Vector2.zero;
-            edgeRect.sizeDelta = cell.sizeDelta;
-
+            edgeRect.sizeDelta = cell.sizeDelta * 0.8f;
             var countRect = CreateRect("count", itemUIRect, typeof(TextMeshProUGUI));
             SetAnchorPivot(countRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
             countRect.anchoredPosition = Vector2.zero;
