@@ -8,17 +8,17 @@ namespace Lookloop.ItemManager
 /// </summary>
 public static class ContainerTouch
 {
-    public static GameObject source;
+    public static RectTransform source;
     static Vector2 beginPosition;
     static Vector2 dragStartPos;
 
 
     public static void BeginDrag(Core core, PointerEventData eventData)
     {
-        source = eventData.pointerCurrentRaycast.gameObject;
+        source = eventData.pointerCurrentRaycast.gameObject.transform as RectTransform;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out beginPosition);
-        dragStartPos  = (source.transform as RectTransform).anchoredPosition;
+        dragStartPos = source.anchoredPosition;
     }
 
 
@@ -29,7 +29,7 @@ public static class ContainerTouch
             core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out Vector2 now);
         Vector2 totalDelta = now - beginPosition;
         if (totalDelta.sqrMagnitude > 0.01f)
-            (source.transform as RectTransform).anchoredPosition = dragStartPos + totalDelta;
+            source.anchoredPosition = dragStartPos + totalDelta;
     }
     public static void EndDrag(Core core)
     {
