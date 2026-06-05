@@ -78,7 +78,7 @@ public static class ContainerBuilder
             pageTextRect.gameObject.tag = "TurnPage";
 
             var tmp = pageTextRect.GetComponent<TextMeshProUGUI>();
-            tmp.text = "1/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+            tmp.text = mod.currentPage + "/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
             tmp.fontSize = spec.containerFillDown;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = Color.white;
