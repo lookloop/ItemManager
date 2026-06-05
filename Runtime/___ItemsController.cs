@@ -26,6 +26,16 @@ namespace Lookloop.ItemManager
             SetViewItem(core, mod, itemKey);
         }
 
+        /// <summary>交换两个 key 的 Item。null 照换不误。</summary>
+        public static void SwapItem(Core core, ContainerMod mod, int keyA, int keyB)
+        {
+            var keya = mod.items[keyA];
+            mod.items[keyA] = mod.items[keyB];
+            mod.items[keyB] = keya;
+            SetViewItem(core, mod, keyA);
+            SetViewItem(core, mod, keyB);
+        }
+
         public static async void SetViewItem(Core core, ContainerMod mod, int itemKey)
         {
             int pageIndex = itemKey / mod.cells.Length + 1;
