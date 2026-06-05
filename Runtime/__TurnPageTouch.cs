@@ -58,23 +58,48 @@ public static class TurnPageTouch
 
     static void ShowPageInput(Core core, ContainerMod mod, RectTransform pageTextRect)
     {
-        if (_input != null) return; // 已弹着
+        if (_input != null) return;
 
-        var go = new GameObject("PageInput", typeof(RectTransform), typeof(TMP_InputField));
+        // 隐藏原文字
+        var originalTmp = pageTextRect.GetComponent<TextMeshProUGUI>();
+        originalTmp.enabled = false;
+
+        var go = new GameObject("PageInput", typeof(RectTransform), typeof(Image), typeof(TMP_InputField));
         go.transform.SetParent(pageTextRect, false);
-        go.transform.SetAsLastSibling();
 
         var rect = go.transform as RectTransform;
         rect.anchorMin = rect.anchorMax = Vector2.one * 0.5f;
         rect.sizeDelta = pageTextRect.sizeDelta;
         rect.anchoredPosition = Vector2.zero;
 
+        // Text Area
+        var textArea = new GameObject("Text Area", typeof(RectTransform));
+        textArea.transform.SetParent(rect, false);
+        var ta = textArea.transform as RectTransform;
+        ta.anchorMin = Vector2.zero; ta.anchorMax = Vector2.one;
+        ta.sizeDelta = Vector2.zero;
+
+        // Text（必须，InputField 用它显示文字）
+        var textGo = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+        textGo.transform.SetParent(ta, false);
+        var textRt = textGo.transform as RectTransform;
+        textRt.anchorMin = Vector2.zero; textRt.anchorMax = Vector2.one;
+        textRt.sizeDelta = Vector2.zero;
+        var textCmp = textGo.GetComponent<TextMeshProUGUI>();
+        textCmp.font = core.font;
+        textCmp.fontSize = originalTmp.fontSize;
+        textCmp.alignment = TextAlignmentOptions.Center;
+        textCmp.color = Color.white;
+
         _input = go.GetComponent<TMP_InputField>();
+        _input.textViewport = ta;
+        _input.textComponent = textCmp;
         _input.text = mod.currentPage.ToString();
         _input.onSubmit.AddListener(val =>
         {
             if (int.TryParse(val, out int page))
                 GoToPage(core, mod, page);
+            originalTmp.enabled = true;
             Object.Destroy(go);
             _input = null;
         });
