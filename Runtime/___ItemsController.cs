@@ -14,12 +14,15 @@ namespace Lookloop.ItemManager
                 Debug.LogError($"[ItemsController] itemKey {itemKey} 越界");
                 return;
             }
-            // id==0 → 视为空
-            if (id == 0)
-                mod.items[itemKey] = null;
-            else
-                mod.items[itemKey] = new Item(id, type, tier, count, data);
+            mod.items[itemKey] = new Item(id, type, tier, count, data);
+            SetViewItem(core, mod, itemKey);
+        }
 
+        /// <summary>移除指定 key 的 Item</summary>
+        public static void RemoveItem(Core core, ContainerMod mod, int itemKey)
+        {
+            if (itemKey < 0 || itemKey >= mod.items.Length) return;
+            mod.items[itemKey] = null;
             SetViewItem(core, mod, itemKey);
         }
 
