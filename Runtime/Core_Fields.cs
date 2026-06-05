@@ -16,5 +16,6 @@ public partial class Core
 
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public string PointerDownTag;
+    [HideInInspector] public bool PointerDragged;
 }
 }
