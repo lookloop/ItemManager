@@ -1,4 +1,3 @@
-using System.Data.Common;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -16,6 +15,8 @@ namespace Lookloop.ItemManager
                 return;
             }
             mod.items[itemKey] = new Item(id, type, tier, count, data);
+            //使用下面那个方法
+            SetViewItem(core,mod,itemKey);
             
             
         }
@@ -26,8 +27,12 @@ namespace Lookloop.ItemManager
             int cellIndex = itemKey % mod.cells.Length;
 
             if (pageIndex != mod.currentPage) return;
-            int id = mod.items[itemKey].Id;
-            int count = mod.items[itemKey].Count;
+
+            var item = mod.items[itemKey];
+            if (item == null) return;
+
+            int id = item.Id;
+            int count = item.Count;
             var ui = mod.itemUIs[cellIndex];
 
             // id == 0 视为空 — 三件套全隐藏
