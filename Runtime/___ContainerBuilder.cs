@@ -42,7 +42,7 @@ public static class ContainerBuilder
         mod.container = instance;
         mod.detail = spec.detail;
 
-        BuildItemUIs(mod);
+        BuildItemUIs(core, mod);
         ContainerManager.containers.Add(mod);
     }
 
@@ -121,14 +121,14 @@ public static class ContainerBuilder
             mod.cells[i] = rect;
         }
 
-        BuildItemUIs(mod);
+        BuildItemUIs(core, mod);
         ContainerManager.containers.Add(mod);
     }
 
     // ─── 内部快捷方法 ───
 
     /// <summary>遍历 cells[]，为每个 Cell 创建 ItemUI（含 edge + count 子元素）</summary>
-    static void BuildItemUIs(ContainerMod mod)
+    static void BuildItemUIs(Core core, ContainerMod mod)
     {
         mod.itemUIs = new ItemUI[mod.cells.Length];
         for (int i = 0; i < mod.cells.Length; i++)
@@ -152,11 +152,15 @@ public static class ContainerBuilder
             countRect.anchoredPosition = Vector2.zero;
             countRect.sizeDelta = new Vector2(cell.sizeDelta.x, cell.sizeDelta.y / 4f);
 
+            var countText = countRect.GetComponent<TextMeshProUGUI>();
+            countText.fontSize = 3.9f;
+            countText.font = core.font;
+
             mod.itemUIs[i] = new ItemUI
             {
                 itemImage = itemImage,
                 edge = edgeRect.GetComponent<Image>(),
-                count = countRect.GetComponent<TextMeshProUGUI>()
+                count = countText
             };
         }
     }
