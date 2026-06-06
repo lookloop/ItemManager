@@ -15,7 +15,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public bool isDrag;
     [HideInInspector] public float holdTime;
     [HideInInspector] public RectTransform  hitRect;
-    [HideInInspector] public RectTransform  hitContainerMod;
+    [HideInInspector] public ContainerMod  hitContainerMod;
 
     Coroutine _holdTimer;
 
@@ -34,7 +34,15 @@ public partial class Core : MonoBehaviour,
             Transform t = hitRect;
             while (t != null && !t.CompareTag("Container"))
                 t = t.parent;
-            hitContainerMod = t as RectTransform;
+
+            if (t != null)
+            {
+                foreach (var m in ContainerManager.containers)
+                {
+                    if (m.container == t)
+                        { hitContainerMod = m; break; }
+                }
+            }
         }
 
         switch (atTag)
