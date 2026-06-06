@@ -16,6 +16,7 @@ public static class MiscInit
     public static void CreateItemUI()
     {
         parent = new GameObject("ItemUIParent", typeof(RectTransform)).GetComponent<RectTransform>();
+        parent.sizeDelta = new Vector2(8f, 8f);
 
         var itemUIGo = new GameObject("ItemUI", typeof(RectTransform), typeof(Image));
         itemUIGo.transform.SetParent(parent, false);
