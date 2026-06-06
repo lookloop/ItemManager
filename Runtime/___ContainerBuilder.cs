@@ -207,6 +207,11 @@ public static class ContainerBuilder
                 edge = edgeRect.GetComponent<Image>(),
                 count = countText
             };
+
+            // 初始隐藏，等 SetViewItem 有数据再显示
+            itemImage.gameObject.SetActive(false);
+            edgeRect.gameObject.SetActive(false);
+            countText.gameObject.SetActive(false);
         }
     }
 
