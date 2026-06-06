@@ -10,7 +10,7 @@ public partial class Core : MonoBehaviour,
     IPointerUpHandler      // D — 手指抬起
 {
 
-    [HideInInspector] public string Tag;
+    [HideInInspector] public string atTag;
     [HideInInspector] public bool isDrag;
 
     public virtual void OnPointerDown(PointerEventData eventData)
@@ -20,20 +20,20 @@ public partial class Core : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
-        Tag = clicked != null ? clicked.tag : null;
+        atTag = clicked != null ? clicked.tag : null;
         isDrag = false;
 
-        if (Tag == "Cell")
+        if (atTag == "Cell")
             //临时重构：先输出文本，后续再调用 CellTouch.BeginDrag(this, eventData);
             Debug.Log("临时重构");
-        else if (Tag == "Container")
+        else if (atTag == "Container")
             ContainerTouch.BeginDrag(this, eventData);
-        else if (Tag == "TurnPage")
+        else if (atTag == "TurnPage")
         {
             // 不拖拽，PointerUp 时结算
         }
         else
-            Tag = null;
+            atTag = null;
     }
 
     public virtual void OnDrag(PointerEventData eventData)
@@ -42,10 +42,10 @@ public partial class Core : MonoBehaviour,
 
         isDrag = true;
 
-        if (Tag == "Cell")
+        if (atTag == "Cell")
             //临时重构：先输出文本，后续再调用 CellTouch.OnDrag(this, eventData);
             Debug.Log("临时重构");
-        else if (Tag == "Container")
+        else if (atTag == "Container")
             ContainerTouch.OnDrag(this, eventData);
     }
 
@@ -53,15 +53,15 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        if (Tag == "Cell")
+        if (atTag == "Cell")
             //输出文本
             Debug.Log("临时重构") ;
-        else if (Tag == "Container")
+        else if (atTag == "Container")
             ContainerTouch.EndDrag(this);
-        else if (Tag == "TurnPage" && !isDrag)
+        else if (atTag == "TurnPage" && !isDrag)
             TurnPageTouch.Click(this, eventData);
 
-        Tag = null;
+        atTag = null;
     }
 
 }
