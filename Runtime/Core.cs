@@ -68,7 +68,7 @@ public partial class Core : MonoBehaviour,
         switch (atTag)
         {
             case "Cell":
-                Debug.Log("拖拽cell");
+                CellTouch.OnDrag(this, eventData);
                 break;
             case "Container":
                 ContainerTouch.OnDrag(this, eventData);
