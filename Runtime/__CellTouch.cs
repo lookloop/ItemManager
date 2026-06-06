@@ -55,12 +55,7 @@ public static class CellTouch
                 CellTouch_Grid.OnDrag(core, eventData);
                 return;
             }
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                core.canvas.transform as RectTransform,
-                eventData.position,
-                core.canvas.worldCamera,
-                out Vector2 localPos);
-            MiscInit.parent.anchoredPosition = localPos;
+            CellTouch_Drag.OnDrag(core, eventData);
         }
 
         public static void EndTouch(Core core)
