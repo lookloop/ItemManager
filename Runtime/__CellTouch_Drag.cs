@@ -6,33 +6,87 @@ namespace Lookloop.ItemManager
 
 public static class CellTouch_Drag
 {
+    static float edgeTimer;
+    static int edgeZone;
+    const float EdgeHoldTime = 1f;
+    public static PointerEventData lastEventData;
+
+    /// <summary>拖拽事件 — 跟手 + 存事件引用</summary>
     public static void OnDrag(Core core, PointerEventData eventData)
     {
-        // 跟手
+        lastEventData = eventData;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             core.canvas.transform as RectTransform,
             eventData.position,
             core.canvas.worldCamera,
             out Vector2 localPos);
         MiscInit.parent.anchoredPosition = localPos;
+    }
 
-        // 检测手指下是否命中 Cell
-        var hitGo = eventData.pointerCurrentRaycast.gameObject;
+    /// <summary>每帧调用 — 边缘检测 + 滚动/翻页</summary>
+    public static void Update(Core core)
+    {
+        if (lastEventData == null) return;
+
+        var hitGo = lastEventData.pointerCurrentRaycast.gameObject;
         if (hitGo == null || !hitGo.CompareTag("Cell")) return;
 
         var hitCell = hitGo.transform as RectTransform;
         if (hitCell == null) return;
 
-        // 判断该 Cell 是否有 Grid 父级
         var grid = hitCell.parent as RectTransform;
-        if (grid == null)
+        if (grid == null) return;
+
+        var mask = grid.parent as RectTransform;
+        if (mask == null) return;
+
+        // 坐标 → mask 本地
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mask, lastEventData.position, core.canvas.worldCamera, out Vector2 maskLocal);
+
+        var r = mask.rect;
+        float edge = r.width * 0.15f;
+
+        bool nearLeft   = maskLocal.x < r.xMin + edge;
+        bool nearRight  = maskLocal.x > r.xMax - edge;
+        bool nearTop    = maskLocal.y > r.yMax - edge;
+        bool nearBottom = maskLocal.y < r.yMin + edge;
+
+        // 上下 — 匀速滚动
+        float scrollSpeed = 120f * Time.deltaTime;
+        float maxScroll = grid.sizeDelta.y - mask.sizeDelta.y;
+
+        if (nearTop)
+            grid.anchoredPosition = new Vector2(0, Mathf.Clamp(grid.anchoredPosition.y - scrollSpeed, 0f, maxScroll));
+        else if (nearBottom)
+            grid.anchoredPosition = new Vector2(0, Mathf.Clamp(grid.anchoredPosition.y + scrollSpeed, 0f, maxScroll));
+
+        // 左右 — 计时翻页
+        int currentZone = 0;
+        if (nearLeft)  currentZone = 1;
+        if (nearRight) currentZone = 2;
+
+        if (currentZone == 0)
         {
-            // 无 Grid 路线
+            edgeTimer = 0f;
         }
         else
         {
-            // 有 Grid 路线 → 获取 Mask
-            var mask = grid.parent as RectTransform;
+            if (currentZone != edgeZone)
+            {
+                edgeTimer = 0f;
+                edgeZone = currentZone;
+            }
+            edgeTimer += Time.deltaTime;
+
+            if (edgeTimer >= EdgeHoldTime)
+            {
+                edgeTimer = 0f;
+                if (currentZone == 1)
+                    TurnPageTouch.PrevPage(core, core.hitContainerMod);
+                else
+                    TurnPageTouch.NextPage(core, core.hitContainerMod);
+            }
         }
     }
 }

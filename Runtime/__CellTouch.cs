@@ -14,6 +14,7 @@ public static class CellTouch
         public static RectTransform mask;
         public static Vector2 gridStartPos;
         public static Vector2 startLocal;
+        public static int sourceItemKey;
 
         public static void BeginTouch(Core core, PointerEventData eventData)
         {
@@ -43,6 +44,7 @@ public static class CellTouch
             int cellIndex = int.Parse(core.hitRect.name);
             // 4. 计算全局 itemKey
             int itemKey = (core.hitContainerMod.currentPage - 1) * core.hitContainerMod.cells.Length + cellIndex;
+            sourceItemKey = itemKey;
             // 5. 赋值显示
             MiscInit.AssignItemData(core, itemKey);
 
@@ -60,6 +62,19 @@ public static class CellTouch
 
         public static void EndTouch(Core core)
         {
+            if (isLongPress && CellTouch_Drag.lastEventData != null)
+            {
+                var targetGo = CellTouch_Drag.lastEventData.pointerCurrentRaycast.gameObject;
+                if (targetGo != null && targetGo.CompareTag("Cell"))
+                {
+                    int targetCellIndex = int.Parse(targetGo.name);
+                    var mod = core.hitContainerMod;
+                    int targetItemKey = (mod.currentPage - 1) * mod.cells.Length + targetCellIndex;
+
+                    if (targetItemKey != sourceItemKey)
+                        ItemsController.SwapItem(core, mod, sourceItemKey, targetItemKey);
+                }
+            }
             Reset();
         }
 

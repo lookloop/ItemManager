@@ -109,6 +109,9 @@ public partial class Core : MonoBehaviour,
                 CellTouch.LongPress(this);
             }
 
+            if (triggered)
+                CellTouch_Drag.Update(this);
+
             yield return null;
         }
     }

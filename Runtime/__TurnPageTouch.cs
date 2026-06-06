@@ -32,7 +32,7 @@ public static class TurnPageTouch
     }
 
     /// <summary>翻后一页：页数 +1 → 刷新格子 → 更新页码文字</summary>
-    static void NextPage(Core core, ContainerMod mod)
+    public static void NextPage(Core core, ContainerMod mod)
     {
         // 总页数 = 总物品数 / 每页格子数（向上取整）
         int totalPages = Mathf.CeilToInt((float)mod.items.Length / mod.cells.Length);
@@ -43,7 +43,7 @@ public static class TurnPageTouch
     }
 
     /// <summary>翻前一页：页数 -1 → 刷新格子 → 更新页码文字</summary>
-    static void PrevPage(Core core, ContainerMod mod)
+    public static void PrevPage(Core core, ContainerMod mod)
     {
         if (mod.currentPage <= 1) return;
         mod.currentPage--;
