@@ -6,7 +6,7 @@ using System.Collections;
 namespace Lookloop.ItemManager
 {
 
-public static class ItemTouch
+public static class CellTouch
     {
 
     }
