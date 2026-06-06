@@ -32,7 +32,7 @@ public partial class Core : MonoBehaviour,
         switch (atTag)
         {
             case "Cell":
-                Debug.Log("开局cell");
+                CellTouch.BeginTouch(this, eventData);
                 break;
             case "Container":
                 ContainerTouch.BeginDrag(this, eventData);

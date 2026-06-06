@@ -10,6 +10,12 @@ public static class CellTouch
     {
         public static bool isLongPress;
 
+        public static void BeginTouch(Core core, PointerEventData eventData)
+        {
+            isLongPress = false;
+            Debug.Log($"[CellTouch] 按下 — cell:{core.hitRect?.name}");
+        }
+
         public static void LongPress(Core core)
         {
             if (core.isDrag) return;
