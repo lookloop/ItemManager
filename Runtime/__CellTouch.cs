@@ -56,9 +56,15 @@ public static class CellTouch
 
         public static void EndTouch(Core core)
         {
+            Reset();
+        }
+
+        public static void Reset()
+        {
             MiscInit.HideAll();
             isLongPress = false;
             downEvent = null;
+            grid = null;
         }
     }
 }
