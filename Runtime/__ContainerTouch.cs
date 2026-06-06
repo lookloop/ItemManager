@@ -27,9 +27,7 @@ public static class ContainerTouch
         if (source == null) return;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             core.canvas.transform as RectTransform, eventData.position, core.canvas?.worldCamera, out Vector2 now);
-        Vector2 totalDelta = now - beginPosition;
-        if (totalDelta.sqrMagnitude > 0.01f)
-            source.anchoredPosition = dragStartPos + totalDelta;
+        source.anchoredPosition = dragStartPos + (now - beginPosition);
     }
     public static void EndDrag(Core core)
     {
