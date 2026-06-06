@@ -13,10 +13,11 @@ public static class MiscInit
     public static TextMeshProUGUI count;
 
     /// <summary>内部生成 parent(10×10) + ItemUI 三兄弟(img8×8, img8×8, tmp)</summary>
-    public static void CreateTemporaryItemUI()
+    public static void CreateTemporaryItemUI(Canvas canvas)
     {
-        // parent — 10×10
+        // parent — 10×10，挂在 canvas 下
         parent = new GameObject("ItemUIParent", typeof(RectTransform)).GetComponent<RectTransform>();
+        parent.SetParent(canvas.transform, false);
         parent.sizeDelta = new Vector2(10f, 10f);
 
         // itemImage — 8×8 居中
