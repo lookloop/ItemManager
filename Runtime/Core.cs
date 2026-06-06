@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,25 +13,25 @@ public partial class Core : MonoBehaviour,
 
     [HideInInspector] public string atTag;
     [HideInInspector] public bool isDrag;
+    [HideInInspector] public float holdTime;
+
+    Coroutine _holdTimer;
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-
-
+        //初始化
         if (eventData.pointerId != 0) return;
+        _holdTimer = StartCoroutine(HoldTimerRoutine());
+        //初始化
 
         GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
         atTag = clicked != null ? clicked.tag : null;
-        isDrag = false;
-
         if (atTag == "Cell")
-            //临时重构：先输出文本，后续再调用 CellTouch.BeginDrag(this, eventData);
             Debug.Log("临时重构");
         else if (atTag == "Container")
             ContainerTouch.BeginDrag(this, eventData);
         else if (atTag == "TurnPage")
         {
-            // 不拖拽，PointerUp 时结算
         }
         else
             atTag = null;
@@ -38,12 +39,14 @@ public partial class Core : MonoBehaviour,
 
     public virtual void OnDrag(PointerEventData eventData)
     {
+        //初始化
         if (eventData.pointerId != 0) return;
-
         isDrag = true;
+        //初始化
+
+
 
         if (atTag == "Cell")
-            //临时重构：先输出文本，后续再调用 CellTouch.OnDrag(this, eventData);
             Debug.Log("临时重构");
         else if (atTag == "Container")
             ContainerTouch.OnDrag(this, eventData);
@@ -51,18 +54,39 @@ public partial class Core : MonoBehaviour,
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
+        //初始化
         if (eventData.pointerId != 0) return;
+        //初始化
+        
+
 
         if (atTag == "Cell")
-            //输出文本
             Debug.Log("临时重构") ;
         else if (atTag == "Container")
             ContainerTouch.EndDrag(this);
         else if (atTag == "TurnPage" && !isDrag)
             TurnPageTouch.Click(this, eventData);
 
-        atTag = null;
+        //使用重置方法
+        Reset();
+        //使用重置方法
     }
 
+    IEnumerator HoldTimerRoutine()
+    {
+        while (true)
+        {
+            holdTime += Time.deltaTime;
+            yield return null;
+        }
+    }
+    public void Reset()
+    {
+        StopCoroutine(_holdTimer);
+        _holdTimer = null;
+        isDrag = false;
+        holdTime = 0f;
+        atTag = null;
+    }
 }
 }
