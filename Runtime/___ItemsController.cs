@@ -46,9 +46,11 @@ namespace Lookloop.ItemManager
             var ui = mod.itemUIs[cellIndex];
             var item = mod.items[itemKey];
 
-            // null → 三件套全隐藏
-            if (item == null)
+            // null 或 Id=0 → 三件套全隐藏
+            if (item == null || item.Id == 0)
             {
+                if (item != null)
+                    Debug.LogWarning($"[SetViewItem] Id=0 无效 — itemKey:{itemKey}");
                 ui.itemImage.gameObject.SetActive(false);
                 ui.edge.gameObject.SetActive(false);
                 ui.count.gameObject.SetActive(false);

@@ -103,7 +103,7 @@ public partial class Core : MonoBehaviour,
         {
             holdTime += Time.deltaTime;
 
-            if (!triggered && holdTime > 0.3f)
+            if (!triggered && holdTime > 0.3f && atTag == "Cell")
             {
                 triggered = true;
                 CellTouch.LongPress(this);

@@ -65,7 +65,7 @@ public static class MiscInit
 
         var item = core.hitContainerMod.items[itemKey];
 
-        if (item == null)
+        if (item == null || item.Id == 0)
         {
             itemImage.gameObject.SetActive(false);
             edge.gameObject.SetActive(false);
