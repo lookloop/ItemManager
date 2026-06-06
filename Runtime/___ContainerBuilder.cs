@@ -164,6 +164,7 @@ public static class ContainerBuilder
             SetAnchorPivot(edgeRect, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
             edgeRect.anchoredPosition = Vector2.zero;
             edgeRect.sizeDelta = cell.sizeDelta * 0.8f;
+            edgeRect.GetComponent<Image>().raycastTarget = false;
 
             var countRect = CreateRect("count", cell, typeof(TextMeshProUGUI));
             SetAnchorPivot(countRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
@@ -171,6 +172,7 @@ public static class ContainerBuilder
             countRect.sizeDelta = new Vector2(cell.sizeDelta.x, cell.sizeDelta.y / 4f);
 
             var countText = countRect.GetComponent<TextMeshProUGUI>();
+            countText.raycastTarget = false;
             countText.fontSize = 3.9f;
             countText.font = core.font;
             countText.alignment = TextAlignmentOptions.Right;
