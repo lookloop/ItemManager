@@ -39,6 +39,11 @@ public static class CellTouch
 
         public static void OnDrag(Core core, PointerEventData eventData)
         {
+            if (!isLongPress)
+            {
+                CellTouch_Grid.OnDrag(core, eventData);
+                return;
+            }
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 core.canvas.transform as RectTransform,
                 eventData.position,
