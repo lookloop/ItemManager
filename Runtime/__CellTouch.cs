@@ -51,5 +51,12 @@ public static class CellTouch
                 out Vector2 localPos);
             MiscInit.parent.anchoredPosition = localPos;
         }
+
+        public static void EndTouch(Core core)
+        {
+            MiscInit.HideAll();
+            isLongPress = false;
+            downEvent = null;
+        }
     }
 }

@@ -83,7 +83,7 @@ public partial class Core : MonoBehaviour,
         switch (atTag)
         {
             case "Cell":
-                Debug.Log("收起的cell");
+                CellTouch.EndTouch(this);
                 break;
             case "Container":
                 ContainerTouch.EndDrag(this);

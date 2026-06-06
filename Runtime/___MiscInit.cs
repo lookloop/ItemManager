@@ -67,9 +67,7 @@ public static class MiscInit
 
         if (item == null || item.Id == 0)
         {
-            itemImage.gameObject.SetActive(false);
-            edge.gameObject.SetActive(false);
-            count.gameObject.SetActive(false);
+            HideAll();
             return;
         }
 
@@ -85,6 +83,13 @@ public static class MiscInit
             itemImage.sprite = table.ItemSprite;
             edge.sprite = table.GlowSprite;
         }
+    }
+
+    public static void HideAll()
+    {
+        itemImage.gameObject.SetActive(false);
+        edge.gameObject.SetActive(false);
+        count.gameObject.SetActive(false);
     }
 }
 
