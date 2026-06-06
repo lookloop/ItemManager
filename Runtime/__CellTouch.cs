@@ -11,6 +11,7 @@ public static class CellTouch
         public static bool isLongPress;
         public static PointerEventData downEvent;
         public static RectTransform grid;
+        public static RectTransform mask;
         public static Vector2 gridStartPos;
 
         public static void BeginTouch(Core core, PointerEventData eventData)
@@ -18,6 +19,7 @@ public static class CellTouch
             isLongPress = false;
             downEvent = eventData;
             grid = core.hitRect?.parent as RectTransform;
+            mask = grid?.parent as RectTransform;
             gridStartPos = grid.anchoredPosition;
         }
 
@@ -67,6 +69,7 @@ public static class CellTouch
             isLongPress = false;
             downEvent = null;
             grid = null;
+            mask = null;
         }
     }
 }
