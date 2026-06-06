@@ -31,10 +31,8 @@ public static class CellTouch
                 out Vector2 localPos);
             MiscInit.parent.anchoredPosition = localPos;
 
-            // 2. 从 hitRect 名字提取 cellIndex（"Cell3"→3, "5"→5）
-            string name = core.hitRect.name;
-            if (name.StartsWith("Cell")) name = name.Substring(4);
-            int cellIndex = int.Parse(name);
+            // 2. 从 hitRect 名字提取 cellIndex（名字即数字 "0","1","2"...）
+            int cellIndex = int.Parse(core.hitRect.name);
 
 
             // 4. 计算全局 itemKey

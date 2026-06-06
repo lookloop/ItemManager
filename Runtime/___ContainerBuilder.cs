@@ -151,7 +151,7 @@ public static class ContainerBuilder
 
         for (int i = 0; i < spec.everyPageTotal; i++)
         {
-            var rect = CreateRect("Cell" + i, gridRect, typeof(Image));
+            var rect = CreateRect(i.ToString(), gridRect, typeof(Image));
             SetAnchorPivot(rect, 0f, 1f, 0f, 1f, 0f, 1f);
             rect.anchoredPosition = new Vector2(
                 (i % spec.rows) * spec.cellWidth,
