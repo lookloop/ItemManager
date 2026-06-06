@@ -25,16 +25,14 @@ public partial class Core : MonoBehaviour,
         //初始化
 
         GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
-        atTag = clicked != null ? clicked.tag : null;
+        atTag = clicked?.tag;
+        
         if (atTag == "Cell")
-            Debug.Log("临时重构");
-        else if (atTag == "Container")
+            Debug.Log("开局cell");
+        if (atTag == "Container")
             ContainerTouch.BeginDrag(this, eventData);
-        else if (atTag == "TurnPage")
-        {
-        }
-        else
-            atTag = null;
+        if (atTag == "TurnPage")
+            Debug.Log("开局turnpage");
     }
 
     public virtual void OnDrag(PointerEventData eventData)
@@ -48,7 +46,7 @@ public partial class Core : MonoBehaviour,
 
         if (atTag == "Cell")
             Debug.Log("临时重构");
-        else if (atTag == "Container")
+        if (atTag == "Container")
             ContainerTouch.OnDrag(this, eventData);
     }
 
@@ -61,10 +59,10 @@ public partial class Core : MonoBehaviour,
 
 
         if (atTag == "Cell")
-            Debug.Log("临时重构") ;
-        else if (atTag == "Container")
+            Debug.Log("收起的cell") ;
+        if (atTag == "Container")
             ContainerTouch.EndDrag(this);
-        else if (atTag == "TurnPage" && !isDrag)
+        if (atTag == "TurnPage")
             TurnPageTouch.Click(this, eventData);
 
         //使用重置方法

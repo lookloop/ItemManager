@@ -16,6 +16,8 @@ public static class TurnPageTouch
     /// </summary>
     public static void Click(Core core, PointerEventData eventData)
     {
+        if (core.isDrag == true) return;
+        
         var go = eventData.pointerCurrentRaycast.gameObject;
         var mod = GetContainerMod(go.transform);
         switch (go.name)
