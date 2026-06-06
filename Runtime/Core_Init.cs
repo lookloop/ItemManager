@@ -6,6 +6,7 @@ public partial class Core
 {
     void Awake()
     {
+        Application.targetFrameRate = 60;
         canvas = GetComponentInParent<Canvas>();
     }
 
