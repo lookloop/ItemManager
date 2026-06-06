@@ -29,6 +29,14 @@ public partial class Core : MonoBehaviour,
         hitRect = eventData.pointerCurrentRaycast.gameObject?.transform as RectTransform;
         hitContainerMod = null;
         atTag = hitRect?.tag;
+        if (hitRect != null)
+        {
+            foreach (var m in ContainerManager.containers)
+            {
+                if (hitRect.IsChildOf(m.container))
+                    { hitContainerMod = m.container; break; }
+            }
+        }
 
         switch (atTag)
         {
