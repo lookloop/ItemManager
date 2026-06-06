@@ -24,14 +24,15 @@ public static class CellTouch_Drag
         if (hitCell == null) return;
 
         // 判断该 Cell 是否有 Grid 父级
-        var grid = hitCell.parent;
+        var grid = hitCell.parent as RectTransform;
         if (grid == null)
         {
             // 无 Grid 路线
         }
         else
         {
-            // 有 Grid 路线
+            // 有 Grid 路线 → 获取 Mask
+            var mask = grid.parent as RectTransform;
         }
     }
 }
