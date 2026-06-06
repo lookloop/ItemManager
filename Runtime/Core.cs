@@ -15,6 +15,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public bool isDrag;
     [HideInInspector] public float holdTime;
     [HideInInspector] public RectTransform  hitRect;
+    [HideInInspector] public RectTransform  hitContainerMod;
 
     Coroutine _holdTimer;
 
