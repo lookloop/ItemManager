@@ -16,6 +16,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public float holdTime;
 
     Coroutine _holdTimer;
+    bool _longPressTriggered;
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
@@ -80,9 +81,17 @@ public partial class Core : MonoBehaviour,
 
     IEnumerator HoldTimerRoutine()
     {
+        _longPressTriggered = false;
         while (true)
         {
             holdTime += Time.deltaTime;
+
+            if (!_longPressTriggered && holdTime > 0.3f)
+            {
+                _longPressTriggered = true;
+                CellTouch.LongPress(this);
+            }
+
             yield return null;
         }
     }
