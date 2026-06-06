@@ -77,7 +77,7 @@ public static class ContainerBuilder
             pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
 
             // Text Area
-            var textArea = CreateRect("Text Area", pageTextRect);
+            var textArea = CreateRect("Text Area", pageTextRect, typeof(RectMask2D));
             textArea.anchorMin = Vector2.zero; textArea.anchorMax = Vector2.one;
             textArea.sizeDelta = Vector2.zero;
 
