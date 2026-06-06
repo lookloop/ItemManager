@@ -70,20 +70,30 @@ public static class ContainerBuilder
 
         if (spec.totalCells > spec.everyPageTotal)
         {
-            // PageText
-            var pageTextRect = CreateRect("PageText", containerRect, typeof(TextMeshProUGUI));
+            // PageText (InputField)
+            var pageTextRect = CreateRect("PageText", containerRect, typeof(Image), typeof(TMP_InputField));
             SetAnchorPivot(pageTextRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
             pageTextRect.anchoredPosition = Vector2.zero;
             pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
-            pageTextRect.gameObject.tag = "TurnPage";
 
-            var tmp = pageTextRect.GetComponent<TextMeshProUGUI>();
+            // Text Area
+            var textArea = CreateRect("Text Area", pageTextRect);
+            textArea.anchorMin = Vector2.zero; textArea.anchorMax = Vector2.one;
+            textArea.sizeDelta = Vector2.zero;
+
+            // Text (TextMeshProUGUI)
+            var textRect = CreateRect("Text", textArea, typeof(TextMeshProUGUI));
+            textRect.anchorMin = Vector2.zero; textRect.anchorMax = Vector2.one;
+            textRect.sizeDelta = Vector2.zero;
+
+            var tmp = pageTextRect.GetComponent<TMP_InputField>();
+            tmp.textViewport = textArea;
+            tmp.textComponent = textRect.GetComponent<TextMeshProUGUI>();
+            tmp.textComponent.font = core.font;
+            tmp.textComponent.fontSize = spec.containerFillDown;
+            tmp.textComponent.alignment = TextAlignmentOptions.Center;
+            tmp.textComponent.color = Color.white;
             tmp.text = mod.currentPage + "/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
-            tmp.fontSize = spec.containerFillDown;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.color = Color.white;
-            tmp.font = core.font;
-            //font = core.font
             
 
             // PrevButton
