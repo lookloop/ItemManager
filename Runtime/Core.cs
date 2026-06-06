@@ -19,55 +19,63 @@ public partial class Core : MonoBehaviour,
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        //初始化
         if (eventData.pointerId != 0) return;
-        _holdTimer = StartCoroutine(HoldTimerRoutine());
-        //初始化
 
-        GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
-        atTag = clicked?.tag;
-        
-        if (atTag == "Cell")
-            Debug.Log("开局cell");
-        if (atTag == "Container")
-            ContainerTouch.BeginDrag(this, eventData);
-        if (atTag == "TurnPage")
-            Debug.Log("开局turnpage");
+        holdTime = 0f;
+        isDrag = false;
+        _holdTimer = StartCoroutine(HoldTimerRoutine());
+
+        atTag = eventData.pointerCurrentRaycast.gameObject?.tag;
+
+        switch (atTag)
+        {
+            case "Cell":
+                Debug.Log("开局cell");
+                break;
+            case "Container":
+                ContainerTouch.BeginDrag(this, eventData);
+                break;
+            case "TurnPage":
+                Debug.Log("开局turnpage");
+                break;
+        }
     }
 
     public virtual void OnDrag(PointerEventData eventData)
     {
-        //初始化
         if (eventData.pointerId != 0) return;
+
         isDrag = true;
-        //初始化
 
-
-
-        if (atTag == "Cell")
-            Debug.Log("临时重构");
-        if (atTag == "Container")
-            ContainerTouch.OnDrag(this, eventData);
+        switch (atTag)
+        {
+            case "Cell":
+                Debug.Log("拖拽cell");
+                break;
+            case "Container":
+                ContainerTouch.OnDrag(this, eventData);
+                break;
+        }
     }
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
-        //初始化
         if (eventData.pointerId != 0) return;
-        //初始化
-        
 
+        switch (atTag)
+        {
+            case "Cell":
+                Debug.Log("收起的cell");
+                break;
+            case "Container":
+                ContainerTouch.EndDrag(this);
+                break;
+            case "TurnPage":
+                TurnPageTouch.Click(this, eventData);
+                break;
+        }
 
-        if (atTag == "Cell")
-            Debug.Log("收起的cell") ;
-        if (atTag == "Container")
-            ContainerTouch.EndDrag(this);
-        if (atTag == "TurnPage")
-            TurnPageTouch.Click(this, eventData);
-
-        //使用重置方法
         Reset();
-        //使用重置方法
     }
 
     IEnumerator HoldTimerRoutine()
@@ -78,6 +86,7 @@ public partial class Core : MonoBehaviour,
             yield return null;
         }
     }
+
     public void Reset()
     {
         StopCoroutine(_holdTimer);
