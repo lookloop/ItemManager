@@ -10,8 +10,13 @@ public partial class Core : MonoBehaviour,
     IPointerUpHandler      // D — 手指抬起
 {
 
+    [HideInInspector] public string PointerDownTag;
+    [HideInInspector] public bool PointerDragged;
+
     public virtual void OnPointerDown(PointerEventData eventData)
     {
+
+
         if (eventData.pointerId != 0) return;
 
         GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
