@@ -13,6 +13,7 @@ public static class CellTouch
         public static RectTransform grid;
         public static RectTransform mask;
         public static Vector2 gridStartPos;
+        public static Vector2 startLocal;
 
         public static void BeginTouch(Core core, PointerEventData eventData)
         {
@@ -21,6 +22,10 @@ public static class CellTouch
             grid = core.hitRect?.parent as RectTransform;
             mask = grid?.parent as RectTransform;
             gridStartPos = grid.anchoredPosition;
+
+            if (mask != null)
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    mask, eventData.position, core.canvas.worldCamera, out startLocal);
         }
 
         public static void LongPress(Core core)
