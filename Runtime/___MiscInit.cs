@@ -29,6 +29,7 @@ public static class MiscInit
         itemRect.sizeDelta = new Vector2(8f, 8f);
         itemImage = itemUIGo.GetComponent<Image>();
         itemImage.raycastTarget = false;
+        itemUIGo.SetActive(false);
 
         // edge — 8×8 居中
         var edgeGo = new GameObject("edge", typeof(RectTransform), typeof(Image));
@@ -39,6 +40,7 @@ public static class MiscInit
         edgeRect.sizeDelta = new Vector2(8f, 8f);
         edge = edgeGo.GetComponent<Image>();
         edge.raycastTarget = false;
+        edgeGo.SetActive(false);
 
         // count — 底部居中 (参考 Builder)
         var countGo = new GameObject("count", typeof(RectTransform), typeof(TextMeshProUGUI));
@@ -51,6 +53,7 @@ public static class MiscInit
         count.raycastTarget = false;
         count.fontSize = 3.9f;
         count.alignment = TextAlignmentOptions.Right;
+        countGo.SetActive(false);
 
         
     }
