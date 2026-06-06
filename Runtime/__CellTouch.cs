@@ -11,12 +11,14 @@ public static class CellTouch
         public static bool isLongPress;
         public static PointerEventData downEvent;
         public static RectTransform grid;
+        public static Vector2 gridStartPos;
 
         public static void BeginTouch(Core core, PointerEventData eventData)
         {
             isLongPress = false;
             downEvent = eventData;
             grid = core.hitRect?.parent as RectTransform;
+            gridStartPos = grid.anchoredPosition;
         }
 
         public static void LongPress(Core core)
