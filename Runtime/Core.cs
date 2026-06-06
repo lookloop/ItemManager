@@ -10,8 +10,8 @@ public partial class Core : MonoBehaviour,
     IPointerUpHandler      // D — 手指抬起
 {
 
-    [HideInInspector] public string PointerDownTag;
-    [HideInInspector] public bool PointerDragged;
+    [HideInInspector] public string Tag;
+    [HideInInspector] public bool isDrag;
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
@@ -20,32 +20,32 @@ public partial class Core : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
         GameObject clicked = eventData.pointerCurrentRaycast.gameObject;
-        PointerDownTag = clicked != null ? clicked.tag : null;
-        PointerDragged = false;
+        Tag = clicked != null ? clicked.tag : null;
+        isDrag = false;
 
-        if (PointerDownTag == "Cell")
+        if (Tag == "Cell")
             //临时重构：先输出文本，后续再调用 CellTouch.BeginDrag(this, eventData);
             Debug.Log("临时重构");
-        else if (PointerDownTag == "Container")
+        else if (Tag == "Container")
             ContainerTouch.BeginDrag(this, eventData);
-        else if (PointerDownTag == "TurnPage")
+        else if (Tag == "TurnPage")
         {
             // 不拖拽，PointerUp 时结算
         }
         else
-            PointerDownTag = null;
+            Tag = null;
     }
 
     public virtual void OnDrag(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
 
-        PointerDragged = true;
+        isDrag = true;
 
-        if (PointerDownTag == "Cell")
+        if (Tag == "Cell")
             //临时重构：先输出文本，后续再调用 CellTouch.OnDrag(this, eventData);
             Debug.Log("临时重构");
-        else if (PointerDownTag == "Container")
+        else if (Tag == "Container")
             ContainerTouch.OnDrag(this, eventData);
     }
 
@@ -53,15 +53,15 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        if (PointerDownTag == "Cell")
+        if (Tag == "Cell")
             //输出文本
             Debug.Log("临时重构") ;
-        else if (PointerDownTag == "Container")
+        else if (Tag == "Container")
             ContainerTouch.EndDrag(this);
-        else if (PointerDownTag == "TurnPage" && !PointerDragged)
+        else if (Tag == "TurnPage" && !isDrag)
             TurnPageTouch.Click(this, eventData);
 
-        PointerDownTag = null;
+        Tag = null;
     }
 
 }
