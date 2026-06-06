@@ -13,6 +13,7 @@ public static class ContainerBuilder
     /// <summary>遍历 specs 数组，逐项构建 + 注册容器</summary>
     public static void BuildAll(Core core)
     {
+        ContainerManager.containers.Clear();
         foreach (var spec in core.specs)
         {
             var mod = new ContainerMod();

@@ -10,11 +10,19 @@ namespace Lookloop.ItemManager
         {
             foreach (var mod in ContainerManager.containers)
             {
+                // 检查数组里是否有非预期的活对象
+                int aliveBefore = 0;
+                for (int i = countPerContainer; i < mod.items.Length; i++)
+                    if (mod.items[i] != null) aliveBefore++;
+
                 for (int i = 0; i < countPerContainer && i < mod.items.Length; i++)
                 {
                     ItemsController.SetItem(core, mod, i,
                         Random.Range(1, 5), 0, 0, Random.Range(1, 99), null);
                 }
+
+                if (aliveBefore > 0)
+                    Debug.LogWarning($"[TestItemFiller] 发现 {aliveBefore} 个非 null 残留，范围 [{countPerContainer}..{mod.items.Length - 1}]");
             }
         }
     }
