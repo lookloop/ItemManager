@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Threading.Tasks;
 
 namespace Lookloop.ItemManager
 {
@@ -55,7 +56,35 @@ public static class MiscInit
         count.alignment = TextAlignmentOptions.Right;
         countGo.SetActive(false);
 
-        
+    }
+
+    /// <summary>用 mod.items[key] + ItemTable 给静态字段赋值（数字+双图）</summary>
+    public static async void AssignItemData(Core core, ContainerMod mod, int itemKey)
+    {
+        if (itemKey < 0 || itemKey >= mod.items.Length) return;
+
+        var item = mod.items[itemKey];
+
+        if (item == null)
+        {
+            itemImage.gameObject.SetActive(false);
+            edge.gameObject.SetActive(false);
+            count.gameObject.SetActive(false);
+            return;
+        }
+
+        itemImage.gameObject.SetActive(true);
+        edge.gameObject.SetActive(true);
+        count.gameObject.SetActive(true);
+
+        count.text = item.Count > 0 ? item.Count.ToString() : "";
+
+        var table = await core.GetItemTable(item.Id.ToString());
+        if (table != null)
+        {
+            itemImage.sprite = table.ItemSprite;
+            edge.sprite = table.GlowSprite;
+        }
     }
 }
 
