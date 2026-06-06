@@ -7,13 +7,16 @@ namespace Lookloop.ItemManager
 
 public static class MiscInit
 {
+    public static RectTransform parent;
     public static Image itemImage;
     public static Image edge;
     public static TextMeshProUGUI count;
 
-    /// <summary>在 parent 下生成 ItemUI 三兄弟空对象，索引写入静态字段</summary>
-    public static void CreateItemUI(Transform parent)
+    /// <summary>内部生成 parent + ItemUI 三兄弟空对象，索引写入静态字段</summary>
+    public static void CreateItemUI()
     {
+        parent = new GameObject("ItemUIParent", typeof(RectTransform)).GetComponent<RectTransform>();
+
         var itemUIGo = new GameObject("ItemUI", typeof(RectTransform), typeof(Image));
         itemUIGo.transform.SetParent(parent, false);
         itemImage = itemUIGo.GetComponent<Image>();
