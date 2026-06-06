@@ -90,7 +90,7 @@ public static class ContainerBuilder
             tmp.textViewport = textArea;
             tmp.textComponent = textRect.GetComponent<TextMeshProUGUI>();
             tmp.textComponent.font = core.font;
-            tmp.textComponent.fontSize = spec.containerFillDown;
+            tmp.textComponent.fontSize = spec.pageTextHeight;
             tmp.textComponent.alignment = TextAlignmentOptions.Center;
             tmp.textComponent.color = Color.white;
             tmp.text = mod.currentPage + "/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
@@ -102,15 +102,14 @@ public static class ContainerBuilder
             // PrevButton
             var prevButtonRect = CreateRect("PrevButton", containerRect, typeof(Image));
             SetAnchorPivot(prevButtonRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
-            prevButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
+            prevButtonRect.sizeDelta = new Vector2(spec.pageTextHeight, spec.pageTextHeight);
             prevButtonRect.anchoredPosition = new Vector2(-pageTextRect.sizeDelta.x / 2 - prevButtonRect.sizeDelta.x / 2, 0);
-            
             prevButtonRect.gameObject.tag = "TurnPage";
 
             // NextButton
             var nextButtonRect = CreateRect("NextButton", containerRect, typeof(Image));
             SetAnchorPivot(nextButtonRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
-            nextButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
+            nextButtonRect.sizeDelta = new Vector2(spec.pageTextHeight, spec.pageTextHeight);
             nextButtonRect.anchoredPosition = new Vector2(pageTextRect.sizeDelta.x / 2 + nextButtonRect.sizeDelta.x / 2, 0);
             
             nextButtonRect.gameObject.tag = "TurnPage";
