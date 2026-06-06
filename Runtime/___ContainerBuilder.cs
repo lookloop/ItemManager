@@ -94,6 +94,9 @@ public static class ContainerBuilder
             tmp.textComponent.alignment = TextAlignmentOptions.Center;
             tmp.textComponent.color = Color.white;
             tmp.text = mod.currentPage + "/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+            // 强制初始化 Caret 内部状态
+            tmp.enabled = false;
+            tmp.enabled = true;
             
 
             // PrevButton
