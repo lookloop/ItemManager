@@ -15,7 +15,6 @@ public static class CellTouch
         {
             isLongPress = false;
             downEvent = eventData;
-            Debug.Log($"[CellTouch] 按下 — cell:{core.hitRect?.name}");
         }
 
         public static void LongPress(Core core)
