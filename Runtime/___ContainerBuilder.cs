@@ -100,17 +100,19 @@ public static class ContainerBuilder
             
 
             // PrevButton
-            var prevButtonRect = CreateRect("PrevButton", pageTextRect, typeof(Image));
-            SetAnchorPivot(prevButtonRect, 0f, 0.5f, 0f, 0.5f, 0f, 0.5f);
-            prevButtonRect.anchoredPosition = new Vector2(-spec.containerFillDown, 0);
+            var prevButtonRect = CreateRect("PrevButton", containerRect, typeof(Image));
+            SetAnchorPivot(prevButtonRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
             prevButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
+            prevButtonRect.anchoredPosition = new Vector2(-pageTextRect.sizeDelta.x / 2 - prevButtonRect.sizeDelta.x / 2, 0);
+            
             prevButtonRect.gameObject.tag = "TurnPage";
 
             // NextButton
-            var nextButtonRect = CreateRect("NextButton", pageTextRect, typeof(Image));
-            SetAnchorPivot(nextButtonRect, 1f, 0.5f, 1f, 0.5f, 1f, 0.5f);
-            nextButtonRect.anchoredPosition = new Vector2(spec.containerFillDown, 0);
+            var nextButtonRect = CreateRect("NextButton", containerRect, typeof(Image));
+            SetAnchorPivot(nextButtonRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
             nextButtonRect.sizeDelta = new Vector2(spec.containerFillDown, spec.containerFillDown);
+            prevButtonRect.anchoredPosition = new Vector2(pageTextRect.sizeDelta.x / 2 + prevButtonRect.sizeDelta.x / 2, 0);
+            
             nextButtonRect.gameObject.tag = "TurnPage";
         }
 
