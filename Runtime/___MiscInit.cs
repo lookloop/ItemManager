@@ -13,7 +13,7 @@ public static class MiscInit
     public static TextMeshProUGUI count;
 
     /// <summary>内部生成 parent(10×10) + ItemUI 三兄弟(img8×8, img8×8, tmp)</summary>
-    public static void CreateItemUI()
+    public static void CreateTemporaryItemUI()
     {
         // parent — 10×10
         parent = new GameObject("ItemUIParent", typeof(RectTransform)).GetComponent<RectTransform>();
