@@ -14,7 +14,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public string atTag;
     [HideInInspector] public bool isDrag;
     [HideInInspector] public float holdTime;
-    [HideInInspector] public RectTransform  RectTarget;
+    [HideInInspector] public RectTransform  hitRect;
 
     Coroutine _holdTimer;
 
@@ -26,7 +26,8 @@ public partial class Core : MonoBehaviour,
         isDrag = false;
         _holdTimer = StartCoroutine(HoldTimerRoutine());
 
-        atTag = eventData.pointerCurrentRaycast.gameObject?.tag;
+        hitRect = eventData.pointerCurrentRaycast.gameObject?.transform as RectTransform;
+        atTag = hitRect?.tag;
 
         switch (atTag)
         {
