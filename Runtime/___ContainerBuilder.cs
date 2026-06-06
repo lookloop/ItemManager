@@ -98,9 +98,6 @@ public static class ContainerBuilder
             tmp.enabled = false;
             tmp.enabled = true;
 
-            // 只允许输入整数
-            tmp.contentType = TMP_InputField.ContentType.IntegerNumber;
-
             // 聚焦时只显示当前页码（去掉 "/总页数"）
             tmp.onSelect.AddListener(_ =>
             {
