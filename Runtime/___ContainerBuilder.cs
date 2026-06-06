@@ -97,6 +97,33 @@ public static class ContainerBuilder
             // 强制初始化 Caret 内部状态
             tmp.enabled = false;
             tmp.enabled = true;
+
+            // 只允许输入整数
+            tmp.contentType = TMP_InputField.ContentType.IntegerNumber;
+
+            // 聚焦时只显示当前页码（去掉 "/总页数"）
+            tmp.onSelect.AddListener(_ =>
+            {
+                tmp.text = mod.currentPage.ToString();
+            });
+
+            // 输入结束：解析 → 钳位 → 翻页 → 恢复显示
+            tmp.onEndEdit.AddListener(val =>
+            {
+                if (int.TryParse(val, out int page))
+                {
+                    int totalPages = Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+                    page = Mathf.Clamp(page, 1, totalPages);
+                    mod.currentPage = page;
+                }
+                int total = Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+                tmp.text = mod.currentPage + "/" + total;
+
+                // 刷新格子
+                int start = (mod.currentPage - 1) * mod.cells.Length;
+                for (int i = start; i < start + mod.cells.Length && i < mod.items.Length; i++)
+                    ItemsController.SetViewItem(core, mod, i);
+            });
             
 
             // PrevButton
