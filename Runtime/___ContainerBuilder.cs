@@ -74,7 +74,7 @@ public static class ContainerBuilder
             var pageTextRect = CreateRect("PageText", containerRect, typeof(TMP_InputField));
             SetAnchorPivot(pageTextRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
             pageTextRect.anchoredPosition = Vector2.zero;
-            pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
+            pageTextRect.sizeDelta = new Vector2(spec.pageTextWidth, spec.pageTextHeight);
 
             // Text Area
             var textArea = CreateRect("Text Area", pageTextRect, typeof(RectMask2D));

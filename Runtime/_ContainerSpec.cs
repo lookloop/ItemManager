@@ -29,6 +29,11 @@ namespace Lookloop.ItemManager
         public float containerFillDown = 4f;
 
         [Space]
+        [Header("翻页")]
+        public float pageTextWidth = 24f;
+        public float pageTextHeight = 4f;
+
+        [Space]
         [Header("视觉")]
         public Sprite containerSprite;
         public Sprite maskSprite;

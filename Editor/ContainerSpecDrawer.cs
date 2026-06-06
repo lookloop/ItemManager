@@ -35,6 +35,8 @@ namespace Lookloop.ItemManager.Editor
                 property.FindPropertyRelative("containerFillHorizontal").floatValue = 2f;
                 property.FindPropertyRelative("containerFillUp").floatValue = 8f;
                 property.FindPropertyRelative("containerFillDown").floatValue = 4f;
+                property.FindPropertyRelative("pageTextWidth").floatValue = 24f;
+                property.FindPropertyRelative("pageTextHeight").floatValue = 4f;
             }
 
             if (Foldouts[key])
@@ -47,6 +49,8 @@ namespace Lookloop.ItemManager.Editor
                 Prop(property, "containerFillHorizontal", "水平内边距 (默认2)");
                 Prop(property, "containerFillUp",       "上边距 (默认8)");
                 Prop(property, "containerFillDown",     "下边距 (默认4)");
+                Prop(property, "pageTextWidth",        "翻页输入宽 (默认24)");
+                Prop(property, "pageTextHeight",       "翻页输入高 (默认4)");
                 Prop(property, "containerSprite");
                 Prop(property, "maskSprite");
                 Prop(property, "cellSprite");
