@@ -23,11 +23,11 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
-        holdTime = 0f;
-        isDrag = false;
+
         _holdTimer = StartCoroutine(HoldTimerRoutine());
 
         hitRect = eventData.pointerCurrentRaycast.gameObject?.transform as RectTransform;
+        hitContainerMod = null;
         atTag = hitRect?.tag;
 
         switch (atTag)
@@ -105,6 +105,8 @@ public partial class Core : MonoBehaviour,
         isDrag = false;
         holdTime = 0f;
         atTag = null;
+        hitRect = null;
+        hitContainerMod = null;
     }
 }
 }
