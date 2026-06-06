@@ -36,20 +36,12 @@ public static class CellTouch
             if (name.StartsWith("Cell")) name = name.Substring(4);
             int cellIndex = int.Parse(name);
 
-            // 3. 查找所属 ContainerMod
-            ContainerMod mod = null;
-            foreach (var m in ContainerManager.containers)
-            {
-                if (core.hitRect.IsChildOf(m.container))
-                    { mod = m; break; }
-            }
-            if (mod == null) return;
 
             // 4. 计算全局 itemKey
-            int itemKey = (mod.currentPage - 1) * mod.cells.Length + cellIndex;
+            int itemKey = (core.hitContainerMod.currentPage - 1) * core.hitContainerMod.cells.Length + cellIndex;
 
             // 5. 赋值显示
-            MiscInit.AssignItemData(core, mod, itemKey);
+            MiscInit.AssignItemData(core, itemKey);
 
             Debug.Log($"[CellTouch] 长按有效 — cell:{cellIndex} itemKey:{itemKey} pos:{localPos}");
         }

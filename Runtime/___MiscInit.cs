@@ -59,11 +59,11 @@ public static class MiscInit
     }
 
     /// <summary>用 mod.items[key] + ItemTable 给静态字段赋值（数字+双图）</summary>
-    public static async void AssignItemData(Core core, ContainerMod mod, int itemKey)
+    public static async void AssignItemData(Core core, int itemKey)
     {
-        if (itemKey < 0 || itemKey >= mod.items.Length) return;
+        if (itemKey < 0 || itemKey >= core.hitContainerMod.items.Length) return;
 
-        var item = mod.items[itemKey];
+        var item = core.hitContainerMod.items[itemKey];
 
         if (item == null)
         {
