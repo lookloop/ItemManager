@@ -71,7 +71,7 @@ public static class ContainerBuilder
         if (spec.totalCells > spec.everyPageTotal)
         {
             // PageText (InputField)
-            var pageTextRect = CreateRect("PageText", containerRect, typeof(Image), typeof(TMP_InputField));
+            var pageTextRect = CreateRect("PageText", containerRect, typeof(TMP_InputField));
             SetAnchorPivot(pageTextRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
             pageTextRect.anchoredPosition = Vector2.zero;
             pageTextRect.sizeDelta = new Vector2(spec.containerFillDown * 6, spec.containerFillDown);
