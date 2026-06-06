@@ -31,11 +31,10 @@ public partial class Core : MonoBehaviour,
         atTag = hitRect?.tag;
         if (hitRect != null)
         {
-            foreach (var m in ContainerManager.containers)
-            {
-                if (hitRect.IsChildOf(m.container))
-                    { hitContainerMod = m.container; break; }
-            }
+            Transform t = hitRect;
+            while (t != null && !t.CompareTag("Container"))
+                t = t.parent;
+            hitContainerMod = t as RectTransform;
         }
 
         switch (atTag)
