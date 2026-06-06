@@ -55,7 +55,7 @@ public static class ContainerBuilder
             spec.maskHeight + spec.containerFillUp + spec.containerFillDown);
 
         // Mask
-        var maskRect = CreateRect("Mask", containerRect, typeof(Image), typeof(Mask));
+        var maskRect = CreateRect("Mask", containerRect, typeof(Image), typeof(RectMask2D));
         SetAnchorPivot(maskRect, 0.5f, 1f, 0.5f, 1f, 0.5f, 1f);
         maskRect.anchoredPosition = new Vector2(0, -spec.containerFillUp);
         maskRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.maskHeight);
