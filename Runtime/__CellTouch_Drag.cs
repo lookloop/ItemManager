@@ -9,6 +9,7 @@ public static class CellTouch_Drag
     static float edgeTimer;
     static int edgeZone;
     const float EdgeHoldTime = 0.5f;
+    const float EdgeDistance = 5f;
     public static PointerEventData lastEventData;
 
     /// <summary>拖拽事件 — 跟手 + 存事件引用</summary>
@@ -51,13 +52,12 @@ public static class CellTouch_Drag
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             mask, lastEventData.position, core.canvas.worldCamera, out Vector2 maskLocal);
 
-        var r = mask.rect;
-        float edge = r.width * 0.15f;
+        float edge = EdgeDistance;
 
-        bool nearLeft   = maskLocal.x < r.xMin + edge;
-        bool nearRight  = maskLocal.x > r.xMax - edge;
-        bool nearTop    = maskLocal.y > r.yMax - edge;
-        bool nearBottom = maskLocal.y < r.yMin + edge;
+        bool nearLeft   = maskLocal.x < mask.rect.xMin + edge;
+        bool nearRight  = maskLocal.x > mask.rect.xMax - edge;
+        bool nearTop    = maskLocal.y > mask.rect.yMax - edge;
+        bool nearBottom = maskLocal.y < mask.rect.yMin + edge;
 
         // 上下 — 匀速滚动
         float scrollSpeed = 120f * Time.deltaTime;
