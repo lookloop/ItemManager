@@ -43,7 +43,8 @@ namespace Lookloop.ItemManager
 
             if (pageIndex != mod.currentPage) return;
 
-            var ui = mod.itemUIs[cellIndex];
+            var cell = mod.cells[cellIndex];
+            var ui = cell.itemUI;
             var item = mod.items[itemKey];
 
             // null 或 Id=0 → 三件套全隐藏
@@ -76,7 +77,7 @@ namespace Lookloop.ItemManager
             int pageIndex = itemKey / mod.cells.Length + 1;
             if (pageIndex != mod.currentPage) return;
             int cellIndex = itemKey % mod.cells.Length;
-            var ui = mod.itemUIs[cellIndex];
+            var ui = mod.cells[cellIndex].itemUI;
             ui.itemImage.gameObject.SetActive(false);
             ui.edge.gameObject.SetActive(false);
             ui.count.gameObject.SetActive(false);

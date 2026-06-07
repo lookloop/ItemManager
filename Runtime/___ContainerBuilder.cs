@@ -38,12 +38,11 @@ public static class ContainerBuilder
         for (int i = 0; i < list.Count; i++)
             list[i].name = i.ToString();
 
-        mod.cells = list.ToArray();
-        mod.items = new Item[mod.cells.Length];
+        mod.items = new Item[list.Count];
         mod.container = instance;
         mod.detail  = spec.detail;
 
-        BuildItemUIs(core, mod);
+        mod.cells = BuildItemUIs(core, mod, list);
         ContainerManager.containers.Add(mod);
     }
 
@@ -148,10 +147,10 @@ public static class ContainerBuilder
         mod.container = containerRect;
         mod.mask      = maskRect;
         mod.grid      = gridRect;
-        mod.cells = new RectTransform[spec.everyPageTotal];
         mod.items = new Item[spec.totalCells];
         mod.detail = spec.detail;
 
+        var cellRects = new System.Collections.Generic.List<RectTransform>();
         for (int i = 0; i < spec.everyPageTotal; i++)
         {
             var rect = CreateRect(i.ToString(), gridRect, typeof(Image));
@@ -162,41 +161,41 @@ public static class ContainerBuilder
             rect.sizeDelta = new Vector2(spec.cellWidth, spec.cellWidth);
             rect.gameObject.tag = "Cell";
             rect.GetComponent<Image>().sprite = spec.cellSprite;
-            mod.cells[i] = rect;
+            cellRects.Add(rect);
         }
 
-        BuildItemUIs(core, mod);
+        mod.cells = BuildItemUIs(core, mod, cellRects);
         ContainerManager.containers.Add(mod);
     }
 
     // ─── 内部快捷方法 ───
 
-    /// <summary>遍历 cells[]，为每个 Cell 创建 ItemUI（含 edge + count 子元素）</summary>
-    static void BuildItemUIs(Core core, ContainerMod mod)
+    /// <summary>遍历 cellRects，为每个 Cell 创建 ItemUI（含 edge + count 子元素），返回 Cell[]</summary>
+    static Cell[] BuildItemUIs(Core core, ContainerMod mod, System.Collections.Generic.List<RectTransform> cellRects)
     {
-        mod.itemUIs = new ItemUI[mod.cells.Length];
-        for (int i = 0; i < mod.cells.Length; i++)
+        var cells = new Cell[cellRects.Count];
+        for (int i = 0; i < cellRects.Count; i++)
         {
-            var cell = mod.cells[i];
+            var cellRect = cellRects[i];
 
-            var itemUIRect = CreateRect("ItemUI", cell, typeof(Image));
+            var itemUIRect = CreateRect("ItemUI", cellRect, typeof(Image));
             SetAnchorPivot(itemUIRect, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
             itemUIRect.anchoredPosition = Vector2.zero;
-            itemUIRect.sizeDelta = cell.sizeDelta * 0.8f;
+            itemUIRect.sizeDelta = cellRect.sizeDelta * 0.8f;
 
             var itemImage = itemUIRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
 
-            var edgeRect = CreateRect("edge", cell, typeof(Image));
+            var edgeRect = CreateRect("edge", cellRect, typeof(Image));
             SetAnchorPivot(edgeRect, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
             edgeRect.anchoredPosition = Vector2.zero;
-            edgeRect.sizeDelta = cell.sizeDelta * 0.8f;
+            edgeRect.sizeDelta = cellRect.sizeDelta * 0.8f;
             edgeRect.GetComponent<Image>().raycastTarget = false;
 
-            var countRect = CreateRect("count", cell, typeof(TextMeshProUGUI));
+            var countRect = CreateRect("count", cellRect, typeof(TextMeshProUGUI));
             SetAnchorPivot(countRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
             countRect.anchoredPosition = Vector2.zero;
-            countRect.sizeDelta = new Vector2(cell.sizeDelta.x, cell.sizeDelta.y / 4f);
+            countRect.sizeDelta = new Vector2(cellRect.sizeDelta.x, cellRect.sizeDelta.y / 4f);
 
             var countText = countRect.GetComponent<TextMeshProUGUI>();
             countText.raycastTarget = false;
@@ -204,11 +203,17 @@ public static class ContainerBuilder
             countText.font = core.font;
             countText.alignment = TextAlignmentOptions.Right;
 
-            mod.itemUIs[i] = new ItemUI
+            var itemUI = new ItemUI
             {
                 itemImage = itemImage,
                 edge = edgeRect.GetComponent<Image>(),
                 count = countText
+            };
+
+            cells[i] = new Cell
+            {
+                cell = cellRect,
+                itemUI = itemUI
             };
 
             // 初始隐藏，等 SetViewItem 有数据再显示
@@ -216,6 +221,7 @@ public static class ContainerBuilder
             edgeRect.gameObject.SetActive(false);
             countText.gameObject.SetActive(false);
         }
+        return cells;
     }
 
     /// <summary>创建带 RectTransform 的 GameObject，设父物体，返回 RectTransform</summary>

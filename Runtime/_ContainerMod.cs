@@ -12,8 +12,7 @@ namespace Lookloop.ItemManager
         public RectTransform detail;
         public RectTransform mask;
         public RectTransform grid;
-        public RectTransform[] cells;
-        public ItemUI[] itemUIs;
+        public Cell[] cells;
         public Item[] items;
         public int currentPage = 1;
     }

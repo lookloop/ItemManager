@@ -5,14 +5,15 @@ using TMPro;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// ItemUI 组件引用 — 每个 Cell 有一个 ItemUI，翻页时换数据不换对象。
-    /// 只存组件不存 Rect，布局在创建时一次完成。
+    /// Cell = 格子 RectTransform + 物品显示 ItemUI。
+    /// 每个 Cell 是一个独立的格子单元，cell 是它的 RectTransform，itemUI 是它的三个显示子对象。
     /// </summary>
     [System.Serializable]
-    public class ItemUI
+    public class Cell
     {
-        public Image itemImage;          // ItemUI 自身的 Image（父级图标）
-        public Image edge;               // 子级：物品边框/图标
-        public TextMeshProUGUI count;    // 子级：数量文字
+        public RectTransform cell;
+        public Image itemImage;          // ItemUI 自身的 Image（物品图标）
+        public Image edge;               // 子级：物品边框/光效
+        public TextMeshProUGUI count;
     }
 }
