@@ -10,6 +10,8 @@ namespace Lookloop.ItemManager
     {
         public RectTransform container;
         public RectTransform detail;
+        public RectTransform mask;
+        public RectTransform grid;
         public RectTransform[] cells;
         public ItemUI[] itemUIs;
         public Item[] items;

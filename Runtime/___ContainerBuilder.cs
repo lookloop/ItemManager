@@ -41,7 +41,7 @@ public static class ContainerBuilder
         mod.cells = list.ToArray();
         mod.items = new Item[mod.cells.Length];
         mod.container = instance;
-        mod.detail = spec.detail;
+        mod.detail  = spec.detail;
 
         BuildItemUIs(core, mod);
         ContainerManager.containers.Add(mod);
@@ -146,6 +146,8 @@ public static class ContainerBuilder
         maskRect.GetComponent<Image>().sprite = spec.maskSprite;
 
         mod.container = containerRect;
+        mod.mask      = maskRect;
+        mod.grid      = gridRect;
         mod.cells = new RectTransform[spec.everyPageTotal];
         mod.items = new Item[spec.totalCells];
         mod.detail = spec.detail;

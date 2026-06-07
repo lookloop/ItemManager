@@ -29,16 +29,23 @@ public static class CellTouch_Drag
         if (lastEventData == null) return;
 
         var hitGo = lastEventData.pointerCurrentRaycast.gameObject;
-        if (hitGo == null || !hitGo.CompareTag("Cell")) return;
+        if (hitGo == null) return;
 
-        var hitCell = hitGo.transform as RectTransform;
-        if (hitCell == null) return;
+        // 从命中点向上追溯到所属 ContainerMod（不要求 Cell，任何容器内元素即可）
+        ContainerMod targetMod = null;
+        foreach (var m in ContainerManager.containers)
+        {
+            if (hitGo.transform.IsChildOf(m.container))
+            {
+                targetMod = m;
+                break;
+            }
+        }
+        if (targetMod == null) return;
 
-        var grid = hitCell.parent as RectTransform;
-        if (grid == null) return;
-
-        var mask = grid.parent as RectTransform;
-        if (mask == null) return;
+        var mask = targetMod.mask;
+        var grid = targetMod.grid;
+        if (mask == null || grid == null) return;
 
         // 坐标 → mask 本地
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -83,9 +90,9 @@ public static class CellTouch_Drag
             {
                 edgeTimer = 0f;
                 if (currentZone == 1)
-                    TurnPageTouch.PrevPage(core, core.hitContainerMod);
+                    TurnPageTouch.PrevPage(core, targetMod);
                 else
-                    TurnPageTouch.NextPage(core, core.hitContainerMod);
+                    TurnPageTouch.NextPage(core, targetMod);
             }
         }
     }
