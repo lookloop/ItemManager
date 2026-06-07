@@ -44,7 +44,6 @@ namespace Lookloop.ItemManager
             if (pageIndex != mod.currentPage) return;
 
             var cell = mod.cells[cellIndex];
-            var ui = cell.itemUI;
             var item = mod.items[itemKey];
 
             // null 或 Id=0 → 三件套全隐藏
@@ -52,22 +51,22 @@ namespace Lookloop.ItemManager
             {
                 if (item != null)
                     Debug.LogWarning($"[SetViewItem] Id=0 无效 — itemKey:{itemKey}");
-                ui.itemImage.gameObject.SetActive(false);
-                ui.edge.gameObject.SetActive(false);
-                ui.count.gameObject.SetActive(false);
+                cell.itemImage.gameObject.SetActive(false);
+                cell.edge.gameObject.SetActive(false);
+                cell.count.gameObject.SetActive(false);
                 return;
             }
 
-            ui.itemImage.gameObject.SetActive(true);
-            ui.edge.gameObject.SetActive(true);
-            ui.count.gameObject.SetActive(true);
-            ui.count.text = item.Count > 0 ? item.Count.ToString() : "";
+            cell.itemImage.gameObject.SetActive(true);
+            cell.edge.gameObject.SetActive(true);
+            cell.count.gameObject.SetActive(true);
+            cell.count.text = item.Count > 0 ? item.Count.ToString() : "";
 
             var table = await core.GetItemTable(item.Id.ToString());
             if (table != null)
             {
-                ui.itemImage.sprite = table.ItemSprite;
-                ui.edge.sprite = table.GlowSprite;
+                cell.itemImage.sprite = table.ItemSprite;
+                cell.edge.sprite = table.GlowSprite;
             }
         }
 
@@ -77,10 +76,10 @@ namespace Lookloop.ItemManager
             int pageIndex = itemKey / mod.cells.Length + 1;
             if (pageIndex != mod.currentPage) return;
             int cellIndex = itemKey % mod.cells.Length;
-            var ui = mod.cells[cellIndex].itemUI;
-            ui.itemImage.gameObject.SetActive(false);
-            ui.edge.gameObject.SetActive(false);
-            ui.count.gameObject.SetActive(false);
+            var cell = mod.cells[cellIndex];
+            cell.itemImage.gameObject.SetActive(false);
+            cell.edge.gameObject.SetActive(false);
+            cell.count.gameObject.SetActive(false);
         }
     }
 }

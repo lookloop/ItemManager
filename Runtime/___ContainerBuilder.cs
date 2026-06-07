@@ -170,7 +170,7 @@ public static class ContainerBuilder
 
     // ─── 内部快捷方法 ───
 
-    /// <summary>遍历 cellRects，为每个 Cell 创建 ItemUI（含 edge + count 子元素），返回 Cell[]</summary>
+    /// <summary>遍历 cellRects，为每个 Cell 创建 itemImage + edge + count 子元素，返回 Cell[]</summary>
     static Cell[] BuildItemUIs(Core core, ContainerMod mod, System.Collections.Generic.List<RectTransform> cellRects)
     {
         var cells = new Cell[cellRects.Count];
@@ -203,17 +203,12 @@ public static class ContainerBuilder
             countText.font = core.font;
             countText.alignment = TextAlignmentOptions.Right;
 
-            var itemUI = new ItemUI
-            {
-                itemImage = itemImage,
-                edge = edgeRect.GetComponent<Image>(),
-                count = countText
-            };
-
             cells[i] = new Cell
             {
                 cell = cellRect,
-                itemUI = itemUI
+                itemImage = itemImage,
+                edge = edgeRect.GetComponent<Image>(),
+                count = countText
             };
 
             // 初始隐藏，等 SetViewItem 有数据再显示
