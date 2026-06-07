@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections;
 
 namespace Lookloop.ItemManager
 {
@@ -31,15 +32,14 @@ public static class TurnPageTouch
         }
     }
 
-    /// <summary>翻后一页：页数 +1 → 刷新格子 → 更新页码文字</summary>
     public static void NextPage(Core core, ContainerMod mod)
     {
-        // 总页数 = 总物品数 / 每页格子数（向上取整）
         int totalPages = Mathf.CeilToInt((float)mod.items.Length / mod.cells.Length);
         if (mod.currentPage >= totalPages) return;
         mod.currentPage++;
-        RefreshPage(core, mod);     // 刷当前页的 cell 视图
-        UpdatePageText(mod);        // 显示 "2/5" 格式
+        RefreshPage(core, mod);
+        UpdatePageText(mod);
+        core.StartCoroutine(ShakeMask(mod.mask));
     }
 
     /// <summary>翻前一页：页数 -1 → 刷新格子 → 更新页码文字</summary>
@@ -49,6 +49,7 @@ public static class TurnPageTouch
         mod.currentPage--;
         RefreshPage(core, mod);
         UpdatePageText(mod);
+        core.StartCoroutine(ShakeMask(mod.mask));
     }
 
     /// <summary>
@@ -90,6 +91,29 @@ public static class TurnPageTouch
                 return mod;
         }
         return null;
+    }
+
+    /// <summary>翻页后 mask 水平晃动两下，纯视觉反馈</summary>
+    static IEnumerator ShakeMask(RectTransform mask)
+    {
+        if (mask == null) yield break;
+
+        float duration = 0.2f;
+        float amplitude = 1.5f;
+        float freq = 5f; // 约 1 个来回
+        float elapsed = 0f;
+        Vector2 origin = mask.anchoredPosition;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float decay = 1f - elapsed / duration;
+            float x = origin.x + Mathf.Sin(elapsed * freq * Mathf.PI * 2f) * amplitude * decay;
+            mask.anchoredPosition = new Vector2(x, origin.y);
+            yield return null;
+        }
+
+        mask.anchoredPosition = origin;
     }
 }
 }
