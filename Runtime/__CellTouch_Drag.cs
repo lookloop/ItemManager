@@ -8,7 +8,7 @@ public static class CellTouch_Drag
 {
     static float edgeTimer;
     static int edgeZone;
-    const float EdgeHoldTime = 1f;
+    const float EdgeHoldTime = 0.5f;
     public static PointerEventData lastEventData;
 
     /// <summary>拖拽事件 — 跟手 + 存事件引用</summary>
