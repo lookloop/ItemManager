@@ -70,6 +70,16 @@ namespace Lookloop.ItemManager
             }
         }
 
-
+        /// <summary>强制隐藏指定 itemKey 的 ItemUI（若在当前页）。拖拽拾取时用。</summary>
+        public static void HideItemUI(ContainerMod mod, int itemKey)
+        {
+            int pageIndex = itemKey / mod.cells.Length + 1;
+            if (pageIndex != mod.currentPage) return;
+            int cellIndex = itemKey % mod.cells.Length;
+            var ui = mod.itemUIs[cellIndex];
+            ui.itemImage.gameObject.SetActive(false);
+            ui.edge.gameObject.SetActive(false);
+            ui.count.gameObject.SetActive(false);
+        }
     }
 }

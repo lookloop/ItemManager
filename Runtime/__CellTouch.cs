@@ -15,6 +15,7 @@ public static class CellTouch
         public static Vector2 gridStartPos;
         public static Vector2 startLocal;
         public static int sourceItemKey;
+        public static ContainerMod sourceMod;
 
         public static void BeginTouch(Core core, PointerEventData eventData)
         {
@@ -45,8 +46,10 @@ public static class CellTouch
             // 4. 计算全局 itemKey
             int itemKey = (core.hitContainerMod.currentPage - 1) * core.hitContainerMod.cells.Length + cellIndex;
             sourceItemKey = itemKey;
-            // 5. 赋值显示
+            sourceMod = core.hitContainerMod;
+            // 4. 赋值显示 + 隐藏源头 Cell
             MiscInit.AssignItemData(core, itemKey);
+            ItemsController.HideItemUI(sourceMod, itemKey);
 
         }
 
@@ -67,12 +70,39 @@ public static class CellTouch
                 var targetGo = CellTouch_Drag.lastEventData.pointerCurrentRaycast.gameObject;
                 if (targetGo != null && targetGo.CompareTag("Cell"))
                 {
-                    int targetCellIndex = int.Parse(targetGo.name);
-                    var mod = core.hitContainerMod;
-                    int targetItemKey = (mod.currentPage - 1) * mod.cells.Length + targetCellIndex;
+                    // 找到目标所属容器
+                    ContainerMod targetMod = null;
+                    foreach (var m in ContainerManager.containers)
+                    {
+                        if (targetGo.transform.IsChildOf(m.container))
+                        {
+                            targetMod = m;
+                            break;
+                        }
+                    }
 
-                    if (targetItemKey != sourceItemKey)
-                        ItemsController.SwapItem(core, mod, sourceItemKey, targetItemKey);
+                    if (targetMod != null)
+                    {
+                        int targetCellIndex = int.Parse(targetGo.name);
+                        int targetItemKey = (targetMod.currentPage - 1) * targetMod.cells.Length + targetCellIndex;
+
+                        if (targetMod == sourceMod)
+                        {
+                            // 同容器内交换
+                            if (targetItemKey != sourceItemKey)
+                                ItemsController.SwapItem(core, sourceMod, sourceItemKey, targetItemKey);
+                        }
+                        else
+                        {
+                            // 跨容器交换
+                            var srcItem = sourceMod.items[sourceItemKey];
+                            var dstItem = targetMod.items[targetItemKey];
+                            sourceMod.items[sourceItemKey] = dstItem;
+                            targetMod.items[targetItemKey] = srcItem;
+                            ItemsController.SetViewItem(core, sourceMod, sourceItemKey);
+                            ItemsController.SetViewItem(core, targetMod, targetItemKey);
+                        }
+                    }
                 }
             }
             Reset();
@@ -85,6 +115,7 @@ public static class CellTouch
             downEvent = null;
             grid = null;
             mask = null;
+            sourceMod = null;
         }
     }
 }

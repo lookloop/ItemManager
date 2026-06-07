@@ -61,6 +61,10 @@ public static class TurnPageTouch
         int start = (mod.currentPage - 1) * mod.cells.Length;
         for (int i = start; i < start + mod.cells.Length && i < mod.items.Length; i++)
             ItemsController.SetViewItem(core, mod, i);
+
+        // 拖拽中翻页 → 源头 Cell 重新隐藏
+        if (CellTouch.isLongPress && CellTouch.sourceMod == mod)
+            ItemsController.HideItemUI(mod, CellTouch.sourceItemKey);
     }
 
     /// <summary>
