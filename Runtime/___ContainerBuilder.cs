@@ -41,6 +41,8 @@ public static class ContainerBuilder
         mod.items = new Item[list.Count];
         mod.container = instance;
         mod.detail  = spec.detail;
+        if (mod.detail != null)
+            mod.detailFiller = mod.detail.GetComponent<IDetailFiller>();
 
         mod.cells = BuildItemUIs(core, mod, list);
         ContainerManager.containers.Add(mod);
@@ -148,7 +150,11 @@ public static class ContainerBuilder
         mod.mask      = maskRect;
         mod.grid      = gridRect;
         mod.items = new Item[spec.totalCells];
-        mod.detail = spec.detail;
+        if (spec.detail != null)
+        {
+            mod.detail = Object.Instantiate(spec.detail, containerRect);
+            mod.detailFiller = mod.detail.GetComponent<IDetailFiller>();
+        }
 
         var cellRects = new System.Collections.Generic.List<RectTransform>();
         for (int i = 0; i < spec.everyPageTotal; i++)

@@ -105,6 +105,11 @@ public static class CellTouch
                     }
                 }
             }
+            else if (!isLongPress && !core.isDrag && core.hitContainerMod != null && core.hitContainerMod.detail != null)
+            {
+                // 短按 Cell → 显示 detail 面板 + 填充数据
+                core.ShowDetail(core.hitContainerMod);
+            }
             Reset();
         }
 

@@ -15,5 +15,7 @@ namespace Lookloop.ItemManager
         public Cell[] cells;
         public Item[] items;
         public int currentPage = 1;
+        /// <summary>detail 面板的填充接口引用，ContainerBuilder 构建时缓存</summary>
+        [System.NonSerialized] public IDetailFiller detailFiller;
     }
 }

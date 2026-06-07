@@ -16,6 +16,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public float holdTime;
     [HideInInspector] public RectTransform  hitRect;
     [HideInInspector] public ContainerMod  hitContainerMod;
+    [HideInInspector] public RectTransform  lastDetail;
 
     Coroutine _holdTimer;
 
@@ -55,6 +56,10 @@ public partial class Core : MonoBehaviour,
                 break;
             case "TurnPage":
                 Debug.Log("开局turnpage");
+                break;
+            default:
+                // 点击空白区域 → 隐藏 detail
+                HideDetail();
                 break;
         }
     }
@@ -113,6 +118,29 @@ public partial class Core : MonoBehaviour,
                 CellTouch_Drag.Update(this);
 
             yield return null;
+        }
+    }
+
+    public void ShowDetail(ContainerMod mod)
+    {
+        // 隐藏上一个
+        HideDetail();
+
+        if (mod.detail == null || mod.detailFiller == null) return;
+
+        mod.detail.gameObject.SetActive(true);
+        int cellIndex = int.Parse(hitRect.name);
+        int itemKey = (mod.currentPage - 1) * mod.cells.Length + cellIndex;
+        mod.detailFiller.Fill(mod, itemKey);
+        lastDetail = mod.detail;
+    }
+
+    public void HideDetail()
+    {
+        if (lastDetail != null)
+        {
+            lastDetail.gameObject.SetActive(false);
+            lastDetail = null;
         }
     }
 
