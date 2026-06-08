@@ -29,9 +29,12 @@ namespace Lookloop.ItemManager
             float maskH = maskRect.rect.height;
             float edgeH = maskH * edgeRatio;
 
-            // Mask pivot (0.5, 1)，原点在顶部中心：y=0 是顶部，y=-maskH 是底部
-            bool inTop    = localPos.y > -edgeH;
-            bool inBottom = localPos.y < -(maskH - edgeH);
+            // 到顶部的距离（y=0）、到底部的距离（y=-maskH），取绝对值判断
+            float distTop    = Mathf.Abs(localPos.y);           // |y - 0|
+            float distBottom = Mathf.Abs(localPos.y + maskH);   // |y - (-maskH)|
+
+            bool inTop    = distTop    <= edgeH && distTop    < distBottom;
+            bool inBottom = distBottom <= edgeH && distBottom < distTop;
 
             if (!inTop && !inBottom) return;
 
