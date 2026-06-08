@@ -9,10 +9,7 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class TouchContainer
     {
-        /// <summary>
-        /// 手指按下
-        /// </summary>
-        public static void On(Core core, PointerEventData eventData)
+       public static void On(Core core, PointerEventData eventData)
         {
             
         }

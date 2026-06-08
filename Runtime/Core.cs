@@ -14,10 +14,12 @@ public partial class Core : MonoBehaviour,
 
     [HideInInspector] public RectTransform atRect;
     [HideInInspector] public bool isDrag;
+    [HideInInspector] public PointerEventData onEvenData;
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
+        onEvenData = eventData;
 
 
         switch (atRect.gameObject.tag)
