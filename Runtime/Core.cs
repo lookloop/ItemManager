@@ -13,6 +13,7 @@ public partial class Core : MonoBehaviour,
     //有关触控的字段
 
     [HideInInspector] public RectTransform sourceRect;
+    [HideInInspector] public Container sourceContainer;
     [HideInInspector] public bool isDrag = false;
     [HideInInspector] public Vector2 sourcePos;
     [HideInInspector] public Vector2 onPos;
@@ -76,6 +77,7 @@ public partial class Core : MonoBehaviour,
         {
             sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
             sourcePos = sourceRect.anchoredPosition;
+            sourceContainer = sourceRect.parent.GetComponent<RectTransform>();
         }
 
     public virtual void Reset()
