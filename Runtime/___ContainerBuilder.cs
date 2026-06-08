@@ -40,10 +40,10 @@ public static class ContainerBuilder
             list[i].name = i.ToString();
 
         mod.items = new Item[list.Count];
-        mod.rect = instance;
-        mod.detail  = spec.detail;
-        if (mod.detail != null)
-            mod.detailFiller = mod.detail.GetComponent<IDetailFiller>();
+        mod.containerRect = instance;
+        mod.detailRect  = spec.detail;
+        if (mod.detailRect != null)
+            mod.detailFiller = mod.detailRect.GetComponent<IDetailFiller>();
 
         mod.cells = BuildItemUIs(core, mod, list);
     }
@@ -154,14 +154,14 @@ public static class ContainerBuilder
         containerRect.GetComponent<Image>().sprite = spec.containerSprite;
         maskRect.GetComponent<Image>().sprite = spec.maskSprite;
 
-        mod.rect = containerRect;
-        mod.mask      = maskRect;
-        mod.grid      = gridRect;
+        mod.containerRect = containerRect;
+        mod.maskRect      = maskRect;
+        mod.gridRect      = gridRect;
         mod.items = new Item[spec.totalCells];
         if (spec.detail != null)
         {
-            mod.detail = Object.Instantiate(spec.detail, containerRect);
-            mod.detailFiller = mod.detail.GetComponent<IDetailFiller>();
+            mod.detailRect = Object.Instantiate(spec.detail, containerRect);
+            mod.detailFiller = mod.detailRect.GetComponent<IDetailFiller>();
         }
 
         var cellRects = new System.Collections.Generic.List<RectTransform>();

@@ -8,10 +8,10 @@ namespace Lookloop.ItemManager
     [System.Serializable]
     public class Container
     {
-        public RectTransform rect;
-        public RectTransform detail;
-        public RectTransform mask;
-        public RectTransform grid;
+        public RectTransform containerRect;
+        public RectTransform detailRect;
+        public RectTransform maskRect;
+        public RectTransform gridRect;
         public Cell[] cells;
         public Item[] items;
         public int currentPage = 1;
