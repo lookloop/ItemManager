@@ -50,43 +50,48 @@ public static class ContainerBuilder
 
     static void Build(Core core, ContainerSpec spec, ContainerMod mod)
     {
-        // Container
-        var containerRect = CreateRect("Container", core.transform, typeof(Image));
-        containerRect.sizeDelta = new Vector2(
-            spec.rows * spec.cellWidth + spec.containerFillHorizontal * 2,
-            spec.maskHeight + spec.containerFillUp + spec.containerFillDown);
+        // Container (anchor 默认 0.5,0.5)
+        var containerRect = CreateRect("Container", core.transform,
+            new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
+            Vector2.zero,
+            new(spec.rows * spec.cellWidth + spec.containerFillHorizontal * 2,
+                spec.maskHeight + spec.containerFillUp + spec.containerFillDown),
+            typeof(Image));
 
         // Mask
-        var maskRect = CreateRect("Mask", containerRect, typeof(Image), typeof(RectMask2D));
-        SetAnchorPivot(maskRect, 0.5f, 1f, 0.5f, 1f, 0.5f, 1f);
-        maskRect.anchoredPosition = new Vector2(0, -spec.containerFillUp);
-        maskRect.sizeDelta = new Vector2(spec.rows * spec.cellWidth, spec.maskHeight);
+        var maskRect = CreateRect("Mask", containerRect,
+            new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
+            new(0, -spec.containerFillUp),
+            new(spec.rows * spec.cellWidth, spec.maskHeight),
+            typeof(Image), typeof(RectMask2D));
 
         // Grid
-        var gridRect = CreateRect("Grid", maskRect);
-        SetAnchorPivot(gridRect, 0.5f, 1f, 0.5f, 1f, 0.5f, 1f);
-        gridRect.anchoredPosition = Vector2.zero;
-        gridRect.sizeDelta = new Vector2(
-            spec.rows * spec.cellWidth,
-            Mathf.CeilToInt((float)spec.everyPageTotal / spec.rows) * spec.cellWidth);
+        var gridRect = CreateRect("Grid", maskRect,
+            new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
+            Vector2.zero,
+            new(spec.rows * spec.cellWidth,
+                Mathf.CeilToInt((float)spec.everyPageTotal / spec.rows) * spec.cellWidth));
 
         if (spec.totalCells > spec.everyPageTotal)
         {
             // PageText (InputField)
-            var pageTextRect = CreateRect("PageText", containerRect, typeof(TMP_InputField));
-            SetAnchorPivot(pageTextRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
-            pageTextRect.anchoredPosition = Vector2.zero;
-            pageTextRect.sizeDelta = new Vector2(spec.pageTextWidth, spec.pageTextHeight);
+            var pageTextRect = CreateRect("PageText", containerRect,
+                new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
+                Vector2.zero,
+                new(spec.pageTextWidth, spec.pageTextHeight),
+                typeof(TMP_InputField));
 
             // Text Area
-            var textArea = CreateRect("Text Area", pageTextRect, typeof(RectMask2D));
-            textArea.anchorMin = Vector2.zero; textArea.anchorMax = Vector2.one;
-            textArea.sizeDelta = Vector2.zero;
+            var textArea = CreateRect("Text Area", pageTextRect,
+                Vector2.zero, Vector2.one, new(0.5f, 0.5f),
+                Vector2.zero, Vector2.zero,
+                typeof(RectMask2D));
 
             // Text (TextMeshProUGUI)
-            var textRect = CreateRect("Text", textArea, typeof(TextMeshProUGUI));
-            textRect.anchorMin = Vector2.zero; textRect.anchorMax = Vector2.one;
-            textRect.sizeDelta = Vector2.zero;
+            var textRect = CreateRect("Text", textArea,
+                Vector2.zero, Vector2.one, new(0.5f, 0.5f),
+                Vector2.zero, Vector2.zero,
+                typeof(TextMeshProUGUI));
 
             var tmp = pageTextRect.GetComponent<TMP_InputField>();
             tmp.textViewport = textArea;
@@ -124,18 +129,19 @@ public static class ContainerBuilder
             
 
             // PrevButton
-            var prevButtonRect = CreateRect("PrevButton", containerRect, typeof(Image));
-            SetAnchorPivot(prevButtonRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
-            prevButtonRect.sizeDelta = new Vector2(spec.pageTextHeight, spec.pageTextHeight);
-            prevButtonRect.anchoredPosition = new Vector2(-pageTextRect.sizeDelta.x / 2 - prevButtonRect.sizeDelta.x / 2, 0);
+            var prevButtonRect = CreateRect("PrevButton", containerRect,
+                new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
+                new(-spec.pageTextWidth / 2 - spec.pageTextHeight / 2, 0),
+                new(spec.pageTextHeight, spec.pageTextHeight),
+                typeof(Image));
             prevButtonRect.gameObject.tag = "TurnPage";
 
             // NextButton
-            var nextButtonRect = CreateRect("NextButton", containerRect, typeof(Image));
-            SetAnchorPivot(nextButtonRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
-            nextButtonRect.sizeDelta = new Vector2(spec.pageTextHeight, spec.pageTextHeight);
-            nextButtonRect.anchoredPosition = new Vector2(pageTextRect.sizeDelta.x / 2 + nextButtonRect.sizeDelta.x / 2, 0);
-            
+            var nextButtonRect = CreateRect("NextButton", containerRect,
+                new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
+                new(spec.pageTextWidth / 2 + spec.pageTextHeight / 2, 0),
+                new(spec.pageTextHeight, spec.pageTextHeight),
+                typeof(Image));
             nextButtonRect.gameObject.tag = "TurnPage";
         }
 
@@ -157,12 +163,11 @@ public static class ContainerBuilder
         var cellRects = new System.Collections.Generic.List<RectTransform>();
         for (int i = 0; i < spec.everyPageTotal; i++)
         {
-            var rect = CreateRect(i.ToString(), gridRect, typeof(Image));
-            SetAnchorPivot(rect, 0f, 1f, 0f, 1f, 0f, 1f);
-            rect.anchoredPosition = new Vector2(
-                (i % spec.rows) * spec.cellWidth,
-                -(i / spec.rows) * spec.cellWidth);
-            rect.sizeDelta = new Vector2(spec.cellWidth, spec.cellWidth);
+            var rect = CreateRect(i.ToString(), gridRect,
+                new(0f, 1f), new(0f, 1f), new(0f, 1f),
+                new((i % spec.rows) * spec.cellWidth, -(i / spec.rows) * spec.cellWidth),
+                new(spec.cellWidth, spec.cellWidth),
+                typeof(Image));
             rect.gameObject.tag = "Cell";
             rect.GetComponent<Image>().sprite = spec.cellSprite;
             cellRects.Add(rect);
@@ -182,24 +187,27 @@ public static class ContainerBuilder
         {
             var cellRect = cellRects[i];
 
-            var itemUIRect = CreateRect("ItemUI", cellRect, typeof(Image));
-            SetAnchorPivot(itemUIRect, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
-            itemUIRect.anchoredPosition = Vector2.zero;
-            itemUIRect.sizeDelta = cellRect.sizeDelta * 0.8f;
+            Vector2 halfHalf = new(0.5f, 0.5f);
+            var itemSize = cellRect.sizeDelta * 0.8f;
 
+            var itemUIRect = CreateRect("ItemUI", cellRect,
+                halfHalf, halfHalf, halfHalf,
+                Vector2.zero, itemSize,
+                typeof(Image));
             var itemImage = itemUIRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
 
-            var edgeRect = CreateRect("edge", cellRect, typeof(Image));
-            SetAnchorPivot(edgeRect, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
-            edgeRect.anchoredPosition = Vector2.zero;
-            edgeRect.sizeDelta = cellRect.sizeDelta * 0.8f;
+            var edgeRect = CreateRect("edge", cellRect,
+                halfHalf, halfHalf, halfHalf,
+                Vector2.zero, itemSize,
+                typeof(Image));
             edgeRect.GetComponent<Image>().raycastTarget = false;
 
-            var countRect = CreateRect("count", cellRect, typeof(TextMeshProUGUI));
-            SetAnchorPivot(countRect, 0.5f, 0f, 0.5f, 0f, 0.5f, 0f);
-            countRect.anchoredPosition = Vector2.zero;
-            countRect.sizeDelta = new Vector2(cellRect.sizeDelta.x, cellRect.sizeDelta.y / 4f);
+            var countRect = CreateRect("count", cellRect,
+                new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
+                Vector2.zero,
+                new(cellRect.sizeDelta.x, cellRect.sizeDelta.y / 4f),
+                typeof(TextMeshProUGUI));
 
             var countText = countRect.GetComponent<TextMeshProUGUI>();
             countText.raycastTarget = false;
@@ -223,8 +231,13 @@ public static class ContainerBuilder
         return cells;
     }
 
-    /// <summary>创建带 RectTransform 的 GameObject，设父物体，返回 RectTransform</summary>
-    static RectTransform CreateRect(string name, Transform parent, params System.Type[] components)
+    /// <summary>
+    /// 创建 RectTransform，一步到位：父物体、锚点、pivot、位置、尺寸、组件。
+    /// </summary>
+    static RectTransform CreateRect(string name, Transform parent,
+        Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
+        Vector2 anchoredPosition, Vector2 sizeDelta,
+        params System.Type[] components)
     {
         var types = new System.Type[components.Length + 1];
         types[0] = typeof(RectTransform);
@@ -232,21 +245,14 @@ public static class ContainerBuilder
             types[i + 1] = components[i];
 
         var go = new GameObject(name, types);
-        go.transform.SetParent(parent, false);
-        return go.transform as RectTransform;
-    }
-
-    /// <summary>
-    /// 一行设 anchorMin + anchorMax + pivot（6 个值）
-    /// </summary>
-    static void SetAnchorPivot(RectTransform rect,
-        float aMinX, float aMinY,
-        float aMaxX, float aMaxY,
-        float pX, float pY)
-    {
-        rect.anchorMin = new Vector2(aMinX, aMinY);
-        rect.anchorMax = new Vector2(aMaxX, aMaxY);
-        rect.pivot = new Vector2(pX, pY);
+        var rect = go.transform as RectTransform;
+        rect.SetParent(parent, false);
+        rect.anchorMin = anchorMin;
+        rect.anchorMax = anchorMax;
+        rect.pivot = pivot;
+        rect.anchoredPosition = anchoredPosition;
+        rect.sizeDelta = sizeDelta;
+        return rect;
     }
 }
 }
