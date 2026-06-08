@@ -11,13 +11,6 @@ namespace Lookloop.ItemManager
     {
        public static void On(Core core, PointerEventData eventData)
         {
-            var parent = (RectTransform)core.sourceRect.parent;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                parent,
-                core.onEvenData.position,
-                core.canvas.worldCamera,
-                out Vector2 localPos);
-            core.sourcePos = localPos;
         }
 
         public static void OnDrag(Core core, PointerEventData eventData)
