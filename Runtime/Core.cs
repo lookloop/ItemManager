@@ -47,6 +47,9 @@ public partial class Core : MonoBehaviour,
             case "Container":
                 TouchContainer.OnDrag(this, eventData);
                 break;
+            case "Cell":
+                TouchCell.OnDrag(this, eventData);
+                break;
         }
 
 
