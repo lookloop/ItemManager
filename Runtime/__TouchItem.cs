@@ -17,9 +17,7 @@ namespace Lookloop.ItemManager
             if (container == null || container.items == null) return;
 
             // cell 索引 → 全局 items 索引
-            int itemKey = cellKey;
-            if (container.items.Length > container.cells.Length)
-                itemKey = container.cells.Length * (container.currentPage - 1) + cellKey;
+            int itemKey = container.cells.Length * (container.currentPage - 1) + cellKey;
 
             var item = container.items[itemKey];
             if (item == null) return;
