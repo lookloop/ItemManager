@@ -12,5 +12,6 @@ public partial class Core
     [HideInInspector] public Canvas canvas;
 
     [HideInInspector] public Container[] containers;
+
 }
 }

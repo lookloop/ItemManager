@@ -30,6 +30,8 @@ public static class ContainerBuilder
             else
             //如果空了，那么直接按照spec数值建造法。
                 Build(core, core.specs[i], container);
+
+            container.containerRect.name = i.ToString();
         }
     }
 

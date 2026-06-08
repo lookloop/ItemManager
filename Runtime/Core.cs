@@ -77,13 +77,25 @@ public partial class Core : MonoBehaviour,
         {
             sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
             sourcePos = sourceRect.anchoredPosition;
-            sourceContainer = sourceRect.parent.GetComponent<RectTransform>();
+
+            // 沿父级向上找 tag=Container，通过 name 定位 container
+            var t = sourceRect.parent;
+            while (t != null)
+            {
+                if (t.CompareTag("Container"))
+                {
+                    if (int.TryParse(t.name, out int index) && index < containers.Length)
+                        sourceContainer = containers[index];
+                    break;
+                }
+                t = t.parent;
+            }
         }
 
     public virtual void Reset()
         {
-            //设置全null
             sourceRect = null;
+            sourceContainer = null;
             isDrag = false;
             sourcePos = Vector2.zero;
             onPos = Vector2.zero;
