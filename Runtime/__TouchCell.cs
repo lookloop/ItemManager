@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,9 +10,17 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class TouchCell
     {
+
+        public const float pressTime = 0.3f;
+
+        public static bool isLongPress;
+
+        static Coroutine longPressCoroutine;
+
         public static void On(Core core, PointerEventData eventData)
         {
-
+            isLongPress = false;
+            longPressCoroutine = core.StartCoroutine(LongPressTimer());
         }
 
         public static void OnDrag(Core core, PointerEventData eventData)
@@ -22,6 +31,12 @@ namespace Lookloop.ItemManager
         public static void End(Core core, PointerEventData eventData)
         {
 
+        }
+
+        static IEnumerator LongPressTimer()
+        {
+            yield return new WaitForSeconds(pressTime);
+            isLongPress = true;
         }
     }
 }
