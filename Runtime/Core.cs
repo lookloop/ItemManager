@@ -15,6 +15,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public RectTransform sourceRect;
     [HideInInspector] public bool isDrag;
     [HideInInspector] public PointerEventData onEvenData;
+    [HideInInspector] public Vector2 sourcePos;
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
@@ -50,7 +51,19 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
+        
+        Reset();
+
     }
+
+    public virtual void Reset()
+        {
+            //设置全null
+            sourceRect = null;
+            isDrag = false;
+            onEvenData = null;
+            sourcePos = Vector2.zero;
+        }
 
   
 

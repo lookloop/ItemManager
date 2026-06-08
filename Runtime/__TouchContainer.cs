@@ -11,11 +11,33 @@ namespace Lookloop.ItemManager
     {
        public static void On(Core core, PointerEventData eventData)
         {
-            
+            var parent = (RectTransform)core.sourceRect.parent;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parent,
+                core.onEvenData.position,
+                core.canvas.worldCamera,
+                out Vector2 localPos);
+            core.sourcePos = localPos;
         }
+
         public static void OnDrag(Core core, PointerEventData eventData)
         {
-            
+            var parent = (RectTransform)core.sourceRect.parent;
+            // 旧坐标 — 按下时的屏幕坐标转为当前父级本地坐标
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parent,
+                core.onEvenData.position,
+                core.canvas.worldCamera,
+                out Vector2 oldLocal);
+            // 新坐标 — 实时屏幕坐标转为当前父级本地坐标
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parent,
+                eventData.position,
+                core.canvas.worldCamera,
+                out Vector2 newLocal);
+
+            Vector2 delta = newLocal - oldLocal;
+            core.sourceRect.anchoredPosition = core.sourcePos + delta;
         }
         public static void End(Core core, PointerEventData eventData)
         {
