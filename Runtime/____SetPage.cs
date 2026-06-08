@@ -5,6 +5,16 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class SetPage
     {
+        public static void Set(Core core, Container container, int page)
+        {
+            container.currentPage = page;
 
+            int start = container.cells.Length * (page - 1);
+            int end = start + container.cells.Length;
+            if (end > container.items.Length) end = container.items.Length;
+
+            for (int i = start; i < end; i++)
+                _ = SetItem.View(core, container, i);
+        }
     }
 }
