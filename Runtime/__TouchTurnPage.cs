@@ -12,6 +12,13 @@ namespace Lookloop.ItemManager
             //如果拖拽的话，直接返回
             if (core.isDrag)
             return;
+            switch (core.sourceRect.name)
+            {
+                case "PrevButton":
+                    break;
+                case "NextButton":
+                    break;
+            }
 
         }
     }
