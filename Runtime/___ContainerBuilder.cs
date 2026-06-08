@@ -134,13 +134,15 @@ public static class ContainerBuilder
             tmp.enabled = false;
             tmp.enabled = true;
 
-            //按下时，就会聚焦，第一次按下tmp输入三兄弟，就会只显示当前current(当前)页的int，在此之前，先int类型转化string。
+            //tmp输入预留了按下和结束时，可以自己定义方法。
+            //定义按下时，就会聚焦，第一次按下tmp输入三兄弟，就会只显示当前current(当前)页的int，在此之前，先int类型转化string。
             tmp.onSelect.AddListener(_ =>
             {
+                //直接设置文本为一个数字。
                 tmp.text = container.currentPage.ToString();
             });
 
-            // 输入结束：解析 → 钳位 → 翻页 → 恢复显示
+            //定义输入完成后，按下确认输入enter的时候或者是点击其他地方，不再聚焦，输入不再有效，这个时候封闭状态呈现出最后的显示效果。
             tmp.onEndEdit.AddListener(val =>
             {
                 if (int.TryParse(val, out int page))
