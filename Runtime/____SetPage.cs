@@ -18,24 +18,22 @@ namespace Lookloop.ItemManager
             int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
             if (totalPages > 1 && page == totalPages)
             {
+                //执行隐藏cell
                 int lastIndex = container.items.Length - 1;
                 if (end > lastIndex) end = lastIndex;
                 LastPage(container);
             }
             else
             {
+                //执行显示cell
                 for (int i = 0; i < container.cells.Length; i++)
                     container.cells[i].cell.gameObject.SetActive(true);
             }
-
+            //最后不管cell显示还是隐藏，对三个子物体刷新其内容
             for (int i = start; i <= end; i++)
                 _ = SetItem.View(core, container, i);
         }
 
-        /// <summary>
-        /// 最后一页：调整 grid 高度 + 隐藏多余 Cell。
-        /// 仅在总页数上限 > 1 且当前为最后一页时调用。
-        /// </summary>
         static void LastPage(Container container)
         {
             int lastItemCount = container.items.Length % container.cells.Length;
