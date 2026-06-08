@@ -12,6 +12,6 @@ public partial class Core
     [HideInInspector] public Canvas canvas;
 
     /// <summary>与 specs 一一对应的运行时容器数组，用 spec 下标索引</summary>
-    [HideInInspector] public ContainerMod[] containers;
+    [HideInInspector] public Container[] containers;
 }
 }

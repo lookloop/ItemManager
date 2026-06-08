@@ -13,10 +13,10 @@ public static class ContainerBuilder
     /// <summary>遍历 specs 数组，逐项构建，containers[i] 对应 specs[i]</summary>
     public static void BuildAll(Core core)
     {
-        core.containers = new ContainerMod[core.specs.Length];
+        core.containers = new Container[core.specs.Length];
         for (int i = 0; i < core.specs.Length; i++)
         {
-            var mod = new ContainerMod();
+            var mod = new Container();
             core.containers[i] = mod;
             if (core.specs[i].prefab != null)
                 BuildFromPrefab(core, core.specs[i], mod);
@@ -25,7 +25,7 @@ public static class ContainerBuilder
         }
     }
 
-    static void BuildFromPrefab(Core core, ContainerSpec spec, ContainerMod mod)
+    static void BuildFromPrefab(Core core, ContainerSpec spec, Container mod)
     {
         var instance = Object.Instantiate(spec.prefab, core.transform);
 
@@ -40,7 +40,7 @@ public static class ContainerBuilder
             list[i].name = i.ToString();
 
         mod.items = new Item[list.Count];
-        mod.container = instance;
+        mod.rect = instance;
         mod.detail  = spec.detail;
         if (mod.detail != null)
             mod.detailFiller = mod.detail.GetComponent<IDetailFiller>();
@@ -48,7 +48,7 @@ public static class ContainerBuilder
         mod.cells = BuildItemUIs(core, mod, list);
     }
 
-    static void Build(Core core, ContainerSpec spec, ContainerMod mod)
+    static void Build(Core core, ContainerSpec spec, Container mod)
     {
         // Container (anchor 默认 0.5,0.5)
         var containerRect = CreateRect("Container", core.transform,
@@ -154,7 +154,7 @@ public static class ContainerBuilder
         containerRect.GetComponent<Image>().sprite = spec.containerSprite;
         maskRect.GetComponent<Image>().sprite = spec.maskSprite;
 
-        mod.container = containerRect;
+        mod.rect = containerRect;
         mod.mask      = maskRect;
         mod.grid      = gridRect;
         mod.items = new Item[spec.totalCells];
@@ -183,7 +183,7 @@ public static class ContainerBuilder
     // ─── 内部快捷方法 ───
 
     /// <summary>遍历 cellRects，为每个 Cell 创建 itemImage + edge + count 子元素，返回 Cell[]</summary>
-    static Cell[] BuildItemUIs(Core core, ContainerMod mod, System.Collections.Generic.List<RectTransform> cellRects)
+    static Cell[] BuildItemUIs(Core core, Container mod, System.Collections.Generic.List<RectTransform> cellRects)
     {
         var cells = new Cell[cellRects.Count];
         for (int i = 0; i < cellRects.Count; i++)
