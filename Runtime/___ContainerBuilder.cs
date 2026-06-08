@@ -10,17 +10,18 @@ namespace Lookloop.ItemManager
 /// </summary>
 public static class ContainerBuilder
 {
-    /// <summary>遍历 specs 数组，逐项构建 + 注册容器</summary>
+    /// <summary>遍历 specs 数组，逐项构建，containers[i] 对应 specs[i]</summary>
     public static void BuildAll(Core core)
     {
-        core.containers.Clear();
-        foreach (var spec in core.specs)
+        core.containers = new ContainerMod[core.specs.Length];
+        for (int i = 0; i < core.specs.Length; i++)
         {
             var mod = new ContainerMod();
-            if (spec.prefab != null)
-                BuildFromPrefab(core, spec, mod);
+            core.containers[i] = mod;
+            if (core.specs[i].prefab != null)
+                BuildFromPrefab(core, core.specs[i], mod);
             else
-                Build(core, spec, mod);
+                Build(core, core.specs[i], mod);
         }
     }
 
@@ -45,7 +46,6 @@ public static class ContainerBuilder
             mod.detailFiller = mod.detail.GetComponent<IDetailFiller>();
 
         mod.cells = BuildItemUIs(core, mod, list);
-        core.containers.Add(mod);
     }
 
     static void Build(Core core, ContainerSpec spec, ContainerMod mod)
@@ -178,7 +178,6 @@ public static class ContainerBuilder
         }
 
         mod.cells = BuildItemUIs(core, mod, cellRects);
-        core.containers.Add(mod);
     }
 
     // ─── 内部快捷方法 ───
