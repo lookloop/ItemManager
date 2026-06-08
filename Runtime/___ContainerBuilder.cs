@@ -211,7 +211,8 @@ public static class ContainerBuilder
         {
             //i就是key，依次访问。
             var cellRect = cellRects[i];
-
+            //三大配置，1，本体，2边缘光，3计数。
+            //物体的本体
             var itemUIRect = CreateRect("ItemUI", cellRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, cellRect.sizeDelta * 0.8f,
@@ -219,21 +220,21 @@ public static class ContainerBuilder
                 typeof(Image));
             var itemImage = itemUIRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
-
+            //物体的边缘光边
             var edgeRect = CreateRect("edge", cellRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, cellRect.sizeDelta * 0.8f,
                 null,
                 typeof(Image));
             edgeRect.GetComponent<Image>().raycastTarget = false;
-
+            //物体叠加计数
             var countRect = CreateRect("count", cellRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 Vector2.zero,
                 new(cellRect.sizeDelta.x, cellRect.sizeDelta.y / 4f),
                 null,
                 typeof(TextMeshProUGUI));
-
+            //物体叠加使用tmp显示，由于3.9是最大的恰好能显示5位数，所以用这个大小。
             var countText = countRect.GetComponent<TextMeshProUGUI>();
             countText.raycastTarget = false;
             countText.fontSize = 3.9f;
