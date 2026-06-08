@@ -12,18 +12,19 @@ namespace Lookloop.ItemManager
             container.currentPage = page;
 
             int start = container.cells.Length * (page - 1);
-            int end = start + container.cells.Length;
-            if (end > container.items.Length) end = container.items.Length;
+            int end = container.cells.Length * page - 1;
+            int lastIndex = container.items.Length - 1;
+            if (end > lastIndex) end = lastIndex;
 
             // 检测最后一页
-            int totalPages = (container.items.Length + container.cells.Length - 1) / container.cells.Length;
+            int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
             if (totalPages > 1 && page == totalPages)
                 LastPage(container);
             else
                 for (int i = 0; i < container.cells.Length; i++)
                     container.cells[i].cell.gameObject.SetActive(true);
 
-            for (int i = start; i < end; i++)
+            for (int i = start; i <= end; i++)
                 _ = SetItem.View(core, container, i);
         }
 
@@ -36,7 +37,7 @@ namespace Lookloop.ItemManager
             int lastItemCount = container.items.Length % container.cells.Length;
             if (lastItemCount == 0) lastItemCount = container.cells.Length;
 
-            int rows = (lastItemCount + container.row - 1) / container.row;
+            int rows = Mathf.CeilToInt((float)lastItemCount / container.row);
             container.gridRect.sizeDelta = new Vector2(
                 container.gridRect.sizeDelta.x,
                 rows * container.cellWidth);
