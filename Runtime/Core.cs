@@ -36,6 +36,7 @@ public partial class Core : MonoBehaviour,
     public virtual void OnDrag(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
+        isDrag = true;
 
         switch (sourceRect.gameObject.tag)
         {
@@ -50,7 +51,7 @@ public partial class Core : MonoBehaviour,
     public virtual void OnPointerUp(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
-        isDrag = true;
+        
 
         switch (sourceRect.gameObject.tag)
         {
