@@ -38,18 +38,19 @@ public static class ContainerBuilder
         for (int i = 0; i < cellRects.Count; i++)
         //一行代码不用加括号，这里是命名以后要对应数组里面的key，使用可变长度list，待会变成数组
             cellRects[i].name = i.ToString();
-        //这里直接根据list长度变成数组。
+        //这里直接根据list长度变成item实际数据数组，等同长度，意味着页面永远为1。
         container.items = new Item[cellRects.Count];
         //使用预制体的容器Rect是容器Rect
         container.containerRect = prefabContainer;
-        //详情信息一般都是预制体，直接引用即可。
-        container.detailRect  = spec.detailRect;
-        //详情面板使用预制体装载，详情面板的显示方法各异，所以可以给详情面板接一个接口。用于他们自己各异实现。
-        if (container.detailRect != null)
-        //使用unity的get直接获取接口实例。
-            container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
+        //由于是预制体，所以要先创建。
+        if(spec.detailRect != null)
+            {
+                var detailRect = Object.Instantiate(spec.detailRect, prefabContainer.transform);
+                container.detailRect  = detailRect;
+                container.detailFiller = detailRect.GetComponent<IDetailFiller>();
+            }   
         //这里对cell进行改装，用于后续的子对象显示。
-        container.cells = BuildItemUIs(core, container, cellRects);
+        container.cells = BuildCellView(core, container, cellRects);
     }
 
     static void Build(Core core, ContainerSpec spec, Container container)
@@ -181,13 +182,13 @@ public static class ContainerBuilder
             cellRects.Add(rect);
         }
 
-        container.cells = BuildItemUIs(core, container, cellRects);
+        container.cells = BuildCellView(core, container, cellRects);
     }
 
     // ─── 内部快捷方法 ───
 
     /// <summary>遍历 cellRects，为每个 Cell 创建 itemImage + edge + count 子元素，返回 Cell[]</summary>
-    static Cell[] BuildItemUIs(Core core, Container container, System.Collections.Generic.List<RectTransform> cellRects)
+    static Cell[] BuildCellView(Core core, Container container, System.Collections.Generic.List<RectTransform> cellRects)
     {
         var cells = new Cell[cellRects.Count];
         for (int i = 0; i < cellRects.Count; i++)
