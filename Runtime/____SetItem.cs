@@ -8,16 +8,18 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class SetItem
     {
-        public static void Set(Container container, int itemKey,
+        public static void Set(Core core, Container container, int itemKey,
             int id, int type, int tier, int count, int[] data)
         {
             container.items[itemKey] = new Item(id, type, tier, count, data);
+            //使用refresh
+            Refresh(core, container, itemKey);
         }
 
         /// <summary>
         /// 根据 items[key] 的 id 异步加载 ItemTable，刷新 Cell 的图标/边框/数量。
         /// </summary>
-        public static async Task Refresh(Core core,Container container, int key)
+        public static async Task Refresh(Core core, Container container, int key)
         {
             var item = container.items[key];
             if (item == null) return;
