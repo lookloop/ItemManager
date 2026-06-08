@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Lookloop.ItemManager
 {
     /// <summary>
@@ -9,10 +11,19 @@ namespace Lookloop.ItemManager
         {
             if (core.containers == null || core.containers.Length == 0) return;
 
-            var container = core.containers[0];
+            foreach (var container in core.containers)
+            {
+                if (container.items == null) continue;
 
-            SetItem.Set(core, container, itemKey: 0,
-                id: 0, type: 1, tier: 2, count: 99, data: null);
+                for (int i = 0; i < container.items.Length; i++)
+                {
+                    // 1/3 概率写入
+                    if (Random.Range(0, 3) != 0) continue;
+
+                    SetItem.Set(core, container, itemKey: i,
+                        id: Random.Range(1, 5), type: 1, tier: 2, count: Random.Range(1, 100), data: null);
+                }
+            }
         }
     }
 }
