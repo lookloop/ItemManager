@@ -13,7 +13,7 @@ public partial class Core : MonoBehaviour,
     //有关触控的字段
 
     [HideInInspector] public RectTransform sourceRect;
-    [HideInInspector] public bool isDrag;
+    [HideInInspector] public bool isDrag = false;
     [HideInInspector] public Vector2 sourcePos;
     [HideInInspector] public Vector2 onPos;
 
@@ -50,8 +50,15 @@ public partial class Core : MonoBehaviour,
     public virtual void OnPointerUp(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
+        isDrag = true;
 
-        
+        switch (sourceRect.gameObject.tag)
+        {
+            case "TurnPage":
+                TouchTurnPage.End(this, eventData);
+                break;
+        }
+
         Reset();
 
     }

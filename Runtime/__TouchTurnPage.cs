@@ -1,3 +1,5 @@
+using UnityEngine.EventSystems;
+
 namespace Lookloop.ItemManager
 {
     /// <summary>
@@ -5,6 +7,9 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class TouchTurnPage
     {
-
+        public static void End(Core core, PointerEventData eventData)
+        {
+        
+        }
     }
 }
