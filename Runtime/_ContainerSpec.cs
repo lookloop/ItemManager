@@ -19,9 +19,9 @@ namespace Lookloop.ItemManager
 
         [Space]
         [Header("Grid")]
-        public int totalCells = 80;
-        public int everyPageTotal = 40;
-        public int rows = 5;
+        public int totalItems = 80;
+        public int everyPageCells = 40;
+        public int row = 5;
         public float cellWidth = 10f;
         public float maskHeight = 40f;
         public float containerFillHorizontal = 2f;

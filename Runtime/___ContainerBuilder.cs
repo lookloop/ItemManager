@@ -10,31 +10,43 @@ namespace Lookloop.ItemManager
 /// </summary>
 public static class ContainerBuilder
 {
-    /// <summary>遍历 specs 数组，逐项构建，containers[i] 对应 specs[i]</summary>
+    //初始化构建一切资产itemui可用的ui。
     public static void BuildAll(Core core)
     {
+        //初始化container数组，长度和检查器定义的数组长度一样。
         core.containers = new Container[core.specs.Length];
+        //从零开始挨个将spec转化为container
         for (int i = 0; i < core.specs.Length; i++)
         {
+            //新建一个container
             var container = new Container();
+            //当前的key。
             core.containers[i] = container;
+            //当前的key也是spec的key。
+            //如果预制体不是空的，那么按照预制体建造法建造。
             if (core.specs[i].prefabRect != null)
                 BuildPrefab(core, core.specs[i], container);
             else
+            //如果空了，那么直接按照spec数值建造法。
                 Build(core, core.specs[i], container);
         }
     }
 
     static void BuildPrefab(Core core, ContainerSpec spec, Container container)
     {
+        //1把预制体实例化，装载在core下面
+        //2将所有子对象引用加入allRects里面
+        //3建立一个空list，用于装过滤后的allRects
         var prefabContainer = Object.Instantiate(spec.prefabRect, core.transform);
         var allRects = prefabContainer.GetComponentsInChildren<RectTransform>(true);
         var cellRects = new System.Collections.Generic.List<RectTransform>();
+        //这个就是过滤器
         foreach (var allRect in allRects)
         {
             if (allRect.CompareTag("Cell"))
                 cellRects.Add(allRect);
         }
+        //将所有Cell按照顺序改名，由于是遍历生成的key，所有或许制作预制体，手动排序自己的cell或许可以管理好key，可以看着生成后的cell名字是否符合偏好。
         for (int i = 0; i < cellRects.Count; i++)
         //一行代码不用加括号，这里是命名以后要对应数组里面的key，使用可变长度list，待会变成数组
             cellRects[i].name = i.ToString();
@@ -52,35 +64,36 @@ public static class ContainerBuilder
         //这里对cell进行改装，用于后续的子对象显示。
         container.cells = BuildCellView(core, container, cellRects);
     }
-
+    //纯粹的数据驱动建造。
     static void Build(Core core, ContainerSpec spec, Container container)
     {
-        // Container (anchor 默认 0.5,0.5)
+        //使用createRect方法新建一个对象，用于当作container的Rect，设置好tag，方便后续路由。
         var containerRect = CreateRect("Container", core.transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
             Vector2.zero,
-            new(spec.rows * spec.cellWidth + spec.containerFillHorizontal * 2,
+            new(spec.row * spec.cellWidth + spec.containerFillHorizontal * 2,
                 spec.maskHeight + spec.containerFillUp + spec.containerFillDown),
             "Container",
             typeof(Image));
 
-        // Mask
+        //使用createRect方法新建一个对象，用于mask和grid滑块双人组，用于滚页，是数据驱动独有的，预制体构建没有。
         var maskRect = CreateRect("Mask", containerRect,
             new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
             new(0, -spec.containerFillUp),
-            new(spec.rows * spec.cellWidth, spec.maskHeight),
+            new(spec.row * spec.cellWidth, spec.maskHeight),
             null,
             typeof(Image), typeof(RectMask2D));
 
-        // Grid
+        //使用createRect方法新建一个对象，用于当作grid，用于携带cell数组，是数据驱动独有的，预制体构建没有。
         var gridRect = CreateRect("Grid", maskRect,
             new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
             Vector2.zero,
-            new(spec.rows * spec.cellWidth,
-                Mathf.CeilToInt((float)spec.everyPageTotal / spec.rows) * spec.cellWidth),
+            new(spec.row * spec.cellWidth,
+                Mathf.CeilToInt((float)spec.everyPageCells / spec.row) * spec.cellWidth),
             "Grid");
 
-        if (spec.totalCells > spec.everyPageTotal)
+        //如果总
+        if (spec.totalItems > spec.everyPageCells)
         {
             // PageText (InputField)
             var pageTextRect = CreateRect("PageText", containerRect,
@@ -111,7 +124,7 @@ public static class ContainerBuilder
             tmp.textComponent.fontSize = spec.pageTextHeight;
             tmp.textComponent.alignment = TextAlignmentOptions.Center;
             tmp.textComponent.color = Color.white;
-            tmp.text = container.currentPage + "/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+            tmp.text = container.currentPage + "/" + Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
             // 强制初始化 Caret 内部状态
             tmp.enabled = false;
             tmp.enabled = true;
@@ -127,11 +140,11 @@ public static class ContainerBuilder
             {
                 if (int.TryParse(val, out int page))
                 {
-                    int totalPages = Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+                    int totalPages = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
                     page = Mathf.Clamp(page, 1, totalPages);
                     container.currentPage = page;
                 }
-                int total = Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+                int total = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
                 tmp.text = container.currentPage + "/" + total;
 
                 // 刷新格子
@@ -162,7 +175,7 @@ public static class ContainerBuilder
         container.containerRect = containerRect;
         container.maskRect      = maskRect;
         container.gridRect      = gridRect;
-        container.items = new Item[spec.totalCells];
+        container.items = new Item[spec.totalItems];
         if (spec.detailRect != null)
         {
             container.detailRect = Object.Instantiate(spec.detailRect, containerRect);
@@ -170,11 +183,11 @@ public static class ContainerBuilder
         }
 
         var cellRects = new System.Collections.Generic.List<RectTransform>();
-        for (int i = 0; i < spec.everyPageTotal; i++)
+        for (int i = 0; i < spec.everyPageCells; i++)
         {
             var rect = CreateRect(i.ToString(), gridRect,
                 new(0f, 1f), new(0f, 1f), new(0f, 1f),
-                new((i % spec.rows) * spec.cellWidth, -(i / spec.rows) * spec.cellWidth),
+                new((i % spec.row) * spec.cellWidth, -(i / spec.row) * spec.cellWidth),
                 new(spec.cellWidth, spec.cellWidth),
                 "Cell",
                 typeof(Image));
