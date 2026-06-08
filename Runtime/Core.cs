@@ -24,7 +24,6 @@ public partial class Core : MonoBehaviour,
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
-        this.eventData = eventData;
         Begin(eventData);
         
 
@@ -85,6 +84,7 @@ public partial class Core : MonoBehaviour,
     
     public virtual void Begin(PointerEventData eventData)
         {
+            this.eventData = eventData;
             sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
             sourcePos = sourceRect.anchoredPosition;
 
