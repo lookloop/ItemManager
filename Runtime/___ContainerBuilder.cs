@@ -16,16 +16,16 @@ public static class ContainerBuilder
         core.containers = new Container[core.specs.Length];
         for (int i = 0; i < core.specs.Length; i++)
         {
-            var mod = new Container();
-            core.containers[i] = mod;
+            var container = new Container();
+            core.containers[i] = container;
             if (core.specs[i].prefab != null)
-                BuildFromPrefab(core, core.specs[i], mod);
+                BuildPrefab(core, core.specs[i], container);
             else
-                Build(core, core.specs[i], mod);
+                Build(core, core.specs[i], container);
         }
     }
 
-    static void BuildFromPrefab(Core core, ContainerSpec spec, Container mod)
+    static void BuildPrefab(Core core, ContainerSpec spec, Container container)
     {
         var instance = Object.Instantiate(spec.prefab, core.transform);
 
@@ -39,16 +39,16 @@ public static class ContainerBuilder
         for (int i = 0; i < list.Count; i++)
             list[i].name = i.ToString();
 
-        mod.items = new Item[list.Count];
-        mod.containerRect = instance;
-        mod.detailRect  = spec.detail;
-        if (mod.detailRect != null)
-            mod.detailFiller = mod.detailRect.GetComponent<IDetailFiller>();
+        container.items = new Item[list.Count];
+        container.containerRect = instance;
+        container.detailRect  = spec.detail;
+        if (container.detailRect != null)
+            container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
 
-        mod.cells = BuildItemUIs(core, mod, list);
+        container.cells = BuildItemUIs(core, container, list);
     }
 
-    static void Build(Core core, ContainerSpec spec, Container mod)
+    static void Build(Core core, ContainerSpec spec, Container container)
     {
         // Container (anchor 默认 0.5,0.5)
         var containerRect = CreateRect("Container", core.transform,
@@ -106,7 +106,7 @@ public static class ContainerBuilder
             tmp.textComponent.fontSize = spec.pageTextHeight;
             tmp.textComponent.alignment = TextAlignmentOptions.Center;
             tmp.textComponent.color = Color.white;
-            tmp.text = mod.currentPage + "/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
+            tmp.text = container.currentPage + "/" + Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
             // 强制初始化 Caret 内部状态
             tmp.enabled = false;
             tmp.enabled = true;
@@ -114,7 +114,7 @@ public static class ContainerBuilder
             // 聚焦时只显示当前页码（去掉 "/总页数"）
             tmp.onSelect.AddListener(_ =>
             {
-                tmp.text = mod.currentPage.ToString();
+                tmp.text = container.currentPage.ToString();
             });
 
             // 输入结束：解析 → 钳位 → 翻页 → 恢复显示
@@ -124,13 +124,13 @@ public static class ContainerBuilder
                 {
                     int totalPages = Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
                     page = Mathf.Clamp(page, 1, totalPages);
-                    mod.currentPage = page;
+                    container.currentPage = page;
                 }
                 int total = Mathf.CeilToInt((float)spec.totalCells / spec.everyPageTotal);
-                tmp.text = mod.currentPage + "/" + total;
+                tmp.text = container.currentPage + "/" + total;
 
                 // 刷新格子
-                int start = (mod.currentPage - 1) * mod.cells.Length;
+                int start = (container.currentPage - 1) * container.cells.Length;
             });
             
 
@@ -154,14 +154,14 @@ public static class ContainerBuilder
         containerRect.GetComponent<Image>().sprite = spec.containerSprite;
         maskRect.GetComponent<Image>().sprite = spec.maskSprite;
 
-        mod.containerRect = containerRect;
-        mod.maskRect      = maskRect;
-        mod.gridRect      = gridRect;
-        mod.items = new Item[spec.totalCells];
+        container.containerRect = containerRect;
+        container.maskRect      = maskRect;
+        container.gridRect      = gridRect;
+        container.items = new Item[spec.totalCells];
         if (spec.detail != null)
         {
-            mod.detailRect = Object.Instantiate(spec.detail, containerRect);
-            mod.detailFiller = mod.detailRect.GetComponent<IDetailFiller>();
+            container.detailRect = Object.Instantiate(spec.detail, containerRect);
+            container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
         }
 
         var cellRects = new System.Collections.Generic.List<RectTransform>();
@@ -177,13 +177,13 @@ public static class ContainerBuilder
             cellRects.Add(rect);
         }
 
-        mod.cells = BuildItemUIs(core, mod, cellRects);
+        container.cells = BuildItemUIs(core, container, cellRects);
     }
 
     // ─── 内部快捷方法 ───
 
     /// <summary>遍历 cellRects，为每个 Cell 创建 itemImage + edge + count 子元素，返回 Cell[]</summary>
-    static Cell[] BuildItemUIs(Core core, Container mod, System.Collections.Generic.List<RectTransform> cellRects)
+    static Cell[] BuildItemUIs(Core core, Container container, System.Collections.Generic.List<RectTransform> cellRects)
     {
         var cells = new Cell[cellRects.Count];
         for (int i = 0; i < cellRects.Count; i++)
