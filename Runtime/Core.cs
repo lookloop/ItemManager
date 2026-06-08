@@ -20,6 +20,8 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public bool isLongPress;
     [HideInInspector] public Coroutine longPressCoroutine;
     [HideInInspector] public PointerEventData eventData;
+    [HideInInspector] public RectTransform targetRect;
+    [HideInInspector] public Container targetContainer;
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
