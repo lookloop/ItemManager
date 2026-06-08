@@ -63,35 +63,18 @@ namespace Lookloop.ItemManager
         }
 
         /// <summary>
-        /// 悬停挡板 — 灰色半透明，拖拽时插入目标 Cell 下方作为占位提示。
+        /// 悬停阴影 — 灰色半透明，拖拽时插入目标 Cell 下方作为占位提示。
         /// </summary>
-        public static RectTransform hoverBoard;
 
-        /// <summary>
-        /// 挡板暂存父级 — 不在任何 Cell 上时挂在这里。
-        /// </summary>
-        public static RectTransform hoverBoardHolder;
-
-        /// <summary>
-        /// 构建悬停挡板（灰色半透明正方形），默认挂在 holder 下。
-        /// </summary>
         public static void BuildShadow(Core core)
         {
-            const float size = 10f;
-
-            // 暂存父级，就建在 Canvas 下，永远不用显示
-            hoverBoardHolder = CreateRect("HoverBoardHolder", core.canvas.transform,
+            Shadow = CreateRect("Shadow", core.canvas.transform,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
-                Vector2.zero, new(1, 1),
-                null);
-
-            hoverBoard = CreateRect("HoverBoard", hoverBoardHolder,
-                new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
-                Vector2.zero, new(size, size),
+                Vector2.zero, new(8, 8),
                 null,
                 typeof(Image));
 
-            var img = hoverBoard.GetComponent<Image>();
+            var img = Shadow.GetComponent<Image>();
             img.color = new Color(0.5f, 0.5f, 0.5f, 0.3f);
             img.raycastTarget = false;
         }
