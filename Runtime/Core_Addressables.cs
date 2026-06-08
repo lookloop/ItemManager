@@ -60,20 +60,26 @@ public partial class Core
     }
     public void LossTiem()
     {
-        var stale = new List<string>();
-
-        foreach (var kv in handleTimes)
+        //建立一个空list，用来装要loss的a。
+        var loss = new List<string>();
+        //遍历handTimes
+        foreach (var a in handleTimes)
         {
-            if (Time.time - kv.Value.time > 1800f)
-                stale.Add(kv.Key);
+            //判断a的value的值，也就是时间，是否过期。如果过期的就添加进list里。
+            if (Time.time - a.Value.time > 1800f)
+                loss.Add(a.Key);
         }
-
-        foreach (var key in stale)
+        //把过期的装完了
+        foreach (var key in loss)
         {
+            //字典还有吗？addres句柄指向的资源还有吗？
             if (handleTimes.TryGetValue(key, out var entry) && entry.handle.IsValid())
+                //先释放实际资源。
                 Addressables.Release(entry.handle);
 
+            //资源释放完了，开始释放字典。
             handleTimes.Remove(key);
+            //双释放完毕。
             Debug.Log($"[Core] 卸载过期句柄: {key}");
         }
     }
