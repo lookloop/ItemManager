@@ -21,7 +21,7 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
         onEvenData = eventData;
-
+        sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
 
         switch (sourceRect.gameObject.tag)
         {
