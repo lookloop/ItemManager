@@ -5,6 +5,7 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
+    public float pressTime = 0.3f;
     public TMP_FontAsset font;
 
     public ContainerSpec[] specs;

@@ -19,7 +19,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public Vector2 onPos;
 
     // Cell 长按
-    const float pressTime = 0.3f;
+    
     [HideInInspector] public bool isLongPress;
     [HideInInspector] public Coroutine longPressCoroutine;
 
