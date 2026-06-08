@@ -36,6 +36,7 @@ namespace Lookloop.ItemManager
                     core.StopCoroutine(longPressCoroutine);
                     longPressCoroutine = null;
                 }
+                TouchCell_Grid.OnDrag(core, eventData);
             }
         }
 

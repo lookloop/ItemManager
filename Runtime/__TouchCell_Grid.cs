@@ -9,7 +9,8 @@ namespace Lookloop.ItemManager
     public static class TouchCell_Grid
     {
         public static void OnDrag(Core core, PointerEventData eventData)
-    {
+        {
+            
         
         }
     }
