@@ -12,13 +12,10 @@ namespace Lookloop.ItemManager
         {
             // sourceRect 就是被按下的 Cell 的 RectTransform，name 就是本页索引
             if (!int.TryParse(core.sourceRect.name, out int cellKey)) return;
-
             var container = core.sourceContainer;
             if (container == null || container.items == null) return;
-
             // cell 索引 → 全局 items 索引
             int itemKey = container.cells.Length * (container.currentPage - 1) + cellKey;
-
             var item = container.items[itemKey];
             if (item == null) return;
 
@@ -30,17 +27,12 @@ namespace Lookloop.ItemManager
                 out Vector2 localPos);
 
             OtherTool.dragRect.anchoredPosition = localPos;
-
             // 通过 id 异步加载 ItemTable
             var table = await core.GetItemTable(item.Id.ToString());
             if (table == null) return;
-
-            // 赋值图标、边框、数量
             OtherTool.dragItem.sprite = table.ItemSprite;
             OtherTool.dragEdge.sprite = table.GlowSprite;
             OtherTool.dragCount.text = item.Count.ToString();
-
-            // 显示
             OtherTool.dragRect.gameObject.SetActive(true);
         }
     }
