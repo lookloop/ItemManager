@@ -73,7 +73,7 @@ namespace Lookloop.ItemManager
                 }
                 else
                 {
-                    OtherTool.Shadow.SetParent(core.canvas, false);
+                    OtherTool.Shadow.SetParent(core.canvas.transform, false);
                     OtherTool.Shadow.gameObject.SetActive(false);
                 }
             }
