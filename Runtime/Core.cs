@@ -29,6 +29,9 @@ public partial class Core : MonoBehaviour,
             case "Container":
                 TouchContainer.On(this, eventData);
                 break;
+            case "Cell":
+                TouchCell.On(this, eventData);
+                break;
         }
 
 
