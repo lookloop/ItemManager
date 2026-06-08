@@ -17,9 +17,6 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public bool isDrag = false;
     [HideInInspector] public Vector2 sourcePos;
     [HideInInspector] public Vector2 onPos;
-
-    // Cell 长按
-    
     [HideInInspector] public bool isLongPress;
     [HideInInspector] public Coroutine longPressCoroutine;
 
@@ -110,6 +107,13 @@ public partial class Core : MonoBehaviour,
             isDrag = false;
             sourcePos = Vector2.zero;
             onPos = Vector2.zero;
+
+            isLongPress = false;
+            if (longPressCoroutine != null)
+            {
+                StopCoroutine(longPressCoroutine);
+                longPressCoroutine = null;
+            }
         }
 
 
