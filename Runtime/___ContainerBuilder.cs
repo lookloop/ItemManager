@@ -56,6 +56,7 @@ public static class ContainerBuilder
             Vector2.zero,
             new(spec.rows * spec.cellWidth + spec.containerFillHorizontal * 2,
                 spec.maskHeight + spec.containerFillUp + spec.containerFillDown),
+            "Container",
             typeof(Image));
 
         // Mask
@@ -63,6 +64,7 @@ public static class ContainerBuilder
             new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
             new(0, -spec.containerFillUp),
             new(spec.rows * spec.cellWidth, spec.maskHeight),
+            null,
             typeof(Image), typeof(RectMask2D));
 
         // Grid
@@ -70,7 +72,8 @@ public static class ContainerBuilder
             new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
             Vector2.zero,
             new(spec.rows * spec.cellWidth,
-                Mathf.CeilToInt((float)spec.everyPageTotal / spec.rows) * spec.cellWidth));
+                Mathf.CeilToInt((float)spec.everyPageTotal / spec.rows) * spec.cellWidth),
+            "Grid");
 
         if (spec.totalCells > spec.everyPageTotal)
         {
@@ -79,18 +82,21 @@ public static class ContainerBuilder
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 Vector2.zero,
                 new(spec.pageTextWidth, spec.pageTextHeight),
+                null,
                 typeof(TMP_InputField));
 
             // Text Area
             var textArea = CreateRect("Text Area", pageTextRect,
                 Vector2.zero, Vector2.one, new(0.5f, 0.5f),
                 Vector2.zero, Vector2.zero,
+                null,
                 typeof(RectMask2D));
 
             // Text (TextMeshProUGUI)
             var textRect = CreateRect("Text", textArea,
                 Vector2.zero, Vector2.one, new(0.5f, 0.5f),
                 Vector2.zero, Vector2.zero,
+                null,
                 typeof(TextMeshProUGUI));
 
             var tmp = pageTextRect.GetComponent<TMP_InputField>();
@@ -133,20 +139,18 @@ public static class ContainerBuilder
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 new(-spec.pageTextWidth / 2 - spec.pageTextHeight / 2, 0),
                 new(spec.pageTextHeight, spec.pageTextHeight),
+                "TurnPage",
                 typeof(Image));
-            prevButtonRect.gameObject.tag = "TurnPage";
 
             // NextButton
             var nextButtonRect = CreateRect("NextButton", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 new(spec.pageTextWidth / 2 + spec.pageTextHeight / 2, 0),
                 new(spec.pageTextHeight, spec.pageTextHeight),
+                "TurnPage",
                 typeof(Image));
-            nextButtonRect.gameObject.tag = "TurnPage";
         }
 
-        containerRect.gameObject.tag = "Container";
-        gridRect.gameObject.tag = "Grid";
         containerRect.GetComponent<Image>().sprite = spec.containerSprite;
         maskRect.GetComponent<Image>().sprite = spec.maskSprite;
 
@@ -167,8 +171,8 @@ public static class ContainerBuilder
                 new(0f, 1f), new(0f, 1f), new(0f, 1f),
                 new((i % spec.rows) * spec.cellWidth, -(i / spec.rows) * spec.cellWidth),
                 new(spec.cellWidth, spec.cellWidth),
+                "Cell",
                 typeof(Image));
-            rect.gameObject.tag = "Cell";
             rect.GetComponent<Image>().sprite = spec.cellSprite;
             cellRects.Add(rect);
         }
@@ -193,6 +197,7 @@ public static class ContainerBuilder
             var itemUIRect = CreateRect("ItemUI", cellRect,
                 halfHalf, halfHalf, halfHalf,
                 Vector2.zero, itemSize,
+                null,
                 typeof(Image));
             var itemImage = itemUIRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
@@ -200,6 +205,7 @@ public static class ContainerBuilder
             var edgeRect = CreateRect("edge", cellRect,
                 halfHalf, halfHalf, halfHalf,
                 Vector2.zero, itemSize,
+                null,
                 typeof(Image));
             edgeRect.GetComponent<Image>().raycastTarget = false;
 
@@ -207,6 +213,7 @@ public static class ContainerBuilder
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 Vector2.zero,
                 new(cellRect.sizeDelta.x, cellRect.sizeDelta.y / 4f),
+                null,
                 typeof(TextMeshProUGUI));
 
             var countText = countRect.GetComponent<TextMeshProUGUI>();
@@ -232,11 +239,12 @@ public static class ContainerBuilder
     }
 
     /// <summary>
-    /// 创建 RectTransform，一步到位：父物体、锚点、pivot、位置、尺寸、组件。
+    /// 创建 RectTransform，一步到位：父物体、锚点、pivot、位置、尺寸、tag、组件。
     /// </summary>
     static RectTransform CreateRect(string name, Transform parent,
         Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
         Vector2 anchoredPosition, Vector2 sizeDelta,
+        string tag = null,
         params System.Type[] components)
     {
         var types = new System.Type[components.Length + 1];
@@ -252,6 +260,7 @@ public static class ContainerBuilder
         rect.pivot = pivot;
         rect.anchoredPosition = anchoredPosition;
         rect.sizeDelta = sizeDelta;
+        if (tag != null) go.tag = tag;
         return rect;
     }
 }
