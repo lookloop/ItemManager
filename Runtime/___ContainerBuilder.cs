@@ -92,10 +92,11 @@ public static class ContainerBuilder
                 Mathf.CeilToInt((float)spec.everyPageCells / spec.row) * spec.cellWidth),
             "Grid");
 
-        //如果总
+        //如果总物品数量大于每页最大格子数量的话，就需要分页了，所以需要分页工具。比如说翻页，和跳页面。
         if (spec.totalItems > spec.everyPageCells)
         {
-            // PageText (InputField)
+            // 使用creaRect构建，在最底下，宽高可以自己设置，高度不建议设置为container向下留白还要大，因为那会覆盖到mask上。
+            //宽度只要不超过背包宽度，那就应该不突兀。
             var pageTextRect = CreateRect("PageText", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 Vector2.zero,
@@ -103,29 +104,33 @@ public static class ContainerBuilder
                 null,
                 typeof(TMP_InputField));
 
-            // Text Area
+            //area总所周知，tmp的一个光标定位工具，就这样创建，居中它的父级。
             var textArea = CreateRect("Text Area", pageTextRect,
                 Vector2.zero, Vector2.one, new(0.5f, 0.5f),
                 Vector2.zero, Vector2.zero,
                 null,
                 typeof(RectMask2D));
 
-            // Text (TextMeshProUGUI)
+            // text，不是input了，而是实实在在的显示层。和上面三个组成三兄弟，输入框，用于跳页。
             var textRect = CreateRect("Text", textArea,
                 Vector2.zero, Vector2.one, new(0.5f, 0.5f),
                 Vector2.zero, Vector2.zero,
                 null,
                 typeof(TextMeshProUGUI));
-
+            
+            //这里获取tmp这个对象。
             var tmp = pageTextRect.GetComponent<TMP_InputField>();
+            //子级是第二兄弟。
             tmp.textViewport = textArea;
+            //这里获取第三兄弟，构成tmp输入框。
             tmp.textComponent = textRect.GetComponent<TextMeshProUGUI>();
+            //下面是第三兄弟的设置
             tmp.textComponent.font = core.font;
             tmp.textComponent.fontSize = spec.pageTextHeight;
             tmp.textComponent.alignment = TextAlignmentOptions.Center;
             tmp.textComponent.color = Color.white;
             tmp.text = container.currentPage + "/" + Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
-            // 强制初始化 Caret 内部状态
+            // 强制初始化，tmp的bug，需要重启适应awake的初始化，让Caret正常显示。
             tmp.enabled = false;
             tmp.enabled = true;
 
