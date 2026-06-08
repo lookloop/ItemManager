@@ -13,16 +13,20 @@ namespace Lookloop.ItemManager
 
             int start = container.cells.Length * (page - 1);
             int end = container.cells.Length * page - 1;
-            int lastIndex = container.items.Length - 1;
-            if (end > lastIndex) end = lastIndex;
 
             // 检测最后一页
             int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
             if (totalPages > 1 && page == totalPages)
+            {
+                int lastIndex = container.items.Length - 1;
+                if (end > lastIndex) end = lastIndex;
                 LastPage(container);
+            }
             else
+            {
                 for (int i = 0; i < container.cells.Length; i++)
                     container.cells[i].cell.gameObject.SetActive(true);
+            }
 
             for (int i = start; i <= end; i++)
                 _ = SetItem.View(core, container, i);
