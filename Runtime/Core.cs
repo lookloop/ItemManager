@@ -23,18 +23,18 @@ public partial class Core : MonoBehaviour,
         switch (atRect.gameObject.tag)
         {
             case "Container":
-                TouchContainer.RouteDown(this, eventData);
+                TouchContainer.On(this, eventData);
                 break;
         }
 
-        TouchContainer.RouteDown(this, eventData);
+
     }
 
     public virtual void OnDrag(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
 
-        TouchContainer.RouteDown(this, eventData);
+
     }
 
     public virtual void OnPointerUp(PointerEventData eventData)

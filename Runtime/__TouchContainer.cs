@@ -12,7 +12,7 @@ namespace Lookloop.ItemManager
         /// <summary>
         /// 手指按下
         /// </summary>
-        public static void RouteDown(Core core, PointerEventData eventData)
+        public static void On(Core core, PointerEventData eventData)
         {
             var target = eventData.pointerCurrentRaycast.gameObject;
             if (target == null) return;
