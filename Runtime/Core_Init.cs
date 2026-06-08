@@ -13,7 +13,6 @@ public partial class Core
     void Start()
     {
         ContainerBuilder.BuildAll(this);
-        TestItemFiller.FillAll(this);
         InvokeRepeating(nameof(ReleaseStaleHandles), 1800f, 1800f); // 每 30 分钟清理过期句柄
         MiscInit.CreateTemporaryItemUI(canvas);
 
