@@ -116,6 +116,7 @@ public partial class Core : MonoBehaviour,
                 StopCoroutine(longPressCoroutine);
                 longPressCoroutine = null;
             }
+            eventData = null;
         }
 
 
