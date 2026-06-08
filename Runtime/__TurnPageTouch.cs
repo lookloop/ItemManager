@@ -20,7 +20,7 @@ public static class TurnPageTouch
         if (core.isDrag == true) return;
         
         var go = eventData.pointerCurrentRaycast.gameObject;
-        var mod = GetContainerMod(go.transform);
+        var mod = GetContainerMod(core, go.transform);
         switch (go.name)
         {
             case "PrevButton":
@@ -87,9 +87,9 @@ public static class TurnPageTouch
     /// 从被点击的 Transform 向上查找，找到所属 ContainerMod。<br/>
     /// 原理：按钮在 containerRect 下 → IsChildOf 匹配 → 返回该 ContainerMod。
     /// </summary>
-    static ContainerMod GetContainerMod(Transform t)
+    static ContainerMod GetContainerMod(Core core, Transform t)
     {
-        foreach (var mod in ContainerManager.containers)
+        foreach (var mod in core.containers)
         {
             if (t.IsChildOf(mod.container))
                 return mod;

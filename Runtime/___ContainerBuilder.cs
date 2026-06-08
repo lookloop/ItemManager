@@ -13,7 +13,7 @@ public static class ContainerBuilder
     /// <summary>遍历 specs 数组，逐项构建 + 注册容器</summary>
     public static void BuildAll(Core core)
     {
-        ContainerManager.containers.Clear();
+        core.containers.Clear();
         foreach (var spec in core.specs)
         {
             var mod = new ContainerMod();
@@ -45,7 +45,7 @@ public static class ContainerBuilder
             mod.detailFiller = mod.detail.GetComponent<IDetailFiller>();
 
         mod.cells = BuildItemUIs(core, mod, list);
-        ContainerManager.containers.Add(mod);
+        core.containers.Add(mod);
     }
 
     static void Build(Core core, ContainerSpec spec, ContainerMod mod)
@@ -171,7 +171,7 @@ public static class ContainerBuilder
         }
 
         mod.cells = BuildItemUIs(core, mod, cellRects);
-        ContainerManager.containers.Add(mod);
+        core.containers.Add(mod);
     }
 
     // ─── 内部快捷方法 ───

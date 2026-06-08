@@ -11,7 +11,7 @@ namespace Lookloop.ItemManager
         /// </summary>
         public static void FillAll(Core core)
         {
-            foreach (var mod in ContainerManager.containers)
+            foreach (var mod in core.containers)
             {
                 for (int i = 0; i < mod.items.Length; i++)
                 {

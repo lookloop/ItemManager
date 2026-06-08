@@ -34,7 +34,7 @@ public static class CellTouch_Drag
 
         // 从命中点向上追溯到所属 ContainerMod（不要求 Cell，任何容器内元素即可）
         ContainerMod targetMod = null;
-        foreach (var m in ContainerManager.containers)
+        foreach (var m in core.containers)
         {
             if (hitGo.transform.IsChildOf(m.container))
             {

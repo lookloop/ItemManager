@@ -72,7 +72,7 @@ public static class CellTouch
                 {
                     // 找到目标所属容器
                     ContainerMod targetMod = null;
-                    foreach (var m in ContainerManager.containers)
+                    foreach (var m in core.containers)
                     {
                         if (targetGo.transform.IsChildOf(m.container))
                         {

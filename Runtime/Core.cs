@@ -38,7 +38,7 @@ public partial class Core : MonoBehaviour,
 
             if (t != null)
             {
-                foreach (var m in ContainerManager.containers)
+                foreach (var m in containers)
                 {
                     if (m.container == t)
                         { hitContainerMod = m; break; }
