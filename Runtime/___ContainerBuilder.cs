@@ -134,7 +134,7 @@ public static class ContainerBuilder
             tmp.enabled = false;
             tmp.enabled = true;
 
-            // 聚焦时只显示当前页码（去掉 "/总页数"）
+            //按下时，就会聚焦，第一次按下tmp输入三兄弟，就会只显示当前current(当前)页的int，在此之前，先int类型转化string。
             tmp.onSelect.AddListener(_ =>
             {
                 tmp.text = container.currentPage.ToString();
