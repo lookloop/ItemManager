@@ -9,5 +9,9 @@ namespace Lookloop.ItemManager
     public static class TouchItem
     {
 
+        public static void ExtractItem(Core core)
+        {
+
+        }
     }
 }
