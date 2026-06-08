@@ -12,8 +12,7 @@ namespace Lookloop.ItemManager
             int id, int type, int tier, int count, int[] data)
         {
             container.items[itemKey] = new Item(id, type, tier, count, data);
-            //使用refresh
-            Refresh(core, container, itemKey);
+            _ = Refresh(core, container, itemKey);
         }
 
         /// <summary>
