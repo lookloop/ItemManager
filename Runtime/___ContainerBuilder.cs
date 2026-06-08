@@ -139,7 +139,7 @@ public static class ContainerBuilder
             ///这是聚焦开始，点击input就启用。
             tmp.onSelect.AddListener(delegate { OnPageInput(tmp, container); });
             //聚焦开始后的聚焦结束，enter，或者是点击其他地方触发。
-            tmp.onEndEdit.AddListener(delegate(string val) { OffPageInput(tmp, container, spec, val); });
+            tmp.onEndEdit.AddListener(delegate { OffPageInput(tmp, container, spec); });
             
 
             // PrevButton
@@ -261,9 +261,9 @@ public static class ContainerBuilder
         tmp.text = container.currentPage.ToString();
     }
 
-    static void OffPageInput(TMP_InputField tmp, Container container, ContainerSpec spec, string val)
+    static void OffPageInput(TMP_InputField tmp, Container container, ContainerSpec spec)
     {
-        if (int.TryParse(val, out int page))
+        if (int.TryParse(tmp.text, out int page))
         {
             int totalPages = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
             page = Mathf.Clamp(page, 1, totalPages);
