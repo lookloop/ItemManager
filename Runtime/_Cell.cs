@@ -12,7 +12,7 @@ namespace Lookloop.ItemManager
     public class Cell
     {
         public RectTransform cell;
-        public Image itemImage;          // ItemUI 自身的 Image（物品图标）
+        public Image item;          // ItemUI 自身的 Image（物品图标）
         public Image edge;               // 子级：物品边框/光效
         public TextMeshProUGUI count;
     }

@@ -51,13 +51,13 @@ namespace Lookloop.ItemManager
             {
                 if (item != null)
                     Debug.LogWarning($"[SetViewItem] Id=0 无效 — itemKey:{itemKey}");
-                cell.itemImage.gameObject.SetActive(false);
+                cell.item.gameObject.SetActive(false);
                 cell.edge.gameObject.SetActive(false);
                 cell.count.gameObject.SetActive(false);
                 return;
             }
 
-            cell.itemImage.gameObject.SetActive(true);
+            cell.item.gameObject.SetActive(true);
             cell.edge.gameObject.SetActive(true);
             cell.count.gameObject.SetActive(true);
             cell.count.text = item.Count > 0 ? item.Count.ToString() : "";
@@ -65,7 +65,7 @@ namespace Lookloop.ItemManager
             var table = await core.GetItemTable(item.Id.ToString());
             if (table != null)
             {
-                cell.itemImage.sprite = table.ItemSprite;
+                cell.item.sprite = table.ItemSprite;
                 cell.edge.sprite = table.GlowSprite;
             }
         }
@@ -77,7 +77,7 @@ namespace Lookloop.ItemManager
             if (pageIndex != mod.currentPage) return;
             int cellIndex = itemKey % mod.cells.Length;
             var cell = mod.cells[cellIndex];
-            cell.itemImage.gameObject.SetActive(false);
+            cell.item.gameObject.SetActive(false);
             cell.edge.gameObject.SetActive(false);
             cell.count.gameObject.SetActive(false);
         }

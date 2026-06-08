@@ -212,7 +212,7 @@ public static class ContainerBuilder
             cells[i] = new Cell
             {
                 cell = cellRect,
-                itemImage = itemImage,
+                item = itemImage,
                 edge = edgeRect.GetComponent<Image>(),
                 count = countText
             };
