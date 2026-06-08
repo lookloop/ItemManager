@@ -12,7 +12,7 @@ namespace Lookloop.ItemManager
         const float edgeRatio = 0.15f;
         const float turnThreshold = 0.3f;
 
-        static float turnAccum;
+        static float lastTurnTime;
 
         public static void EdgeBehavior(Core core)
         {
@@ -68,31 +68,26 @@ namespace Lookloop.ItemManager
             float maskW = maskRect.rect.width;
             float edgeW = maskW * edgeRatio;
 
-            // 到左边（x=0）、到右边的距离（x=maskW），取绝对值判断
-            float distLeft  = Mathf.Abs(localPos.x);          // |x - 0|
-            float distRight = Mathf.Abs(localPos.x - maskW);  // |x - maskW|
+            float distLeft  = Mathf.Abs(localPos.x);
+            float distRight = Mathf.Abs(localPos.x - maskW);
 
             bool inLeft  = distLeft  <= edgeW && distLeft  < distRight;
             bool inRight = distRight <= edgeW && distRight < distLeft;
 
-            if (!inLeft && !inRight)
+            float now = Time.time;
+
+            if (inLeft || inRight)
             {
-                turnAccum = 0f;
-                return;
+                if (now - lastTurnTime >= turnThreshold)
+                {
+                    int page = container.currentPage;
+                    if (inLeft)  page--;
+                    if (inRight) page++;
+                    SetPage.Set(core, container, page);
+                }
             }
 
-            turnAccum += Time.deltaTime;
-            if (turnAccum >= turnThreshold)
-            {
-                turnAccum -= turnThreshold;
-
-                int page = container.currentPage;
-
-                if (inLeft)  page--;
-                if (inRight) page++;
-
-                SetPage.Set(core, container, page);
-            }
+            lastTurnTime = now;
         }
     }
 }
