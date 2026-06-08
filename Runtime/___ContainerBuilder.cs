@@ -120,8 +120,6 @@ public static class ContainerBuilder
 
                 // 刷新格子
                 int start = (mod.currentPage - 1) * mod.cells.Length;
-                for (int i = start; i < start + mod.cells.Length && i < mod.items.Length; i++)
-                    ItemsController.SetViewItem(core, mod, i);
             });
             
 
