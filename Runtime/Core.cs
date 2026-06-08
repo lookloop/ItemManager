@@ -18,6 +18,11 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public Vector2 sourcePos;
     [HideInInspector] public Vector2 onPos;
 
+    // Cell 长按
+    const float pressTime = 0.3f;
+    [HideInInspector] public bool isLongPress;
+    [HideInInspector] public Coroutine longPressCoroutine;
+
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
@@ -110,8 +115,8 @@ public partial class Core : MonoBehaviour,
 
     public IEnumerator LongPressTimer()
     {
-        yield return new WaitForSeconds(TouchCell.pressTime);
-        TouchCell.isLongPress = true;
+        yield return new WaitForSeconds(pressTime);
+        isLongPress = true;
         TouchItem.ExtractItem(this);
 
         while (true)

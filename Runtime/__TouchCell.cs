@@ -10,31 +10,25 @@ namespace Lookloop.ItemManager
     public static class TouchCell
     {
 
-        public const float pressTime = 0.3f;
-
-        public static bool isLongPress;
-
-        static Coroutine longPressCoroutine;
-
         public static void On(Core core, PointerEventData eventData)
         {
-            longPressCoroutine = core.StartCoroutine(core.LongPressTimer());
+            core.longPressCoroutine = core.StartCoroutine(core.LongPressTimer());
             //初始化grid拖拽
             TouchCell_Grid.On(core, eventData);
         }
 
         public static void OnDrag(Core core, PointerEventData eventData)
         {
-            if (isLongPress)
+            if (core.isLongPress)
             {
                 // 长按已触发，拖拽中
             }
             else
             {
-                if (longPressCoroutine != null)
+                if (core.longPressCoroutine != null)
                 {
-                    core.StopCoroutine(longPressCoroutine);
-                    longPressCoroutine = null;
+                    core.StopCoroutine(core.longPressCoroutine);
+                    core.longPressCoroutine = null;
                 }
                 TouchCell_Grid.OnDrag(core, eventData);
             }
