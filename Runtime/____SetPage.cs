@@ -15,31 +15,34 @@ namespace Lookloop.ItemManager
             int end = start + container.cells.Length;
             if (end > container.items.Length) end = container.items.Length;
 
-            // 检测最后一页，调整 grid 高度 + 隐藏多余 Cell
+            // 检测最后一页
             int totalPages = (container.items.Length + container.cells.Length - 1) / container.cells.Length;
-            if (page == totalPages)
-            {
-                int lastItemCount = container.items.Length % container.cells.Length;
-                if (lastItemCount == 0) lastItemCount = container.cells.Length;
-
-                int rows = (lastItemCount + container.row - 1) / container.row;
-                container.gridRect.sizeDelta = new Vector2(
-                    container.gridRect.sizeDelta.x,
-                    rows * container.cellWidth);
-
-                // 隐藏超出最后一页物品数量的 Cell
-                for (int i = lastItemCount; i < container.cells.Length; i++)
-                    container.cells[i].cell.gameObject.SetActive(false);
-            }
+            if (totalPages > 1 && page == totalPages)
+                LastPage(container);
             else
-            {
-                // 非最后一页，确保所有 Cell 可见
                 for (int i = 0; i < container.cells.Length; i++)
                     container.cells[i].cell.gameObject.SetActive(true);
-            }
 
             for (int i = start; i < end; i++)
                 _ = SetItem.View(core, container, i);
+        }
+
+        /// <summary>
+        /// 最后一页：调整 grid 高度 + 隐藏多余 Cell。
+        /// 仅在总页数上限 > 1 且当前为最后一页时调用。
+        /// </summary>
+        static void LastPage(Container container)
+        {
+            int lastItemCount = container.items.Length % container.cells.Length;
+            if (lastItemCount == 0) lastItemCount = container.cells.Length;
+
+            int rows = (lastItemCount + container.row - 1) / container.row;
+            container.gridRect.sizeDelta = new Vector2(
+                container.gridRect.sizeDelta.x,
+                rows * container.cellWidth);
+
+            for (int i = lastItemCount; i < container.cells.Length; i++)
+                container.cells[i].cell.gameObject.SetActive(false);
         }
     }
 }
