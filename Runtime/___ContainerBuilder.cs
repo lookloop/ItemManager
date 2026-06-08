@@ -212,20 +212,17 @@ public static class ContainerBuilder
             //i就是key，依次访问。
             var cellRect = cellRects[i];
 
-            Vector2 halfHalf = new(0.5f, 0.5f);
-            var itemSize = cellRect.sizeDelta * 0.8f;
-
             var itemUIRect = CreateRect("ItemUI", cellRect,
-                halfHalf, halfHalf, halfHalf,
-                Vector2.zero, itemSize,
+                new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
+                Vector2.zero, cellRect.sizeDelta * 0.8f,
                 null,
                 typeof(Image));
             var itemImage = itemUIRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
 
             var edgeRect = CreateRect("edge", cellRect,
-                halfHalf, halfHalf, halfHalf,
-                Vector2.zero, itemSize,
+                new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
+                Vector2.zero, cellRect.sizeDelta * 0.8f,
                 null,
                 typeof(Image));
             edgeRect.GetComponent<Image>().raycastTarget = false;
