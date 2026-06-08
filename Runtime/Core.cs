@@ -12,7 +12,7 @@ public partial class Core : MonoBehaviour,
 {
     //有关触控的字段
 
-    [HideInInspector] public string atTag;
+    [HideInInspector] public RectTransform atRect;
     [HideInInspector] public bool isDrag;
 
     public virtual void OnPointerDown(PointerEventData eventData)
@@ -20,20 +20,27 @@ public partial class Core : MonoBehaviour,
         if (eventData.pointerId != 0) return;
 
 
-        
+        switch (atRect.gameObject.tag)
+        {
+            case "Container":
+                TouchContainer.RouteDown(this, eventData);
+                break;
+        }
+
+        TouchContainer.RouteDown(this, eventData);
     }
 
     public virtual void OnDrag(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
 
-       
+        TouchContainer.RouteDown(this, eventData);
     }
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
-        
+
     }
 
   
