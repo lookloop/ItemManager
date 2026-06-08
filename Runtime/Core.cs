@@ -107,7 +107,18 @@ public partial class Core : MonoBehaviour,
             onPos = Vector2.zero;
         }
 
-  
+
+    public IEnumerator LongPressTimer()
+    {
+        yield return new WaitForSeconds(TouchCell.pressTime);
+        TouchCell.isLongPress = true;
+        TouchItem.ExtractItem(this);
+
+        while (true)
+        {
+            yield return null;
+        }
+    }
 
 
 

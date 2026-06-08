@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -19,8 +18,7 @@ namespace Lookloop.ItemManager
 
         public static void On(Core core, PointerEventData eventData)
         {
-            //启动协程
-            longPressCoroutine = core.StartCoroutine(LongPressTimer());
+            longPressCoroutine = core.StartCoroutine(core.LongPressTimer());
             //初始化grid拖拽
             TouchCell_Grid.On(core, eventData);
         }
@@ -45,17 +43,6 @@ namespace Lookloop.ItemManager
         public static void End(Core core, PointerEventData eventData)
         {
 
-        }
-
-        static IEnumerator LongPressTimer()
-        {
-            yield return new WaitForSeconds(pressTime);
-            isLongPress = true;
-
-            while (true)
-            {
-                yield return null;
-            }
         }
     }
 }
