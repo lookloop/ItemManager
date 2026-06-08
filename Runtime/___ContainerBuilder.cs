@@ -124,6 +124,7 @@ public static class ContainerBuilder
             
             //这里获取tmp这个对象。
             var tmp = pageTextRect.GetComponent<TMP_InputField>();
+            container.pageInput = tmp;
             //子级是第二兄弟。
             tmp.textViewport = textArea;
             //这里获取第三兄弟，构成tmp输入框。

@@ -38,6 +38,10 @@ namespace Lookloop.ItemManager
             //最后不管cell显示还是隐藏，对三个子物体刷新其内容
             for (int i = start; i <= end; i++)
                 _ = SetItem.View(core, container, i);
+
+            // 同步 TMP 翻页输入框显示
+            if (container.pageInput != null)
+                container.pageInput.text = page + "/" + Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
         }
 
         static void LastPage(Container container)

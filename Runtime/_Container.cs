@@ -18,5 +18,6 @@ namespace Lookloop.ItemManager
         public int row;
         public float cellWidth;
         [System.NonSerialized] public IDetailFiller detailFiller;
+        [System.NonSerialized] public TMPro.TMP_InputField pageInput;
     }
 }
