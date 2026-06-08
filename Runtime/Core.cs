@@ -14,13 +14,12 @@ public partial class Core : MonoBehaviour,
 
     [HideInInspector] public RectTransform sourceRect;
     [HideInInspector] public bool isDrag;
-    [HideInInspector] public PointerEventData onEvenData;
     [HideInInspector] public Vector2 sourcePos;
+    [HideInInspector] public Vector2 onPos;
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
-        onEvenData = eventData;
         sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
         sourcePos = sourceRect.anchoredPosition;
 
@@ -62,7 +61,6 @@ public partial class Core : MonoBehaviour,
             //设置全null
             sourceRect = null;
             isDrag = false;
-            onEvenData = null;
             sourcePos = Vector2.zero;
         }
 
