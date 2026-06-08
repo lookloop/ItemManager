@@ -28,9 +28,7 @@ namespace Lookloop.ItemManager
             dragRect = CreateRect("dragitem", core.canvas.transform,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero,
-                new(size, size),
-                null,
-                typeof(Image));
+                new(size, size));
 
             // 三个子对象，和 ContainerBuilder.BuildCellView 里一致
             var itemRect = CreateRect("item", dragRect,
