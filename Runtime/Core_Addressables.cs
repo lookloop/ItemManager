@@ -59,7 +59,7 @@ public partial class Core
         //没东西可以返回，直接null，外部记住防null。
         return null;
     }
-    public void LossTiem()
+    public void LossTime()
     {
         //建立一个空list，用来装要loss的a。
         var loss = new List<string>();
