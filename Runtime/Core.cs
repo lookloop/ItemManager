@@ -31,6 +31,7 @@ public partial class Core : MonoBehaviour,
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
+        if (eventData.pointerId != 0) return;
         
     }
 
