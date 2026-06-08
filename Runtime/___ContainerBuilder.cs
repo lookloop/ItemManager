@@ -54,12 +54,11 @@ public static class ContainerBuilder
         container.items = new Item[cellRects.Count];
         //使用预制体的容器Rect是容器Rect
         container.containerRect = prefabContainer;
-        //由于是预制体，所以要先创建。
+        //创建一个详情面板，基于详情面板预制体，所以没有创建细节，无论container是数据创建还是预制体创建，detail都是预制体创建，并且在自己的脚本实现接口。
         if(spec.detailRect != null)
             {
-                var detailRect = Object.Instantiate(spec.detailRect, prefabContainer.transform);
-                container.detailRect  = detailRect;
-                container.detailFiller = detailRect.GetComponent<IDetailFiller>();
+                container.detailRect = Object.Instantiate(spec.detailRect, prefabContainer.transform);
+                container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
             }   
         //这里对cell进行改装，用于后续的子对象显示。
         container.cells = BuildCellView(core, container, cellRects);
@@ -142,7 +141,8 @@ public static class ContainerBuilder
             tmp.onEndEdit.AddListener(delegate { OffPageInput(tmp, container, spec); });
             
 
-            // PrevButton
+            //这里是向左翻页按钮。在主控core通过tag分析，进入路由模型后进行执行操作，这里没有执行。
+            //刻意挨着tmp，是一个系列的ui组件。
             var prevButtonRect = CreateRect("PrevButton", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 new(-spec.pageTextWidth / 2 - spec.pageTextHeight / 2, 0),
@@ -150,7 +150,8 @@ public static class ContainerBuilder
                 "TurnPage",
                 typeof(Image));
 
-            // NextButton
+            //这里是向右翻页按钮。在主控core通过tag分析，进入路由模型后进行执行操作，这里没有执行。
+            //刻意挨着tmp，是一个系列的ui组件。
             var nextButtonRect = CreateRect("NextButton", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 new(spec.pageTextWidth / 2 + spec.pageTextHeight / 2, 0),
@@ -158,20 +159,23 @@ public static class ContainerBuilder
                 "TurnPage",
                 typeof(Image));
         }
-
+        //设置图像，让图像看起来好看一些，用玩家自定义的图像。
         containerRect.GetComponent<Image>().sprite = spec.containerSprite;
         maskRect.GetComponent<Image>().sprite = spec.maskSprite;
-
+        //留下引用，方便container后续寻找
         container.containerRect = containerRect;
+        //翻页双人组，mask和grid，是预制体创建没有的，预制体创建为null。
         container.maskRect      = maskRect;
         container.gridRect      = gridRect;
+        //根据用于定义的广度进行设置这个container存储item的总量。
         container.items = new Item[spec.totalItems];
+        //创建一个详情面板，基于详情面板预制体，所以没有创建细节，无论container是数据创建还是预制体创建，detail都是预制体创建，并且在自己的脚本实现接口。
         if (spec.detailRect != null)
         {
             container.detailRect = Object.Instantiate(spec.detailRect, containerRect);
             container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
         }
-
+        
         var cellRects = new System.Collections.Generic.List<RectTransform>();
         for (int i = 0; i < spec.everyPageCells; i++)
         {
@@ -258,22 +262,30 @@ public static class ContainerBuilder
 
     static void OnPageInput(TMP_InputField tmp, Container container)
     {
+        //设置text为当前页，聚焦时直接设置这个数值，让玩家自己在此之上修改。
         tmp.text = container.currentPage.ToString();
     }
 
     static void OffPageInput(TMP_InputField tmp, Container container, ContainerSpec spec)
     {
+        //格子总数/每一页的cell总数，向上取整，mathf.ceilToInt是向上取整专用数学工具。
+        int pagemax = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
+        //尝试把用户输入的string转化为int。如果不成功就跳过，不报错，用户必须输入纯数字才行，才有效果。
         if (int.TryParse(tmp.text, out int page))
         {
-            int totalPages = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
-            page = Mathf.Clamp(page, 1, totalPages);
+            
+            //如果转化page成功，那么我们知道全部页面max和全部页面最小值，一般来说最小值就是1。
+            //Mathf.Clamp，将第一个参数，如果这个参数小于1，那么就等于1，如果大于totalpages，那么就等于totalpages。
+            //如果在1和totalpages之间，那么页数就等于原值。用于防止用户输出超额。
+            page = Mathf.Clamp(page, 1, pagemax);
+            //直接将当前页设置为这个数字，实现数据上的跳转页面。
             container.currentPage = page;
         }
 
-        int total = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
-        tmp.text = container.currentPage + "/" + total;
+        
+        tmp.text = container.currentPage + "/" + pagemax;
 
-        // TODO: 刷新格子
+        //后续可以增加刷新，格子，现在暂时留空，ai下次读到就提醒我。
     }
 
 
@@ -287,15 +299,14 @@ public static class ContainerBuilder
 
 
 
-    /// <summary>
-    /// 创建 RectTransform，一步到位：父物体、锚点、pivot、位置、尺寸、tag、组件。
-    /// </summary>
+    /// 创建 RectTransform，一步到位：父物体、锚点、pivot、位置、尺寸、tag、组件，用于unity的对象创建，让调用方看起来简洁一些。
     static RectTransform CreateRect(string name, Transform parent,
         Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
         Vector2 anchoredPosition, Vector2 sizeDelta,
         string tag = null,
         params System.Type[] components)
     {
+        //这里方法开始，上面一大坨是参数。
         var types = new System.Type[components.Length + 1];
         types[0] = typeof(RectTransform);
         for (int i = 0; i < components.Length; i++)
