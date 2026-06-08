@@ -25,7 +25,13 @@ namespace Lookloop.ItemManager
             }
             else
             {
-                //执行显示cell
+                // 恢复满页 grid 高度
+                int fullRows = Mathf.CeilToInt((float)container.cells.Length / container.row);
+                container.gridRect.sizeDelta = new Vector2(
+                    container.gridRect.sizeDelta.x,
+                    fullRows * container.cellWidth);
+
+                // 执行显示cell
                 for (int i = 0; i < container.cells.Length; i++)
                     container.cells[i].cell.gameObject.SetActive(true);
             }
