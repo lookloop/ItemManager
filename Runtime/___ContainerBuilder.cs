@@ -134,8 +134,12 @@ public static class ContainerBuilder
             tmp.enabled = false;
             tmp.enabled = true;
 
-            tmp.onSelect.AddListener(delegate { OnPageInputSelect(tmp, container); });
-            tmp.onEndEdit.AddListener(delegate(string val) { OnPageInputEndEdit(tmp, container, spec, val); });
+            ///tmp的输入框，点击后聚焦，聚焦的意思就是键盘输入可以录入输入框。
+            ///tmp可以定义，聚焦开始和结束要启用什么方法。
+            ///这是聚焦开始，点击input就启用。
+            tmp.onSelect.AddListener(delegate { OnPageInput(tmp, container); });
+            //聚焦开始后的聚焦结束，enter，或者是点击其他地方触发。
+            tmp.onEndEdit.AddListener(delegate(string val) { OffPageInput(tmp, container, spec, val); });
             
 
             // PrevButton
@@ -241,14 +245,23 @@ public static class ContainerBuilder
         return cells;
     }
 
+
+
+
+
+
+
+
+
+
     // ─── 页码输入 ───
 
-    static void OnPageInputSelect(TMP_InputField tmp, Container container)
+    static void OnPageInput(TMP_InputField tmp, Container container)
     {
         tmp.text = container.currentPage.ToString();
     }
 
-    static void OnPageInputEndEdit(TMP_InputField tmp, Container container, ContainerSpec spec, string val)
+    static void OffPageInput(TMP_InputField tmp, Container container, ContainerSpec spec, string val)
     {
         if (int.TryParse(val, out int page))
         {
@@ -262,6 +275,17 @@ public static class ContainerBuilder
 
         // TODO: 刷新格子
     }
+
+
+
+
+
+
+
+
+
+
+
 
     /// <summary>
     /// 创建 RectTransform，一步到位：父物体、锚点、pivot、位置、尺寸、tag、组件。
