@@ -51,6 +51,11 @@ namespace Lookloop.ItemManager
         {
             yield return new WaitForSeconds(pressTime);
             isLongPress = true;
+
+            while (true)
+            {
+                yield return null;
+            }
         }
     }
 }
