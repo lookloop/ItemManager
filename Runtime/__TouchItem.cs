@@ -35,5 +35,18 @@ namespace Lookloop.ItemManager
             OtherTool.dragCount.text = item.Count.ToString();
             OtherTool.dragRect.gameObject.SetActive(true);
         }
+
+        public static void OnDrag(Core core)
+        {
+            if (!OtherTool.dragRect.gameObject.activeSelf) return;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                core.canvas.transform as RectTransform,
+                core.eventData.position,
+                core.canvas.worldCamera,
+                out Vector2 localPos);
+
+            OtherTool.dragRect.anchoredPosition = localPos;
+        }
     }
 }

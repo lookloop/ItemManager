@@ -20,7 +20,7 @@ namespace Lookloop.ItemManager
         {
             if (core.isLongPress)
             {
-                // 长按已触发，拖拽中
+                TouchItem.OnDrag(core);
             }
             else
             {
