@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
@@ -8,7 +7,7 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class TouchTurnPage
     {
-        public static void End(Core core, PointerEventData eventData)
+        public static void End(Core core)
         {
             if (core.isDrag || core.sourceContainer == null) return;
 

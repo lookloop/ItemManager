@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
@@ -9,24 +8,24 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class TouchContainer
     {
-       public static void On(Core core, PointerEventData eventData)
+       public static void On(Core core)
         {
             // 旧坐标，containertag的特定坐标系的转化结果
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 core.sourceRect.parent as RectTransform,
-                eventData.position,
+                core.eventData.position,
                 core.canvas.worldCamera,
                 out Vector2 oldLocal);
             core.onPos = oldLocal;
 
         }
 
-        public static void OnDrag(Core core, PointerEventData eventData)
+        public static void OnDrag(Core core)
         {
             // 新坐标
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 core.sourceRect.parent as RectTransform,
-                eventData.position,
+                core.eventData.position,
                 core.canvas.worldCamera,
                 out Vector2 OnDragPos);
             //距离等于新坐标减去旧坐标。

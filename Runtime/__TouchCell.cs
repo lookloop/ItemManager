@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
@@ -10,14 +9,14 @@ namespace Lookloop.ItemManager
     public static class TouchCell
     {
 
-        public static void On(Core core, PointerEventData eventData)
+        public static void On(Core core)
         {
             core.longPressCoroutine = core.StartCoroutine(core.LongPressTimer());
             //初始化grid拖拽
-            TouchCell_Grid.On(core, eventData);
+            TouchCell_Grid.On(core);
         }
 
-        public static void OnDrag(Core core, PointerEventData eventData)
+        public static void OnDrag(Core core)
         {
             if (core.isLongPress)
             {
@@ -30,11 +29,11 @@ namespace Lookloop.ItemManager
                     core.StopCoroutine(core.longPressCoroutine);
                     core.longPressCoroutine = null;
                 }
-                TouchCell_Grid.OnDrag(core, eventData);
+                TouchCell_Grid.OnDrag(core);
             }
         }
 
-        public static void End(Core core, PointerEventData eventData)
+        public static void End(Core core)
         {
 
         }

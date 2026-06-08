@@ -31,10 +31,10 @@ public partial class Core : MonoBehaviour,
         switch (sourceRect.gameObject.tag)
         {
             case "Container":
-                TouchContainer.On(this, eventData);
+                TouchContainer.On(this);
                 break;
             case "Cell":
-                TouchCell.On(this, eventData);
+                TouchCell.On(this);
                 break;
         }
 
@@ -49,10 +49,10 @@ public partial class Core : MonoBehaviour,
         switch (sourceRect.gameObject.tag)
         {
             case "Container":
-                TouchContainer.OnDrag(this, eventData);
+                TouchContainer.OnDrag(this);
                 break;
             case "Cell":
-                TouchCell.OnDrag(this, eventData);
+                TouchCell.OnDrag(this);
                 break;
         }
 
@@ -67,7 +67,7 @@ public partial class Core : MonoBehaviour,
         switch (sourceRect.gameObject.tag)
         {
             case "TurnPage":
-                TouchTurnPage.End(this, eventData);
+                TouchTurnPage.End(this);
                 break;
         }
 

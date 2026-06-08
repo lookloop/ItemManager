@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
@@ -8,7 +7,7 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class TouchCell_Grid
     {
-        public static void On(Core core, PointerEventData eventData)
+        public static void On(Core core)
         {
             var gridRect = core.sourceContainer.gridRect;
             if (gridRect == null) return;
@@ -17,19 +16,19 @@ namespace Lookloop.ItemManager
             //手指的Pos
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 gridRect.parent as RectTransform,
-                eventData.position,
+                core.eventData.position,
                 core.canvas.worldCamera,
                 out core.onPos);
         }
 
-        public static void OnDrag(Core core, PointerEventData eventData)
+        public static void OnDrag(Core core)
         {
             var gridRect = core.sourceContainer.gridRect;
             if (gridRect == null) return;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 gridRect.parent as RectTransform,
-                eventData.position,
+                core.eventData.position,
                 core.canvas.worldCamera,
                 out Vector2 newLocal);
 
