@@ -31,7 +31,6 @@ namespace Lookloop.ItemManager
             }
             else
             {
-                // 未触发长按，停止协程销毁它
                 if (longPressCoroutine != null)
                 {
                     core.StopCoroutine(longPressCoroutine);
