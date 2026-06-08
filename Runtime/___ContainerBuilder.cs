@@ -141,7 +141,7 @@ public static class ContainerBuilder
             ///这是聚焦开始，点击input就启用。
             tmp.onSelect.AddListener(delegate { OnPageInput(tmp, container); });
             //聚焦开始后的聚焦结束，enter，或者是点击其他地方触发。
-            tmp.onEndEdit.AddListener(delegate { OffPageInput(tmp, container, spec); });
+            tmp.onEndEdit.AddListener(delegate { OffPageInput(core, tmp, container); });
             
 
             //这里是向左翻页按钮。在主控core通过tag分析，进入路由模型后进行执行操作，这里没有执行。
@@ -281,26 +281,19 @@ public static class ContainerBuilder
         tmp.text = container.currentPage.ToString();
     }
 
-    static void OffPageInput(TMP_InputField tmp, Container container, ContainerSpec spec)
+    static void OffPageInput(Core core, TMP_InputField tmp, Container container)
     {
-        //格子总数/每一页的cell总数，向上取整，mathf.ceilToInt是向上取整专用数学工具。
-        int pagemax = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
-        //尝试把用户输入的string转化为int。如果不成功就跳过，不报错，用户必须输入纯数字才行，才有效果。
+        //获取最大页
+        int pagemax = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
         if (int.TryParse(tmp.text, out int page))
         {
-            
-            //如果转化page成功，那么我们知道全部页面max和全部页面最小值，一般来说最小值就是1。
-            //Mathf.Clamp，将第一个参数，如果这个参数小于1，那么就等于1，如果大于totalpages，那么就等于totalpages。
-            //如果在1和totalpages之间，那么页数就等于原值。用于防止用户输出超额。
+            //钳制1到最大页
             page = Mathf.Clamp(page, 1, pagemax);
-            //直接将当前页设置为这个数字，实现数据上的跳转页面。
-            container.currentPage = page;
+            //启用翻页方法
+            SetPage.Set(core, container, page);
         }
 
-        
         tmp.text = container.currentPage + "/" + pagemax;
-
-        //后续可以增加刷新，格子，现在暂时留空，ai下次读到就提醒我。
     }
 
 
