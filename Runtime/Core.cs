@@ -10,6 +10,7 @@ public partial class Core : MonoBehaviour,
     IDragHandler,          // C — 拖拽中（每帧）
     IPointerUpHandler      // D — 手指抬起
 {
+    //有关触控的字段
 
     [HideInInspector] public string atTag;
     [HideInInspector] public bool isDrag;

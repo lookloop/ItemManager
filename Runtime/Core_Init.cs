@@ -5,6 +5,7 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
+    //承担一切的初始化工作
     void Awake()
     {
         //frame设置为60

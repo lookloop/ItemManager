@@ -8,6 +8,8 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
+
+    //没有字段，只有一个结构体
     //用于增加一个float的时间time，用于辅助计时，所以特地装了一个结构体。
     struct HandleTime
     {
