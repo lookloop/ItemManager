@@ -58,7 +58,7 @@ public partial class Core
         //没东西可以返回，直接null，外部记住防null。
         return null;
     }
-    public void ReleaseStaleHandles()
+    public void LossTiem()
     {
         var stale = new List<string>();
 
