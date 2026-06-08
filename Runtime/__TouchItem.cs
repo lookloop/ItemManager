@@ -45,7 +45,6 @@ namespace Lookloop.ItemManager
                 core.eventData.position,
                 core.canvas.worldCamera,
                 out Vector2 localPos);
-
             OtherTool.dragRect.anchoredPosition = localPos;
         }
     }
