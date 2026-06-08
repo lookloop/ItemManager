@@ -36,6 +36,13 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
 
+        switch (sourceRect.gameObject.tag)
+        {
+            case "Container":
+                TouchContainer.OnDrag(this, eventData);
+                break;
+        }
+
 
     }
 
