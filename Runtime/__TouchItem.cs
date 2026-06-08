@@ -46,6 +46,30 @@ namespace Lookloop.ItemManager
                 core.canvas.worldCamera,
                 out Vector2 localPos);
             OtherTool.dragRect.anchoredPosition = localPos;
+
+            // 射线检测当前拖拽下方碰到的对象
+            var raycast = core.eventData.pointerCurrentRaycast;
+            if (raycast.gameObject != null)
+            {
+                core.targetRect = raycast.gameObject.GetComponent<RectTransform>();
+                // 沿父级向上找 tag=Container，通过 name 定位 container
+                var t = core.targetRect != null ? core.targetRect.parent : null;
+                while (t != null)
+                {
+                    if (t.CompareTag("Container"))
+                    {
+                        if (int.TryParse(t.name, out int index) && index < core.containers.Length)
+                            core.targetContainer = core.containers[index];
+                        break;
+                    }
+                    t = t.parent;
+                }
+            }
+            else
+            {
+                core.targetRect = null;
+                core.targetContainer = null;
+            }
         }
     }
 }
