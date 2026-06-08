@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
@@ -7,6 +8,9 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class TouchCell_Grid
     {
-
+        public static void OnDrag(Core core, PointerEventData eventData)
+    {
+        
+        }
     }
 }
