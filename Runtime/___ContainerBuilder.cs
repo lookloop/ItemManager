@@ -213,13 +213,13 @@ public static class ContainerBuilder
             var cellRect = cellRects[i];
             //三大配置，1，本体，2边缘光，3计数。射线检测都关闭，并且开局全部先隐藏。都是cell的子对象。
             //物体的本体
-            var itemUIRect = CreateRect("ItemUI", cellRect,
+            var itemRect = CreateRect("ItemUI", cellRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, cellRect.sizeDelta * 0.8f,
                 null,
                 typeof(Image));
             //获取图片组件
-            var itemImage = itemUIRect.GetComponent<Image>();
+            var itemImage = itemRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
 
             var edgeRect = CreateRect("edge", cellRect,
