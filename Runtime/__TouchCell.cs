@@ -9,6 +9,19 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class TouchCell
     {
+        public static void On(Core core, PointerEventData eventData)
+        {
 
+        }
+
+        public static void OnDrag(Core core, PointerEventData eventData)
+        {
+
+        }
+
+        public static void End(Core core, PointerEventData eventData)
+        {
+
+        }
     }
 }
