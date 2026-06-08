@@ -16,10 +16,14 @@ public partial class Core
 
     void Start()
     {
-        //启动构建功工作
+        //启动构建工作
         ContainerBuilder.BuildAll(this);
         //开启磁盘资源本地缓存循环检查，去除时间留得太久的
         StartCoroutine(LossTimeLoop());
+
+        //构建拖拽工具
+        OtherTool.BuildDragItem(this);
+        OtherTool.BuildShadow(this);
 
         Test.Fill(this);
     }
