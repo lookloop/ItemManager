@@ -10,6 +10,9 @@ namespace Lookloop.ItemManager
     {
         const float scrollSpeed = 60f;
         const float edgeRatio = 0.15f;
+        const float turnThreshold = 0.3f;
+
+        static float turnAccum;
 
         public static void EdgeBehavior(Core core)
         {
@@ -47,6 +50,52 @@ namespace Lookloop.ItemManager
             targetY = Mathf.Clamp(targetY, 0f, maxY);
 
             gridRect.anchoredPosition = new Vector2(gridRect.anchoredPosition.x, targetY);
+        }
+
+        public static void TurnPageBehavior(Core core)
+        {
+            var container = core.targetContainer;
+            if (container == null) return;
+            var maskRect = container.maskRect;
+            if (maskRect == null) return;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                maskRect,
+                core.eventData.position,
+                core.canvas.worldCamera,
+                out Vector2 localPos);
+
+            float maskW = maskRect.rect.width;
+            float edgeW = maskW * edgeRatio;
+
+            // 到左边（x=0）、到右边的距离（x=maskW），取绝对值判断
+            float distLeft  = Mathf.Abs(localPos.x);          // |x - 0|
+            float distRight = Mathf.Abs(localPos.x - maskW);  // |x - maskW|
+
+            bool inLeft  = distLeft  <= edgeW && distLeft  < distRight;
+            bool inRight = distRight <= edgeW && distRight < distLeft;
+
+            if (!inLeft && !inRight)
+            {
+                turnAccum = 0f;
+                return;
+            }
+
+            turnAccum += Time.deltaTime;
+            if (turnAccum >= turnThreshold)
+            {
+                turnAccum -= turnThreshold;
+
+                int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
+                int page = container.currentPage;
+
+                if (inLeft)  page--;
+                if (inRight) page++;
+
+                page = Mathf.Clamp(page, 1, totalPages);
+                if (page != container.currentPage)
+                    SetPage.Set(core, container, page);
+            }
         }
     }
 }
