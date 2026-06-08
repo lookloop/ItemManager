@@ -25,7 +25,7 @@ namespace Lookloop.ItemManager
         {
             const float size = 10f;
 
-            dragRect = CreateRect("DragCell", core.canvas.transform,
+            dragRect = CreateRect("dragitem", core.canvas.transform,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero,
                 new(size, size),
@@ -33,7 +33,7 @@ namespace Lookloop.ItemManager
                 typeof(Image));
 
             // 三个子对象，和 ContainerBuilder.BuildCellView 里一致
-            var itemRect = CreateRect("ItemUI", dragRect,
+            var itemRect = CreateRect("item", dragRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, dragRect.sizeDelta * 0.8f,
                 null,
