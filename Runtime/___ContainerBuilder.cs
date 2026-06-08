@@ -176,31 +176,40 @@ public static class ContainerBuilder
             container.detailRect = Object.Instantiate(spec.detailRect, containerRect);
             container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
         }
-        
+        //和上面一样，整一个list装cell。至于为什么不是直接数组反正有everyPageCells，
+        //因为上面预制体创建用的就是list作为参数传递进入BuildCellView，这里也同步一下，复用一下方法。
         var cellRects = new List<RectTransform>();
+        //那个是天然就有预制体，这个是自己循环创建，并且依次排好位置，符合容器横平竖直排列规范。
         for (int i = 0; i < spec.everyPageCells; i++)
         {
+            //每一个循环都要新建一个，填写很多参数进去。
             var rect = CreateRect(i.ToString(), gridRect,
                 new(0f, 1f), new(0f, 1f), new(0f, 1f),
                 new((i % spec.row) * spec.cellWidth, -(i / spec.row) * spec.cellWidth),
                 new(spec.cellWidth, spec.cellWidth),
                 "Cell",
                 typeof(Image));
+                //这里创建完毕了。
+            //给这个格子背景上色，使用用户拖进来的精灵图。
             rect.GetComponent<Image>().sprite = spec.cellSprite;
+            //加入list。
             cellRects.Add(rect);
         }
-
+        //使用这个方法传递list，生成数组，并且完成cellview的基础设施构建工作。
         container.cells = BuildCellView(core, container, cellRects);
     }
 
     // ─── 内部快捷方法 ───
 
-    /// <summary>遍历 cellRects，为每个 Cell 创建 itemImage + edge + count 子元素，返回 Cell[]</summary>
+    //使用list，遍历list，针对每一个cell进行生成对应的view配置。返回一个数组，作为container的一部分。
     static Cell[] BuildCellView(Core core, Container container, List<RectTransform> cellRects)
     {
+        //直接通过list的count来决定数组长度，同时也是everypageCells参数，值是一样的。因为list就是基于everyPageCell创建的。
         var cells = new Cell[cellRects.Count];
+        //遍历这些cell。
         for (int i = 0; i < cellRects.Count; i++)
         {
+            //i就是key，依次访问。
             var cellRect = cellRects[i];
 
             Vector2 halfHalf = new(0.5f, 0.5f);
