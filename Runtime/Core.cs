@@ -62,6 +62,7 @@ public partial class Core : MonoBehaviour,
             sourceRect = null;
             isDrag = false;
             sourcePos = Vector2.zero;
+            onPos = Vector2.zero;
         }
 
   
