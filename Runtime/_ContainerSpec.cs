@@ -14,8 +14,8 @@ namespace Lookloop.ItemManager
     {
         [Header("预制体 (可选)")]
         [Tooltip("不为空则直接 Instantiate，自动扫描 tag='Item' 的子对象作为 Cell 注册表")]
-        public RectTransform prefab;
-        public RectTransform detail;
+        public RectTransform prefabRect;
+        public RectTransform detailRect;
 
         [Space]
         [Header("Grid")]

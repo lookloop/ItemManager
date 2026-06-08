@@ -18,7 +18,7 @@ public static class ContainerBuilder
         {
             var container = new Container();
             core.containers[i] = container;
-            if (core.specs[i].prefab != null)
+            if (core.specs[i].prefabRect != null)
                 BuildPrefab(core, core.specs[i], container);
             else
                 Build(core, core.specs[i], container);
@@ -27,25 +27,24 @@ public static class ContainerBuilder
 
     static void BuildPrefab(Core core, ContainerSpec spec, Container container)
     {
-        var instance = Object.Instantiate(spec.prefab, core.transform);
-
-        var allChildren = instance.GetComponentsInChildren<RectTransform>(true);
-        var list = new System.Collections.Generic.List<RectTransform>();
-        foreach (var tr in allChildren)
+        var prefabContainer = Object.Instantiate(spec.prefabRect, core.transform);
+        var allRects = prefabContainer.GetComponentsInChildren<RectTransform>(true);
+        var cellRects = new System.Collections.Generic.List<RectTransform>();
+        foreach (var allRect in allRects)
         {
-            if (tr.CompareTag("Cell"))
-                list.Add(tr);
+            if (allRect.CompareTag("Cell"))
+                cellRects.Add(allRect);
         }
-        for (int i = 0; i < list.Count; i++)
-            list[i].name = i.ToString();
+        for (int i = 0; i < cellRects.Count; i++)
+            cellRects[i].name = i.ToString();
 
-        container.items = new Item[list.Count];
-        container.containerRect = instance;
-        container.detailRect  = spec.detail;
+        container.items = new Item[cellRects.Count];
+        container.containerRect = prefabContainer;
+        container.detailRect  = spec.detailRect;
         if (container.detailRect != null)
             container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
 
-        container.cells = BuildItemUIs(core, container, list);
+        container.cells = BuildItemUIs(core, container, cellRects);
     }
 
     static void Build(Core core, ContainerSpec spec, Container container)
@@ -158,9 +157,9 @@ public static class ContainerBuilder
         container.maskRect      = maskRect;
         container.gridRect      = gridRect;
         container.items = new Item[spec.totalCells];
-        if (spec.detail != null)
+        if (spec.detailRect != null)
         {
-            container.detailRect = Object.Instantiate(spec.detail, containerRect);
+            container.detailRect = Object.Instantiate(spec.detailRect, containerRect);
             container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
         }
 
