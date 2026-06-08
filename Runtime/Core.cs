@@ -130,6 +130,7 @@ public partial class Core : MonoBehaviour,
 
         while (true)
         {
+            TouchMask.EdgeBehavior(this);
             yield return null;
         }
     }
