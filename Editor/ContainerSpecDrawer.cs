@@ -17,19 +17,19 @@ namespace Lookloop.ItemManager.Editor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // prefab + detail — 始终可见，不参与折叠
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("prefab"));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("detail"));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("prefabRect"));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("detailRect"));
             // 三角折叠按钮
             string key = property.propertyPath;
             if (!Foldouts.ContainsKey(key)) Foldouts[key] = false;
             Foldouts[key] = EditorGUILayout.Foldout(Foldouts[key], "参数");
 
             // 新建元素自动写默认值（Unity 数组新增不执行字段初始化器）
-            if (property.FindPropertyRelative("totalCells").intValue == 0)
+            if (property.FindPropertyRelative("totalItems").intValue == 0)
             {
-                property.FindPropertyRelative("totalCells").intValue = 80;
-                property.FindPropertyRelative("everyPageTotal").intValue = 40;
-                property.FindPropertyRelative("rows").intValue = 5;
+                property.FindPropertyRelative("totalItems").intValue = 80;
+                property.FindPropertyRelative("everyPageCells").intValue = 40;
+                property.FindPropertyRelative("row").intValue = 5;
                 property.FindPropertyRelative("cellWidth").floatValue = 10f;
                 property.FindPropertyRelative("maskHeight").floatValue = 40f;
                 property.FindPropertyRelative("containerFillHorizontal").floatValue = 2f;
@@ -41,9 +41,9 @@ namespace Lookloop.ItemManager.Editor
 
             if (Foldouts[key])
             {
-                Prop(property, "totalCells",            "物品总数 (默认80)");
-                Prop(property, "everyPageTotal",        "每页格子数 (默认40)");
-                Prop(property, "rows",                  "每行格子数 (默认5)");
+                Prop(property, "totalItems",            "物品总数 (默认80)");
+                Prop(property, "everyPageCells",        "每页格子数 (默认40)");
+                Prop(property, "row",                  "每行格子数 (默认5)");
                 Prop(property, "cellWidth",             "格子边长 (默认10)");
                 Prop(property, "maskHeight",            "遮罩高度 (默认40)");
                 Prop(property, "containerFillHorizontal", "水平内边距 (默认2)");
