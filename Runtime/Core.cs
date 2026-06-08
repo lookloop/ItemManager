@@ -12,7 +12,7 @@ public partial class Core : MonoBehaviour,
 {
     //有关触控的字段
 
-    [HideInInspector] public RectTransform atRect;
+    [HideInInspector] public RectTransform sourceRect;
     [HideInInspector] public bool isDrag;
     [HideInInspector] public PointerEventData onEvenData;
 
@@ -22,7 +22,7 @@ public partial class Core : MonoBehaviour,
         onEvenData = eventData;
 
 
-        switch (atRect.gameObject.tag)
+        switch (sourceRect.gameObject.tag)
         {
             case "Container":
                 TouchContainer.On(this, eventData);
