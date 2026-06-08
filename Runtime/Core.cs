@@ -20,8 +20,8 @@ public partial class Core : MonoBehaviour,
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
-        sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
-        sourcePos = sourceRect.anchoredPosition;
+        Begin(eventData);
+        
 
         switch (sourceRect.gameObject.tag)
         {
@@ -55,6 +55,20 @@ public partial class Core : MonoBehaviour,
         Reset();
 
     }
+
+
+
+
+
+
+
+
+    
+    public virtual void Begin(PointerEventData eventData)
+        {
+            sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
+            sourcePos = sourceRect.anchoredPosition;
+        }
 
     public virtual void Reset()
         {
