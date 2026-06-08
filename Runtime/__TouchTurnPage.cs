@@ -9,7 +9,9 @@ namespace Lookloop.ItemManager
     {
         public static void End(Core core, PointerEventData eventData)
         {
-        
+            if (core.isDrag)
+            return;
+            
         }
     }
 }
