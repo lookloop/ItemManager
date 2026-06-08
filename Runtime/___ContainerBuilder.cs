@@ -134,29 +134,8 @@ public static class ContainerBuilder
             tmp.enabled = false;
             tmp.enabled = true;
 
-            //tmp输入预留了按下和结束时，可以自己定义方法。
-            //定义按下时，就会聚焦，第一次按下tmp输入三兄弟，就会只显示当前current(当前)页的int，在此之前，先int类型转化string。
-            tmp.onSelect.AddListener(_ =>
-            {
-                //直接设置文本为一个数字。
-                tmp.text = container.currentPage.ToString();
-            });
-
-            //定义输入完成后，按下确认输入enter的时候或者是点击其他地方，不再聚焦，输入不再有效，这个时候封闭状态呈现出最后的显示效果。
-            tmp.onEndEdit.AddListener(val =>
-            {
-                if (int.TryParse(val, out int page))
-                {
-                    int totalPages = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
-                    page = Mathf.Clamp(page, 1, totalPages);
-                    container.currentPage = page;
-                }
-                int total = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
-                tmp.text = container.currentPage + "/" + total;
-
-                // 刷新格子
-                int start = (container.currentPage - 1) * container.cells.Length;
-            });
+            tmp.onSelect.AddListener(delegate { OnPageInputSelect(tmp, container); });
+            tmp.onEndEdit.AddListener(delegate(string val) { OnPageInputEndEdit(tmp, container, spec, val); });
             
 
             // PrevButton
@@ -260,6 +239,28 @@ public static class ContainerBuilder
             countText.gameObject.SetActive(false);
         }
         return cells;
+    }
+
+    // ─── 页码输入 ───
+
+    static void OnPageInputSelect(TMP_InputField tmp, Container container)
+    {
+        tmp.text = container.currentPage.ToString();
+    }
+
+    static void OnPageInputEndEdit(TMP_InputField tmp, Container container, ContainerSpec spec, string val)
+    {
+        if (int.TryParse(val, out int page))
+        {
+            int totalPages = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
+            page = Mathf.Clamp(page, 1, totalPages);
+            container.currentPage = page;
+        }
+
+        int total = Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
+        tmp.text = container.currentPage + "/" + total;
+
+        // TODO: 刷新格子
     }
 
     /// <summary>
