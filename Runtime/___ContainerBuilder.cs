@@ -36,14 +36,19 @@ public static class ContainerBuilder
                 cellRects.Add(allRect);
         }
         for (int i = 0; i < cellRects.Count; i++)
+        //一行代码不用加括号，这里是命名以后要对应数组里面的key，使用可变长度list，待会变成数组
             cellRects[i].name = i.ToString();
-
+        //这里直接根据list长度变成数组。
         container.items = new Item[cellRects.Count];
+        //使用预制体的容器Rect是容器Rect
         container.containerRect = prefabContainer;
+        //详情信息一般都是预制体，直接引用即可。
         container.detailRect  = spec.detailRect;
+        //详情面板使用预制体装载，详情面板的显示方法各异，所以可以给详情面板接一个接口。用于他们自己各异实现。
         if (container.detailRect != null)
+        //使用unity的get直接获取接口实例。
             container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
-
+        //这里对cell进行改装，用于后续的子对象显示。
         container.cells = BuildItemUIs(core, container, cellRects);
     }
 
