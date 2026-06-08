@@ -35,7 +35,17 @@ namespace Lookloop.ItemManager
 
             Vector2 diff = newLocal - core.onPos;
 
-            gridRect.anchoredPosition = new Vector2(core.sourcePos.x, core.sourcePos.y + diff.y);
+            // 最终位置
+            float targetY = core.sourcePos.y + diff.y;
+
+            // 钳制：不能低于 0（Grid 顶部不能低于 Mask 顶部）
+            //        不能高于 gridHeight - maskHeight（Grid 底部不能超过 Mask 底部）
+            float gridHeight = gridRect.sizeDelta.y;
+            float maskHeight = core.sourceContainer.maskRect.sizeDelta.y;
+            float maxY = Mathf.Max(0f, gridHeight - maskHeight);
+            targetY = Mathf.Clamp(targetY, 0f, maxY);
+
+            gridRect.anchoredPosition = new Vector2(core.sourcePos.x, targetY);
         }
     }
 }
