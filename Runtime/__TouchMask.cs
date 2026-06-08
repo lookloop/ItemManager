@@ -86,15 +86,12 @@ namespace Lookloop.ItemManager
             {
                 turnAccum -= turnThreshold;
 
-                int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
                 int page = container.currentPage;
 
                 if (inLeft)  page--;
                 if (inRight) page++;
 
-                page = Mathf.Clamp(page, 1, totalPages);
-                if (page != container.currentPage)
-                    SetPage.Set(core, container, page);
+                SetPage.Set(core, container, page);
             }
         }
     }
