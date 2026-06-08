@@ -28,6 +28,7 @@ public partial class Core
             if (entry.handle.IsValid() && entry.handle.Status == AsyncOperationStatus.Succeeded)
             {
                 //对结构体的时间进行重置一下，因为又有新的访问来了，刷新时间。
+                //时间刷新为游戏运行最新时间。
                 entry.time = Time.time;
                 //这里使用key从字典获取值，再用值=字典key，再被字典的key引用。
                 //值类型发生改变，结构体只能一整个更换。
@@ -46,7 +47,7 @@ public partial class Core
         //判断加载情况，如果成功，那就存入缓存。
         if (handle.Status == AsyncOperationStatus.Succeeded)
         {
-            //时间刷新为最新，句柄也是刚刚出炉。
+            //时间刷新为最新游戏运行时间，句柄也是刚刚出炉。
             handleTimes[key] = new HandleTime { handle = handle, time = Time.time };
             //返回handle给外部，没有命中缓存有点慢。
             return handle.Result;
@@ -66,6 +67,7 @@ public partial class Core
         foreach (var a in handleTimes)
         {
             //判断a的value的值，也就是时间，是否过期。如果过期的就添加进list里。
+            //当前游戏运行时间，和过去这个句柄的记录的游戏运行时间的差异，如果大于30分钟，那么进行清理
             if (Time.time - a.Value.time > 1800f)
                 loss.Add(a.Key);
         }

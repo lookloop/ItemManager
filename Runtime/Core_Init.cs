@@ -13,9 +13,18 @@ public partial class Core
     void Start()
     {
         ContainerBuilder.BuildAll(this);
-        InvokeRepeating(nameof(LossTiem), 1800f, 1800f); // 每 30 分钟清理过期句柄
+        StartCoroutine(LossTimeLoop());
 
     }
+    IEnumerator LossTimeLoop()
+{
+    yield return new WaitForSeconds(1800f);  // 首次等 30 分钟
+    while (true)
+    {
+        LossTime();
+        yield return new WaitForSeconds(1800f);  // 每 30 分钟一次
+    }
+}
 
 }
 }
