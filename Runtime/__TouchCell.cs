@@ -25,7 +25,19 @@ namespace Lookloop.ItemManager
 
         public static void OnDrag(Core core, PointerEventData eventData)
         {
-
+            if (isLongPress)
+            {
+                // 长按已触发，拖拽中
+            }
+            else
+            {
+                // 未触发长按，停止协程销毁它
+                if (longPressCoroutine != null)
+                {
+                    core.StopCoroutine(longPressCoroutine);
+                    longPressCoroutine = null;
+                }
+            }
         }
 
         public static void End(Core core, PointerEventData eventData)
