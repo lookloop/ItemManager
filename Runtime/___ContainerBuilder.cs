@@ -256,6 +256,7 @@ public static class ContainerBuilder
             edgeImage.gameObject.SetActive(false);
             countText.gameObject.SetActive(false);
         }
+        //返回数组，完成最终构建。
         return cells;
     }
 
