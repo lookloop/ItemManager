@@ -64,11 +64,24 @@ namespace Lookloop.ItemManager
                     }
                     t = t.parent;
                 }
+
+                // 命中 Cell：Shadow 挂到目标 Cell 下，居中覆盖
+                if (core.targetRect != null && core.targetRect.CompareTag("Cell"))
+                {
+                    OtherTool.Shadow.SetParent(core.targetRect, false);
+                    OtherTool.Shadow.gameObject.SetActive(true);
+                }
+                else
+                {
+                    OtherTool.Shadow.SetParent(core.canvas, false);
+                    OtherTool.Shadow.gameObject.SetActive(false);
+                }
             }
             else
             {
                 core.targetRect = null;
                 core.targetContainer = null;
+                OtherTool.Shadow.gameObject.SetActive(false);
             }
         }
     }
