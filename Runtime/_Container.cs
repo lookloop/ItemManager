@@ -15,6 +15,8 @@ namespace Lookloop.ItemManager
         public Cell[] cells;
         public Item[] items;
         public int currentPage = 1;
+        public int row;
+        public float cellWidth;
         [System.NonSerialized] public IDetailFiller detailFiller;
     }
 }

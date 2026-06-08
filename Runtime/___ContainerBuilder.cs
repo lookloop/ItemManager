@@ -53,6 +53,8 @@ public static class ContainerBuilder
             cellRects[i].name = i.ToString();
         //这里直接根据list长度变成item实际数据数组，等同长度，意味着页面永远为1。
         container.items = new Item[cellRects.Count];
+        container.row = spec.row;
+        container.cellWidth = spec.cellWidth;
         //使用预制体的容器Rect是容器Rect
         container.containerRect = prefabContainer;
         //创建一个详情面板，基于详情面板预制体，所以没有创建细节，无论container是数据创建还是预制体创建，detail都是预制体创建，并且在自己的脚本实现接口。
@@ -170,6 +172,8 @@ public static class ContainerBuilder
         container.gridRect      = gridRect;
         //根据用于定义的广度进行设置这个container存储item的总量。
         container.items = new Item[spec.totalItems];
+        container.row = spec.row;
+        container.cellWidth = spec.cellWidth;
         //创建一个详情面板，基于详情面板预制体，所以没有创建细节，无论container是数据创建还是预制体创建，detail都是预制体创建，并且在自己的脚本实现接口。
         if (spec.detailRect != null)
         {
