@@ -60,6 +60,8 @@ namespace Lookloop.ItemManager
             dragCount.font = core.font;
             dragCount.alignment = TextAlignmentOptions.Right;
             dragCount.raycastTarget = false;
+
+            dragRect.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -77,6 +79,8 @@ namespace Lookloop.ItemManager
             var img = Shadow.GetComponent<Image>();
             img.color = new Color(0.5f, 0.5f, 0.5f, 0.3f);
             img.raycastTarget = false;
+
+            Shadow.gameObject.SetActive(false);
         }
 
         static RectTransform CreateRect(string name, Transform parent,
