@@ -19,8 +19,10 @@ namespace Lookloop.ItemManager
 
         public static void On(Core core, PointerEventData eventData)
         {
-            isLongPress = false;
+            //启动协程
             longPressCoroutine = core.StartCoroutine(LongPressTimer());
+            //初始化grid拖拽
+            TouchCell_Grid.On(core, eventData);
         }
 
         public static void OnDrag(Core core, PointerEventData eventData)
