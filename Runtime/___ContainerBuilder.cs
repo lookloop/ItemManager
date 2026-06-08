@@ -211,47 +211,49 @@ public static class ContainerBuilder
         {
             //i就是key，依次访问。
             var cellRect = cellRects[i];
-            //三大配置，1，本体，2边缘光，3计数。
+            //三大配置，1，本体，2边缘光，3计数。射线检测都关闭，并且开局全部先隐藏。都是cell的子对象。
             //物体的本体
             var itemUIRect = CreateRect("ItemUI", cellRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, cellRect.sizeDelta * 0.8f,
                 null,
                 typeof(Image));
+            //获取图片组件
             var itemImage = itemUIRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
-            //物体的边缘光边
+
             var edgeRect = CreateRect("edge", cellRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, cellRect.sizeDelta * 0.8f,
                 null,
                 typeof(Image));
-            edgeRect.GetComponent<Image>().raycastTarget = false;
-            //物体叠加计数
+            //获取图片组件
+            var edgeImage = edgeRect.GetComponent<Image>();
+            edgeImage.raycastTarget = false;
+            //这里没有图片组件了,是TMP文字。
             var countRect = CreateRect("count", cellRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 Vector2.zero,
                 new(cellRect.sizeDelta.x, cellRect.sizeDelta.y / 4f),
                 null,
                 typeof(TextMeshProUGUI));
-            //物体叠加使用tmp显示，由于3.9是最大的恰好能显示5位数，所以用这个大小。
+            //获取tmp组件
             var countText = countRect.GetComponent<TextMeshProUGUI>();
-            countText.raycastTarget = false;
             countText.fontSize = 3.9f;
             countText.font = core.font;
             countText.alignment = TextAlignmentOptions.Right;
-
+            countText.raycastTarget = false;
+            //给这个key对应的引用。
             cells[i] = new Cell
             {
                 cell = cellRect,
                 item = itemImage,
-                edge = edgeRect.GetComponent<Image>(),
+                edge = edgeImage,
                 count = countText
             };
-
-            // 初始隐藏，等 SetViewItem 有数据再显示
+            //隐藏三大子对象。
             itemImage.gameObject.SetActive(false);
-            edgeRect.gameObject.SetActive(false);
+            edgeImage.gameObject.SetActive(false);
             countText.gameObject.SetActive(false);
         }
         return cells;
