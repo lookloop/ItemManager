@@ -21,6 +21,7 @@ public partial class Core
         //开启磁盘资源本地缓存循环检查，去除时间留得太久的
         StartCoroutine(LossTimeLoop());
 
+        Test.Fill(this);
     }
     IEnumerator LossTimeLoop()
     {
