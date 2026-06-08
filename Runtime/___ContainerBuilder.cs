@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -39,7 +40,7 @@ public static class ContainerBuilder
         //3建立一个空list，用于装过滤后的allRects
         var prefabContainer = Object.Instantiate(spec.prefabRect, core.transform);
         var allRects = prefabContainer.GetComponentsInChildren<RectTransform>(true);
-        var cellRects = new System.Collections.Generic.List<RectTransform>();
+        var cellRects = new List<RectTransform>();
         //这个就是过滤器
         foreach (var allRect in allRects)
         {
@@ -176,7 +177,7 @@ public static class ContainerBuilder
             container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
         }
         
-        var cellRects = new System.Collections.Generic.List<RectTransform>();
+        var cellRects = new List<RectTransform>();
         for (int i = 0; i < spec.everyPageCells; i++)
         {
             var rect = CreateRect(i.ToString(), gridRect,
@@ -195,7 +196,7 @@ public static class ContainerBuilder
     // ─── 内部快捷方法 ───
 
     /// <summary>遍历 cellRects，为每个 Cell 创建 itemImage + edge + count 子元素，返回 Cell[]</summary>
-    static Cell[] BuildCellView(Core core, Container container, System.Collections.Generic.List<RectTransform> cellRects)
+    static Cell[] BuildCellView(Core core, Container container, List<RectTransform> cellRects)
     {
         var cells = new Cell[cellRects.Count];
         for (int i = 0; i < cellRects.Count; i++)
