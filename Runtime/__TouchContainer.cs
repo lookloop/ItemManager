@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Experimental.Animations;
 
 namespace Lookloop.ItemManager
 {
@@ -12,32 +11,28 @@ namespace Lookloop.ItemManager
     {
        public static void On(Core core, PointerEventData eventData)
         {
-            var parent = (RectTransform)core.sourceRect.parent;
-            // 旧坐标 — 按下时的屏幕坐标转为当前父级本地坐标
+            // 旧坐标，containertag的特定坐标系的转化结果
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                parent,
+                core.sourceRect.parent as RectTransform,
                 eventData.position,
                 core.canvas.worldCamera,
                 out Vector2 oldLocal);
-                core.onPos = oldLocal;
+            core.onPos = oldLocal;
+
         }
 
         public static void OnDrag(Core core, PointerEventData eventData)
         {
-            var parent = (RectTransform)core.sourceRect.parent;
-            // 新坐标 — 实时屏幕坐标转为当前父级本地坐标
+            // 新坐标
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                parent,
+                core.sourceRect.parent as RectTransform,
                 eventData.position,
                 core.canvas.worldCamera,
-                out Vector2 newLocal);
-
-            Vector2 delta = newLocal - core.onPos;
-            core.sourceRect.anchoredPosition = core.sourcePos + delta;
-        }
-        public static void End(Core core, PointerEventData eventData)
-        {
-            
+                out Vector2 OnDragPos);
+            //距离等于新坐标减去旧坐标。
+            Vector2 diff = OnDragPos - core.onPos;
+            //新的位置设置，原来的位置+距离。将差异弥补，差异是手指移动造成的，也就是有多少差异就移动多少，跟随手指移动。
+            core.sourceRect.anchoredPosition = core.sourcePos + diff;
         }
 
     }
