@@ -23,6 +23,14 @@ namespace Lookloop.ItemManager
             var item = container.items[key];
             if (item == null) return;
 
+            // 翻页检查：items 比 cells 多说明有分页，只刷新当前页的 Cell
+            if (container.items.Length > container.cells.Length)
+            {
+                int page = key / container.cells.Length + 1;
+                if (page != container.currentPage) return;
+                key %= container.cells.Length;
+            }
+
             var table = await core.GetItemTable(item.Id.ToString());
             if (table == null) return;
 
