@@ -52,7 +52,9 @@ namespace Lookloop.ItemManager
             if (raycast.gameObject != null)
             {
                 core.targetRect = raycast.gameObject.GetComponent<RectTransform>();
+
                 // 沿父级向上找 tag=Container，通过 name 定位 container
+                core.targetContainer = null;
                 var t = core.targetRect != null ? core.targetRect.parent : null;
                 while (t != null)
                 {
