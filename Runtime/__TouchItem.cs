@@ -54,7 +54,7 @@ namespace Lookloop.ItemManager
 
                 // 沿父级向上找 tag=Container，通过 name 定位 container
                 core.targetContainer = null;
-                var t = core.targetRect != null ? core.targetRect.parent : null;
+                Transform t = core.targetRect;
                 while (t != null)
                 {
                     if (t.CompareTag("Container"))
