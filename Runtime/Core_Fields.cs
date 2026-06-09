@@ -8,7 +8,7 @@ public partial class Core
     public float pressTime = 0.3f;
     public float scrollSpeed = 60f;
     public float edgeThreshold = 3f;
-    public float turnThreshold = 0.3f;
+    public float turnThreshold = 0.5f;
     public TMP_FontAsset font;
 
     public ContainerSpec[] specs;
