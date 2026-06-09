@@ -56,5 +56,22 @@ namespace Lookloop.ItemManager
             cell.edge.gameObject.SetActive(true);
             cell.count.gameObject.SetActive(true);
         }
+        public static void NoView(Core core, Container container, int itemKey)
+        {
+            var item = container.items[itemKey];
+
+            // 全局 itemKey → cellKey
+            int cellKey = itemKey;
+            if (container.items.Length > container.cells.Length)
+                cellKey = itemKey % container.cells.Length;
+
+            var cell = container.cells[cellKey];
+
+            cell.item.gameObject.SetActive(false);
+            cell.edge.gameObject.SetActive(false);
+            cell.count.gameObject.SetActive(false);
+            return;
+        }
+            
     }
 }
