@@ -20,7 +20,7 @@ namespace Lookloop.ItemManager
 
         public void Fill(Core core, Container container, int itemKey)
         {
-            
+            Debug.Log("[DetailFiller] Fill called for key: " + itemKey);
         }
     }
 }
