@@ -31,6 +31,7 @@ namespace Lookloop.ItemManager
             OtherTool.dragEdge.sprite = table.GlowSprite;
             OtherTool.dragCount.text = item.Count.ToString();
             OtherTool.dragRect.gameObject.SetActive(true);
+            SetItem.NoView(core.sourceContainer, core.sourceItemKey);
         }
 
         public static void OnDrag(Core core)
