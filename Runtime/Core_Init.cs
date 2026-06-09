@@ -19,7 +19,7 @@ public partial class Core
         rt.anchorMin = Vector2.zero;
         rt.anchorMax = Vector2.one;
         rt.sizeDelta = Vector2.zero;
-        rt.SetAsLastSibling();  // 最高级，背包打开时接管所有点击
+        rt.SetAsFirstSibling();  // 垫底兜底，空处才命中 Core
 
         var img = gameObject.AddComponent<Image>();
         img.color = Color.clear;
