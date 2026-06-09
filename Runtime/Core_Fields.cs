@@ -14,5 +14,11 @@ public partial class Core
 
     [HideInInspector] public Container[] containers;
 
+    // TouchMask 参数
+    public float scrollSpeed = 60f;
+    public float edgeRatio = 0.15f;
+    public float turnThreshold = 0.3f;
+    [HideInInspector] public float lastTurnTime;
+
 }
 }
