@@ -37,7 +37,7 @@ namespace Lookloop.ItemManager
 
             var cell = container.cells[cellKey];
 
-            if (item == null)
+            if (item == null || item.Id == 0)
             {
                 cell.item.gameObject.SetActive(false);
                 cell.edge.gameObject.SetActive(false);
