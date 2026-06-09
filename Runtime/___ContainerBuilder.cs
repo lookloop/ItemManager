@@ -246,7 +246,7 @@ public static class ContainerBuilder
                 typeof(TextMeshProUGUI));
             //获取tmp组件
             var countText = countRect.GetComponent<TextMeshProUGUI>();
-            countText.fontSize = 3.9f;
+            countText.fontSize = core.fontSize;
             countText.font = core.font;
             countText.alignment = TextAlignmentOptions.Right;
             countText.raycastTarget = false;

@@ -52,7 +52,7 @@ namespace Lookloop.ItemManager
             }
 
             if (page != oldPage)
-                core.StartCoroutine(FlipFeedback(container, page > oldPage));
+                core.StartCoroutine(FlipFeedback(core, container, page > oldPage));
         }
 
         static void LastPage(Container container)
@@ -76,13 +76,13 @@ namespace Lookloop.ItemManager
                 container.cells[i].cell.gameObject.SetActive(false);
         }
 
-        public static IEnumerator FlipFeedback(Container container, bool forward)
+        public static IEnumerator FlipFeedback(Core core, Container container, bool forward)
         {
             var maskRect = container.maskRect;
             if (maskRect == null) yield break;
 
             float maskWidth = maskRect.rect.width;
-            float half = 0.25f;
+            float half = core.flipDuration / 2f;
             Vector2 origin = maskRect.anchoredPosition;
 
             // 滑出

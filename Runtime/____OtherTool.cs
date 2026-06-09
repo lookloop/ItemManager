@@ -54,7 +54,7 @@ namespace Lookloop.ItemManager
                 null,
                 typeof(TextMeshProUGUI));
             dragCount = countRect.GetComponent<TextMeshProUGUI>();
-            dragCount.fontSize = 3.9f;
+            dragCount.fontSize = core.fontSize;
             dragCount.font = core.font;
             dragCount.alignment = TextAlignmentOptions.Right;
             dragCount.raycastTarget = false;
