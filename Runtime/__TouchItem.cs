@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Lookloop.ItemManager
@@ -8,7 +9,7 @@ namespace Lookloop.ItemManager
     public static class TouchItem
     {
 
-        public static async void ExtractItem(Core core)
+        public static async Task ExtractItem(Core core)
         {
             var container = core.sourceContainer;
             if (container == null || container.items == null) return;

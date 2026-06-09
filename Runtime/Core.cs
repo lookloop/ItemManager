@@ -157,7 +157,7 @@ public partial class Core : MonoBehaviour,
     {
         yield return new WaitForSeconds(pressTime);
         isLongPress = true;
-        TouchItem.ExtractItem(this);
+        _ = TouchItem.ExtractItem(this);
 
         while (true)
         {
