@@ -22,7 +22,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public PointerEventData eventData;
     [HideInInspector] public RectTransform targetRect;
     [HideInInspector] public Container targetContainer;
-    [HideInInspector] public int sourcePage;
+    [HideInInspector] public int sourceItemKey;
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
