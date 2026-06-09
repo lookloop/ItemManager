@@ -110,7 +110,7 @@ public partial class Core : MonoBehaviour,
 
             // 用 Cell 的 name (cellKey) → 全局 itemKey
             if (sourceRect.CompareTag("Cell") &&
-                sourceContainer != null &&
+                sourceContainer != null && sourceContainer.cells != null &&
                 int.TryParse(sourceRect.name, out int cellKey))
             {
                 sourceItemKey = sourceContainer.cells.Length * (sourceContainer.currentPage - 1) + cellKey;
@@ -120,7 +120,7 @@ public partial class Core : MonoBehaviour,
     public virtual void Reset()
         {
             // 拖拽结束，恢复 source Cell 显示（仅当 sourceItemKey 在当前页）
-            if (sourceContainer != null)
+            if (sourceContainer != null && sourceContainer.cells != null)
             {
                 int start = sourceContainer.cells.Length * (sourceContainer.currentPage - 1);
                 int end   = sourceContainer.cells.Length * sourceContainer.currentPage - 1;
