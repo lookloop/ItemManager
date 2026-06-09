@@ -35,7 +35,14 @@ namespace Lookloop.ItemManager
 
         public static void End(Core core)
         {
-            TouchExchangeItem.Exchange(core);
+            if (core.isLongPress && core.isDrag)
+            {
+                TouchExchangeItem.Exchange(core);
+            }
+            else if (!core.isLongPress && !core.isDrag)
+            {
+                core.sourceContainer?.detailFiller?.Fill(core, core.sourceContainer, core.sourceItemKey);
+            }
         }
     }
 }
