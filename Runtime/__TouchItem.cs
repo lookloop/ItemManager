@@ -15,7 +15,7 @@ namespace Lookloop.ItemManager
             if (container == null || container.items == null) return;
             int itemKey = core.sourceItemKey;
             var item = container.items[itemKey];
-            if (item == null) return;
+            if (item == null || item.Id == 0) return;
 
             // 屏幕坐标 → Canvas 本地坐标，移动 dragRect
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
