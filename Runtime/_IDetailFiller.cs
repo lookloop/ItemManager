@@ -5,6 +5,6 @@ namespace Lookloop.ItemManager
     /// </summary>
     public interface IDetailFiller
     {
-        void Fill(Container container, int itemKey);
+        void Fill(Core core, Container container, int itemKey);
     }
 }

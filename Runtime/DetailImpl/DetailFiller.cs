@@ -18,7 +18,7 @@ namespace Lookloop.ItemManager
         public TMP_Text attributesText;
         public TMP_Text introductionText;
 
-        public void Fill(Container container, int itemKey)
+        public void Fill(Core core, Container container, int itemKey)
         {
             
         }
