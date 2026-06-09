@@ -25,7 +25,6 @@ namespace Lookloop.ItemManager
             // To-do: 根据 cellData 填充 detailRect 内容
             PositionAtCell(core, container, itemKey);
             gameObject.SetActive(true);
-            Debug.Log($"执行完毕");
         }
 
         void PositionAtCell(Core core, Container container, int itemKey)
@@ -33,32 +32,32 @@ namespace Lookloop.ItemManager
             int cellKey = itemKey - container.cells.Length * (container.currentPage - 1);
             if (cellKey < 0 || cellKey >= container.cells.Length) return;
 
-            RectTransform cellRect = container.cells[cellKey].cell;
-            Vector3[] corners = new Vector3[4];
-            cellRect.GetWorldCorners(corners);
-            Vector2 cellCenter = (corners[0] + corners[2]) * 0.5f;
-
+            RectTransform itemRect = container.cells[cellKey].item.rectTransform;
             RectTransform rt = GetComponent<RectTransform>();
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                rt.parent as RectTransform, cellCenter, core.canvas.worldCamera, out Vector2 localPos);
+            RectTransform parentRt = rt.parent as RectTransform;
+            Camera cam = core.canvas.worldCamera;
 
-            float cellW = cellRect.sizeDelta.x;
-            if (cellCenter.x < Screen.width * 0.5f)
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(cam, itemRect.position);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parentRt, screenPoint, cam, out Vector2 localPos);
+
+            float cellW = itemRect.sizeDelta.x;
+            Vector2 pivot = rt.pivot;
+            if (localPos.x <= 0f)
             {
-                // cell 在左 → detail 靠右
-                rt.anchorMin = rt.anchorMax = Vector2.zero;
-                rt.pivot = Vector2.one;
-                localPos.x += cellW * 0.5f;   // cell 右边缘
+                // cell 在左 → detail 靠右，轴心在左
+                pivot.x = 0f;
+                localPos.x += cellW * 0.5f;
             }
             else
             {
-                // cell 在右 → detail 靠左
-                rt.anchorMin = rt.anchorMax = Vector2.one;
-                rt.pivot = Vector2.zero;
-                localPos.x -= cellW * 0.5f;   // cell 左边缘
+                // cell 在右 → detail 靠左，轴心在右
+                pivot.x = 1f;
+                localPos.x -= cellW * 0.5f;
             }
-
+            rt.pivot = pivot;
             rt.anchoredPosition = localPos;
+
         }
     }
 }
