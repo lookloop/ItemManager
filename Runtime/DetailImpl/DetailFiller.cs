@@ -18,10 +18,22 @@ namespace Lookloop.ItemManager
         public TMP_Text attributesText;
         public TMP_Text introductionText;
 
-        public void Fill(Core core, Container container, int itemKey)
+        public async void Fill(Core core, Container container, int itemKey)
         {
             PositionAtCell(core, container, itemKey);
-            
+
+            var item = container.items[itemKey];
+            if (item == null || item.Id == 0) return;
+
+            var table = await core.GetItemTable(item.Id.ToString());
+            if (table == null) return;
+
+            fakeItemImage.sprite = table.ItemSprite;
+            fakeEdgeImage.sprite = table.GlowSprite;
+            itemNameText.text = table.ItemName;
+            itemCountText.text = item.Count.ToString();
+            tierText.text = item.Tier.ToString();
+            introductionText.text = table.ItemDescription;
         }
 
         void PositionAtCell(Core core, Container container, int itemKey)
