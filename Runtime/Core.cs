@@ -161,6 +161,7 @@ public partial class Core : MonoBehaviour,
         yield return new WaitForSeconds(pressTime);
         isLongPress = true;
         _ = TouchItem.ExtractItem(this);
+        lastTurnTime = Time.time;
 
         while (true)
         {
