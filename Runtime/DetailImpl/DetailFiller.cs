@@ -20,8 +20,12 @@ namespace Lookloop.ItemManager
 
         public void Fill(Core core, Container container, int itemKey)
         {
+            
+
+            // To-do: 根据 cellData 填充 detailRect 内容
             PositionAtCell(core, container, itemKey);
             gameObject.SetActive(true);
+            Debug.Log($"执行完毕");
         }
 
         void PositionAtCell(Core core, Container container, int itemKey)
@@ -32,18 +36,27 @@ namespace Lookloop.ItemManager
             RectTransform cellRect = container.cells[cellKey].cell;
             Vector3[] corners = new Vector3[4];
             cellRect.GetWorldCorners(corners);
-            Vector3 cellCenter = (corners[0] + corners[2]) * 0.5f;
+            Vector2 cellCenter = (corners[0] + corners[2]) * 0.5f;
 
             RectTransform rt = GetComponent<RectTransform>();
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 rt.parent as RectTransform, cellCenter, core.canvas.worldCamera, out Vector2 localPos);
 
-            float w = rt.sizeDelta.x;
             float cellW = cellRect.sizeDelta.x;
             if (cellCenter.x < Screen.width * 0.5f)
-                localPos.x += cellW * 0.5f + w * 0.5f;
+            {
+                // cell 在左 → detail 靠右
+                rt.anchorMin = rt.anchorMax = Vector2.zero;
+                rt.pivot = Vector2.one;
+                localPos.x += cellW * 0.5f;   // cell 右边缘
+            }
             else
-                localPos.x -= cellW * 0.5f + w * 0.5f;
+            {
+                // cell 在右 → detail 靠左
+                rt.anchorMin = rt.anchorMax = Vector2.one;
+                rt.pivot = Vector2.zero;
+                localPos.x -= cellW * 0.5f;   // cell 左边缘
+            }
 
             rt.anchoredPosition = localPos;
         }
