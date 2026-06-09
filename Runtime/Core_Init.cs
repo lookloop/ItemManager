@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Lookloop.ItemManager
 {
@@ -12,6 +13,17 @@ public partial class Core
         Application.targetFrameRate = 60;
         //获取一下canvas是ui工作当中很重要的事情
         canvas = GetComponentInParent<Canvas>();
+
+        // 全屏透明接收器 — 确保点击空白也能被 Core 捕获
+        var rt = GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.sizeDelta = Vector2.zero;
+        rt.SetAsFirstSibling();  // 兜底在最底部，不遮挡其他 UI 的射线命中
+
+        var img = gameObject.AddComponent<Image>();
+        img.color = Color.clear;
+        img.raycastTarget = true;
     }
 
     void Start()
