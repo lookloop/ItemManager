@@ -11,7 +11,12 @@ namespace Lookloop.ItemManager
         public static void Set(Core core, Container container, int itemKey,
             int id, int type, int tier, int count, int[] data)
         {
-            container.items[itemKey] = new Item(id, type, tier, count, data);
+            Set(core, container, itemKey, new Item(id, type, tier, count, data));
+        }
+
+        public static void Set(Core core, Container container, int itemKey, Item item)
+        {
+            container.items[itemKey] = item;
 
             // 不在当前页则不刷新 UI
             if (container.items.Length > container.cells.Length)
