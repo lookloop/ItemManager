@@ -119,6 +119,13 @@ public partial class Core : MonoBehaviour,
                 longPressCoroutine = null;
             }
             eventData = null;
+
+            targetRect = null;
+            targetContainer = null;
+            lastTurnTime = 0f;
+
+            OtherTool.dragRect.gameObject.SetActive(false);
+            OtherTool.Shadow.gameObject.SetActive(false);
         }
 
 
