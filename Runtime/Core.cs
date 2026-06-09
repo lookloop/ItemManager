@@ -115,9 +115,14 @@ public partial class Core : MonoBehaviour,
 
     public virtual void Reset()
         {
-            // 拖拽结束，恢复 source Cell 显示
+            // 拖拽结束，恢复 source Cell 显示（仅当 sourceItemKey 在当前页）
             if (sourceContainer != null)
-                _ = SetItem.View(this, sourceContainer, sourceItemKey);
+            {
+                int start = sourceContainer.cells.Length * (sourceContainer.currentPage - 1);
+                int end   = sourceContainer.cells.Length * sourceContainer.currentPage - 1;
+                if (sourceItemKey >= start && sourceItemKey <= end)
+                    _ = SetItem.View(this, sourceContainer, sourceItemKey);
+            }
 
             sourceItemKey = 0;
             lastTurnTime = 0f;
