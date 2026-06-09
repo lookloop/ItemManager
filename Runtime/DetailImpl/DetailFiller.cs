@@ -20,8 +20,6 @@ namespace Lookloop.ItemManager
 
         public async void Fill(Core core, Container container, int itemKey)
         {
-            PositionAtCell(core, container, itemKey);
-
             var item = container.items[itemKey];
             if (item == null || item.Id == 0) return;
 
@@ -34,6 +32,9 @@ namespace Lookloop.ItemManager
             itemCountText.text = item.Count.ToString();
             tierText.text = item.Tier.ToString();
             introductionText.text = table.ItemDescription;
+
+            PositionAtCell(core, container, itemKey);
+            gameObject.SetActive(true);
         }
 
         void PositionAtCell(Core core, Container container, int itemKey)
@@ -64,7 +65,6 @@ namespace Lookloop.ItemManager
             }
             rt.pivot = pivot;
             rt.anchoredPosition = localPos;
-            gameObject.SetActive(true);
         }
     }
 }
