@@ -22,13 +22,12 @@ namespace Lookloop.ItemManager
                 out Vector2 localPos);
 
             float maskH = maskRect.rect.height;
-            float edgeH = maskH * core.edgeRatio;
 
             float distTop    = Mathf.Abs(localPos.y);
             float distBottom = Mathf.Abs(localPos.y + maskH);
 
-            bool inTop    = distTop    <= edgeH && distTop    < distBottom;
-            bool inBottom = distBottom <= edgeH && distBottom < distTop;
+            bool inTop    = distTop    <= core.edgeThreshold && distTop    < distBottom;
+            bool inBottom = distBottom <= core.edgeThreshold && distBottom < distTop;
 
             if (!inTop && !inBottom) return;
 
@@ -58,14 +57,13 @@ namespace Lookloop.ItemManager
                 out Vector2 localPos);
 
             float maskW = maskRect.rect.width;
-            float edgeW = maskW * core.edgeRatio;
             float halfW = maskW * 0.5f;
 
             float distLeft  = Mathf.Abs(localPos.x + halfW);
             float distRight = Mathf.Abs(localPos.x - halfW);
 
-            bool inLeft  = distLeft  <= edgeW && distLeft  < distRight;
-            bool inRight = distRight <= edgeW && distRight < distLeft;
+            bool inLeft  = distLeft  <= core.edgeThreshold && distLeft  < distRight;
+            bool inRight = distRight <= core.edgeThreshold && distRight < distLeft;
 
             if (inLeft || inRight)
             {

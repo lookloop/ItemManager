@@ -16,7 +16,7 @@ public partial class Core
 
     // TouchMask 参数
     public float scrollSpeed = 60f;
-    public float edgeRatio = 0.15f;
+    public float edgeThreshold = 3f;
     public float turnThreshold = 0.3f;
     [HideInInspector] public float lastTurnTime;
 
