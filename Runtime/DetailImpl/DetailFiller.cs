@@ -5,8 +5,8 @@ using TMPro;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// Detail 面板 — 挂载到 detailRect 预制体上，实现 IDetailFiller 接口。
-    /// Core 会在物品被选中时自动调用 Fill(container, itemKey)。
+    /// Detail 面板 — 点击物品时显示详情。
+    /// 点击空白隐藏由 Core.OnPointerDown 统一处理。
     /// </summary>
     public class DetailFiller : MonoBehaviour, IDetailFiller
     {
@@ -54,20 +54,17 @@ namespace Lookloop.ItemManager
             Vector2 pivot = rt.pivot;
             if (localPos.x <= 0f)
             {
-                // cell 在左 → detail 靠右，轴心在左
                 pivot.x = 0f;
                 localPos.x += cellW * 0.5f;
             }
             else
             {
-                // cell 在右 → detail 靠左，轴心在右
                 pivot.x = 1f;
                 localPos.x -= cellW * 0.5f;
             }
             rt.pivot = pivot;
             rt.anchoredPosition = localPos;
             gameObject.SetActive(true);
-
         }
     }
 }

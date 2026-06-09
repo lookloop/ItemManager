@@ -29,7 +29,6 @@ public partial class Core : MonoBehaviour,
     {
         if (eventData.pointerId != 0) return;
         Begin(eventData);
-        
 
         switch (sourceRect.gameObject.tag)
         {
@@ -92,6 +91,18 @@ public partial class Core : MonoBehaviour,
     public virtual void Begin(PointerEventData eventData)
         {
             this.eventData = eventData;
+
+            // 点击空白 → 隐藏显示中的 detail
+            var clicked = eventData.pointerCurrentRaycast.gameObject;
+            if (containers != null)
+                foreach (var c in containers)
+                {
+                    var df = c?.detailFiller as DetailFiller;
+                    if (df != null && df.gameObject.activeSelf &&
+                        (clicked == null || !clicked.transform.IsChildOf(df.transform)))
+                        df.gameObject.SetActive(false);
+                }
+
             sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
             sourcePos = sourceRect.anchoredPosition;
 
