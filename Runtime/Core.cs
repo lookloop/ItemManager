@@ -115,11 +115,23 @@ public partial class Core : MonoBehaviour,
 
     public virtual void Reset()
         {
+            // 拖拽结束，恢复 source Cell 显示
+            if (sourceContainer != null)
+                _ = SetItem.View(this, sourceContainer, sourceItemKey);
+
+            sourceItemKey = 0;
+            lastTurnTime = 0f;
+
+            targetRect = null;
+            targetContainer = null;
             sourceRect = null;
             sourceContainer = null;
             isDrag = false;
             sourcePos = Vector2.zero;
             onPos = Vector2.zero;
+
+            OtherTool.dragRect.gameObject.SetActive(false);
+            OtherTool.Shadow.gameObject.SetActive(false);
 
             isLongPress = false;
             if (longPressCoroutine != null)
@@ -128,14 +140,6 @@ public partial class Core : MonoBehaviour,
                 longPressCoroutine = null;
             }
             eventData = null;
-
-            targetRect = null;
-            targetContainer = null;
-            sourceItemKey = 0;
-            lastTurnTime = 0f;
-
-            OtherTool.dragRect.gameObject.SetActive(false);
-            OtherTool.Shadow.gameObject.SetActive(false);
         }
 
 
