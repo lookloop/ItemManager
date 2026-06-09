@@ -96,7 +96,7 @@ public partial class Core : MonoBehaviour,
             sourcePos = sourceRect.anchoredPosition;
 
             // 沿父级向上找 tag=Container，通过 name 定位 container
-            var t = sourceRect.parent;
+            Transform t = sourceRect;
             while (t != null)
             {
                 if (t.CompareTag("Container"))
