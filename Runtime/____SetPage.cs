@@ -87,7 +87,7 @@ namespace Lookloop.ItemManager
 
             // 滑出
             float elapsed = 0f;
-            float outDir = forward ? 1f : -1f;
+            float outDir = forward ? -1f : 1f;
             while (elapsed < half)
             {
                 elapsed += Time.deltaTime;
@@ -98,7 +98,7 @@ namespace Lookloop.ItemManager
 
             // 滑入
             elapsed = 0f;
-            float inStart = forward ? -maskWidth : maskWidth;
+            float inStart = forward ? maskWidth : -maskWidth;
             while (elapsed < half)
             {
                 elapsed += Time.deltaTime;
