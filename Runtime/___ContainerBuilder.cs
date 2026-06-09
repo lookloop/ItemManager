@@ -64,6 +64,7 @@ public static class ContainerBuilder
             {
                 container.detailRect = Object.Instantiate(spec.detailRect, prefabContainer.transform);
                 container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
+                container.detailRect.gameObject.SetActive(false);
             }   
         //这里对cell进行改装，用于后续的子对象显示。
         container.cells = BuildCellView(core, container, cellRects);
@@ -182,6 +183,7 @@ public static class ContainerBuilder
         {
             container.detailRect = Object.Instantiate(spec.detailRect, containerRect);
             container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
+            container.detailRect.gameObject.SetActive(false);
         }
         //和上面一样，整一个list装cell。至于为什么不是直接数组反正有everyPageCells，
         //因为上面预制体创建用的就是list作为参数传递进入BuildCellView，这里也同步一下，复用一下方法。
