@@ -12,6 +12,14 @@ namespace Lookloop.ItemManager
             int id, int type, int tier, int count, int[] data)
         {
             container.items[itemKey] = new Item(id, type, tier, count, data);
+
+            // 不在当前页则不刷新 UI
+            if (container.items.Length > container.cells.Length)
+            {
+                int page = itemKey / container.cells.Length + 1;
+                if (page != container.currentPage) return;
+            }
+
             _ = View(core, container, itemKey);
         }
 
@@ -21,20 +29,24 @@ namespace Lookloop.ItemManager
         public static async Task View(Core core, Container container, int key)
         {
             var item = container.items[key];
-            if (item == null) return;
 
-            // 翻页检查：items 比 cells 多说明有分页，只刷新当前页的 Cell
+            // 全局 key → cell 索引
             if (container.items.Length > container.cells.Length)
-            {
-                int page = key / container.cells.Length + 1;
-                if (page != container.currentPage) return;
                 key %= container.cells.Length;
+
+            var cell = container.cells[key];
+
+            if (item == null)
+            {
+                cell.item.gameObject.SetActive(false);
+                cell.edge.gameObject.SetActive(false);
+                cell.count.gameObject.SetActive(false);
+                return;
             }
 
             var table = await core.GetItemTable(item.Id.ToString());
             if (table == null) return;
 
-            var cell = container.cells[key];
             cell.count.text = item.Count.ToString();
             cell.item.sprite = table.ItemSprite;
             cell.edge.sprite = table.GlowSprite;
