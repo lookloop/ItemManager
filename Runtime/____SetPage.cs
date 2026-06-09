@@ -9,6 +9,8 @@ namespace Lookloop.ItemManager
     {
         public static void Set(Core core, Container container, int page)
         {
+            int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
+            page = Mathf.Clamp(page, 1, totalPages);
             container.currentPage = page;
 
             int start = container.cells.Length * (page - 1);

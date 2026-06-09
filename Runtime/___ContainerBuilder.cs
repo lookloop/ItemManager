@@ -286,10 +286,8 @@ public static class ContainerBuilder
 
     static void OffPageInput(Core core, TMP_InputField tmp, Container container)
     {
-        int pagemax = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
         if (int.TryParse(tmp.text, out int page))
         {
-            page = Mathf.Clamp(page, 1, pagemax);
             SetPage.Set(core, container, page);
         }
     }

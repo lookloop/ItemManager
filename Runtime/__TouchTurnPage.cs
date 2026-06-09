@@ -26,8 +26,6 @@ namespace Lookloop.ItemManager
                     return;
             }
 
-            int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
-            page = Mathf.Clamp(page, 1, totalPages);
             SetPage.Set(core, container, page);
         }
     }
