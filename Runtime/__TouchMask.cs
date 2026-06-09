@@ -14,14 +14,12 @@ namespace Lookloop.ItemManager
 
         static float lastTurnTime;
 
-        public static void EdgeBehavior(Core core)
+        public static void ScrollPage(Core core)
         {
             var container = core.targetContainer;
-            if (container == null) { Debug.Log("[Edge] targetContainer is null"); return; }
+            if (container == null) return;
             var maskRect = container.maskRect;
-            if (maskRect == null) { Debug.Log("[Edge] maskRect is null"); return; }
-            var gridRect = container.gridRect;
-            if (gridRect == null) { Debug.Log("[Edge] gridRect is null"); return; }
+            if (maskRect == null) return;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 maskRect,
@@ -38,10 +36,9 @@ namespace Lookloop.ItemManager
             bool inTop    = distTop    <= edgeH && distTop    < distBottom;
             bool inBottom = distBottom <= edgeH && distBottom < distTop;
 
-            
-
             if (!inTop && !inBottom) return;
 
+            var gridRect = container.gridRect;
             float gridH = gridRect.sizeDelta.y;
             float maxY = Mathf.Max(0f, gridH - maskH);
             if (maxY <= 0f) return;
@@ -53,12 +50,12 @@ namespace Lookloop.ItemManager
             gridRect.anchoredPosition = new Vector2(gridRect.anchoredPosition.x, targetY);
         }
 
-        public static void TurnPageBehavior(Core core)
+        public static void TurnPage(Core core)
         {
             var container = core.targetContainer;
-            if (container == null) { Debug.Log("[TurnPage] targetContainer is null"); return; }
+            if (container == null) return;
             var maskRect = container.maskRect;
-            if (maskRect == null) { Debug.Log("[TurnPage] maskRect is null"); return; }
+            if (maskRect == null) return;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 maskRect,
@@ -77,22 +74,18 @@ namespace Lookloop.ItemManager
             bool inLeft  = distLeft  <= edgeW && distLeft  < distRight;
             bool inRight = distRight <= edgeW && distRight < distLeft;
 
-            Debug.Log($"[TurnPage] localPos.x={localPos.x:F1} maskW={maskW:F1} edgeW={edgeW:F1} distLeft={distLeft:F1} distRight={distRight:F1} inLeft={inLeft} inRight={inRight}");
-
-            float now = Time.time;
-
             if (inLeft || inRight)
             {
+                float now = Time.time;
                 if (now - lastTurnTime >= turnThreshold)
                 {
                     int page = container.currentPage;
                     if (inLeft)  page--;
                     if (inRight) page++;
                     SetPage.Set(core, container, page);
+                    lastTurnTime = now;
                 }
             }
-
-            lastTurnTime = now;
         }
     }
 }

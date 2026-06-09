@@ -130,8 +130,8 @@ public partial class Core : MonoBehaviour,
 
         while (true)
         {
-            TouchMask.EdgeBehavior(this);
-            TouchMask.TurnPageBehavior(this);
+            TouchMask.ScrollPage(this);
+            TouchMask.TurnPage(this);
             yield return null;
         }
     }
