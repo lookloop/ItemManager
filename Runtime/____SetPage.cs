@@ -19,7 +19,6 @@ namespace Lookloop.ItemManager
             // 检测最后一页
             if (totalPages > 1 && page == totalPages)
             {
-                //执行隐藏cell
                 int lastIndex = container.items.Length - 1;
                 if (end > lastIndex) end = lastIndex;
                 LastPage(container);
@@ -32,11 +31,10 @@ namespace Lookloop.ItemManager
                     container.gridRect.sizeDelta.x,
                     fullRows * container.cellWidth);
 
-                // 执行显示cell
                 for (int i = 0; i < container.cells.Length; i++)
                     container.cells[i].cell.gameObject.SetActive(true);
             }
-            //最后不管cell显示还是隐藏，对三个子物体刷新其内容
+
             for (int i = start; i <= end; i++)
                 _ = SetItem.View(core, container, i);
 
@@ -54,6 +52,13 @@ namespace Lookloop.ItemManager
             container.gridRect.sizeDelta = new Vector2(
                 container.gridRect.sizeDelta.x,
                 rows * container.cellWidth);
+
+            // 高度缩小后，钳制 y 到合法范围
+            float gridH = container.gridRect.sizeDelta.y;
+            float maskH = container.maskRect.sizeDelta.y;
+            float maxY = Mathf.Max(0f, gridH - maskH);
+            float y = Mathf.Clamp(container.gridRect.anchoredPosition.y, 0f, maxY);
+            container.gridRect.anchoredPosition = new Vector2(container.gridRect.anchoredPosition.x, y);
 
             for (int i = lastItemCount; i < container.cells.Length; i++)
                 container.cells[i].cell.gameObject.SetActive(false);
