@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Lookloop.ItemManager
@@ -9,6 +10,7 @@ namespace Lookloop.ItemManager
     {
         public static void Set(Core core, Container container, int page)
         {
+            int oldPage = container.currentPage;
             int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
             page = Mathf.Clamp(page, 1, totalPages);
             container.currentPage = page;
@@ -48,6 +50,9 @@ namespace Lookloop.ItemManager
             {
                 SetItem.NoView(container, core.sourceItemKey);
             }
+
+            if (page != oldPage)
+                core.StartCoroutine(FlipFeedback(container, page > oldPage));
         }
 
         static void LastPage(Container container)
@@ -69,6 +74,40 @@ namespace Lookloop.ItemManager
 
             for (int i = lastItemCount; i < container.cells.Length; i++)
                 container.cells[i].cell.gameObject.SetActive(false);
+        }
+
+        public static IEnumerator FlipFeedback(Container container, bool forward)
+        {
+            var maskRect = container.maskRect;
+            if (maskRect == null) yield break;
+
+            float maskWidth = maskRect.rect.width;
+            float half = 0.25f;
+            Vector2 origin = maskRect.anchoredPosition;
+
+            // 滑出
+            float elapsed = 0f;
+            float outDir = forward ? 1f : -1f;
+            while (elapsed < half)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / half;
+                maskRect.anchoredPosition = new Vector2(origin.x + outDir * maskWidth * t, origin.y);
+                yield return null;
+            }
+
+            // 滑入
+            elapsed = 0f;
+            float inStart = forward ? -maskWidth : maskWidth;
+            while (elapsed < half)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / half;
+                maskRect.anchoredPosition = new Vector2(inStart * (1f - t), origin.y);
+                yield return null;
+            }
+
+            maskRect.anchoredPosition = origin;
         }
     }
 }
