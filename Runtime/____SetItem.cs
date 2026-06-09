@@ -26,15 +26,16 @@ namespace Lookloop.ItemManager
         /// <summary>
         /// 根据 items[key] 的 id 异步加载 ItemTable，刷新 Cell 的图标/边框/数量。
         /// </summary>
-        public static async Task View(Core core, Container container, int key)
+        public static async Task View(Core core, Container container, int itemKey)
         {
-            var item = container.items[key];
+            var item = container.items[itemKey];
 
-            // 全局 key → cell 索引
+            // 全局 itemKey → cellKey
+            int cellKey = itemKey;
             if (container.items.Length > container.cells.Length)
-                key %= container.cells.Length;
+                cellKey = itemKey % container.cells.Length;
 
-            var cell = container.cells[key];
+            var cell = container.cells[cellKey];
 
             if (item == null)
             {
