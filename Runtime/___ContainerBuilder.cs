@@ -78,7 +78,7 @@ public static class ContainerBuilder
             new(spec.row * spec.cellWidth + spec.containerFillHorizontal * 2,
                 spec.maskHeight + spec.containerFillUp + spec.containerFillDown),
             "Container",
-            typeof(Image));
+            typeof(Image), typeof(RectMask2D));
 
         //使用createRect方法新建一个对象，用于mask和grid滑块双人组，用于滚页，是数据驱动独有的，预制体构建没有。
         var maskRect = CreateRect("Mask", containerRect,
