@@ -108,7 +108,7 @@ public partial class Core : MonoBehaviour,
                 t = t.parent;
             }
 
-            if (sourceContainer != null)
+            if (sourceContainer != null && sourceContainer.containerRect != null)
                 sourceContainer.containerRect.SetAsLastSibling();
 
             // 用 Cell 的 name (cellKey) → 全局 itemKey
