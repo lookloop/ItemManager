@@ -66,6 +66,9 @@ namespace Lookloop.ItemManager
                     t = t.parent;
                 }
 
+                if (core.targetContainer != null)
+                    core.targetContainer.containerRect.SetAsLastSibling();
+
                 // 命中 Cell：Shadow 挂到目标 Cell 下，居中覆盖，同时计算 targetItemKey
                 if (core.targetRect != null && core.targetRect.CompareTag("Cell"))
                 {
