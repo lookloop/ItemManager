@@ -17,11 +17,11 @@ namespace Lookloop.ItemManager
         public static void EdgeBehavior(Core core)
         {
             var container = core.targetContainer;
-            if (container == null) return;
+            if (container == null) { Debug.Log("[Edge] targetContainer is null"); return; }
             var maskRect = container.maskRect;
-            if (maskRect == null) return;
+            if (maskRect == null) { Debug.Log("[Edge] maskRect is null"); return; }
             var gridRect = container.gridRect;
-            if (gridRect == null) return;
+            if (gridRect == null) { Debug.Log("[Edge] gridRect is null"); return; }
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 maskRect,
@@ -32,12 +32,13 @@ namespace Lookloop.ItemManager
             float maskH = maskRect.rect.height;
             float edgeH = maskH * edgeRatio;
 
-            // 到顶部的距离（y=0）、到底部的距离（y=-maskH），取绝对值判断
-            float distTop    = Mathf.Abs(localPos.y);           // |y - 0|
-            float distBottom = Mathf.Abs(localPos.y + maskH);   // |y - (-maskH)|
+            float distTop    = Mathf.Abs(localPos.y);
+            float distBottom = Mathf.Abs(localPos.y + maskH);
 
             bool inTop    = distTop    <= edgeH && distTop    < distBottom;
             bool inBottom = distBottom <= edgeH && distBottom < distTop;
+
+            
 
             if (!inTop && !inBottom) return;
 
@@ -55,9 +56,9 @@ namespace Lookloop.ItemManager
         public static void TurnPageBehavior(Core core)
         {
             var container = core.targetContainer;
-            if (container == null) return;
+            if (container == null) { Debug.Log("[TurnPage] targetContainer is null"); return; }
             var maskRect = container.maskRect;
-            if (maskRect == null) return;
+            if (maskRect == null) { Debug.Log("[TurnPage] maskRect is null"); return; }
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 maskRect,
@@ -67,12 +68,16 @@ namespace Lookloop.ItemManager
 
             float maskW = maskRect.rect.width;
             float edgeW = maskW * edgeRatio;
+            float halfW = maskW * 0.5f;
 
-            float distLeft  = Mathf.Abs(localPos.x);
-            float distRight = Mathf.Abs(localPos.x - maskW);
+            // Mask pivot (0.5, 1)，x 原点在中心：x=-halfW 左边缘，x=+halfW 右边缘
+            float distLeft  = Mathf.Abs(localPos.x + halfW);
+            float distRight = Mathf.Abs(localPos.x - halfW);
 
             bool inLeft  = distLeft  <= edgeW && distLeft  < distRight;
             bool inRight = distRight <= edgeW && distRight < distLeft;
+
+            Debug.Log($"[TurnPage] localPos.x={localPos.x:F1} maskW={maskW:F1} edgeW={edgeW:F1} distLeft={distLeft:F1} distRight={distRight:F1} inLeft={inLeft} inRight={inRight}");
 
             float now = Time.time;
 
