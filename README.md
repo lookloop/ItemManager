@@ -1,8 +1,8 @@
 # Item Manager
 
-**多 Cell 容器资产管理框架** — 背包、仓库、装备槽、炼丹炉、锻造台… 所有需要格子系统的基础设施。
+**纯代码驱动的多容器物品管理框架** — 背包、仓库、装备槽、商店… 一切格子系统的基础设施。
 
-纯代码生成 UI，零预制体依赖。Addressables 异步加载资源。多容器并存。
+零预制体依赖。Addressables 异步加载。多容器并存。跨容器拖拽交换。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Unity](https://img.shields.io/badge/Unity-2022.3%2B-black)](package.json)
@@ -12,37 +12,58 @@
 ## 架构
 
 ```
-Core.cs                     ← 触控分发中枢 (PointerDown/Drag/Up)
-├── Core_Fields.cs          ← 公开字段 (specs[] / font / canvas)
-├── Core_Init.cs            ← 启动 (Awake + Start)
-└── Core_Addressables.cs    ← ItemTable 异步加载 + 缓存 + 过期回收
+Core.cs                     ← 触控中枢 (IPointerDown/Drag/UpHandler)
+├── Core_Fields.cs          ← 公开字段 (specs[] / font / pressTime / scrollSpeed …)
+├── Core_Init.cs            ← 启动流程 (Awake + Start)
+└── Core_Addressables.cs    ← ItemTable 异步加载 + 缓存 + 30min 过期回收
 
 数据层
-├── _Item.cs                ← Id / Type / Tier / Count / Data
-├── _ItemTable.cs           ← ScriptableObject 物品表
-├── _Cell.cs                ← 格子内 UI 组件引用
-├── _Container.cs           ← 运行时容器实例
-└── _ContainerSpec.cs       ← 容器蓝图 (尺寸/格子/翻页/视觉)
+├── _Item.cs                ← 物品数据 (Id / Type / Tier / Count / Data[])
+├── _ItemTable.cs           ← ScriptableObject 物品表 (图标 / 边框 / 名称 / 描述)
+├── _Cell.cs                ← 格子 UI 引用 (cell / item 图标 / edge 边框 / count 数量)
+├── _Container.cs           ← 运行时容器实例 (Rect 引用 + items[] + cells[] + 翻页状态)
+├── _ContainerSpec.cs       ← 容器蓝图 (尺寸 / 每页格子 / 行数 / 视觉精灵)
+└── _IDetailFiller.cs       ← 详情面板填充接口
 
 构建层
-└── ___ContainerBuilder.cs  ← Container→Mask→Grid→Cell 全程序化构建
+└── ___ContainerBuilder.cs  ← Container → Mask → Grid → Cell 全程序化构建
+
+触控层
+├── __TouchCell.cs          ← Cell 触控路由 (On / OnDrag / End)
+├── __TouchCell_Grid.cs     ← Grid 拖拽滚动 (坐标换算 + 钳制)
+├── __TouchContainer.cs     ← Container 整体拖拽
+├── __TouchItem.cs          ← 长按提取物品 + 幽灵拖拽跟随 + target 射线追踪
+├── __TouchMask.cs          ← 长按拖拽时 Mask 边缘自动滚动 + 翻页
+├── __TouchTurnPage.cs      ← 翻页按钮点击
+└── __TouchExchangeItem.cs  ← 跨容器物品交换 (source ↔ target 纯互换)
+
+工具层
+├── ____OtherTool.cs        ← 拖拽幽灵构建 + 悬停阴影
+├── ____SetItem.cs          ← 物品数据写入 + View 刷新 + NoView 隐藏
+└── ____SetPage.cs          ← 翻页逻辑 + 最后一页高度适配
+
+测试
+└── _______________Test.cs  ← 启动时随机填充物品 (1/3 概率)
 
 Editor
-├── ContainerSpecDrawer.cs  ← ContainerSpec 自定义 Inspector
-└── ItemDataEditorTools.cs  ← Project 右键快速创建 ItemTable
+├── ContainerSpecDrawer.cs  ← ContainerSpec 自定义折叠 Inspector
+└── ItemDataEditorTools.cs  ← Project 右键 → Create → ItemTable
 ```
 
-> 文件名下划线数量 = 层级优先级。在 Project 窗口中自然按层级排序。
+> 文件名下划线数量 = 层级优先级。在 Project 窗口中自然按层级排序，无需子文件夹。
 
 ---
 
 ## 特性
 
-- **纯代码构建** — 无需任何 Prefab，所有 UI 程序化生成
-- **多容器并存** — 一个 Core 组件，多个独立容器面板
-- **Addressables** — ItemTable 异步加载，30 分钟过期缓存
-- **自定义 Inspector** — ContainerSpec 可折叠参数面板
-- **快速创建** — Project 右键 `Create → ItemTable` 新建物品表
+- **零预制体** — 所有 UI 通过 `new GameObject` 程序化生成，Container → Mask → Grid → Cell 完整层级
+- **多容器并存** — 一个 `Core` 组件，`specs[]` 数组驱动任意数量独立容器面板
+- **跨容器交换** — 长按拖拽物品可在不同容器之间互换位置
+- **Addressables 异步** — `ItemTable` 按需加载，30 分钟缓存过期自动回收
+- **长按 + 边缘滚动** — 长按提取物品后拖到 Mask 边缘自动滚动列表，拖到左右边缘自动翻页
+- **自定义 Inspector** — `ContainerSpec` 可折叠参数面板，新增元素自动填充默认值
+- **两构建模式** — 纯数据驱动（`Build`）或预制体实例化（`BuildPrefab`），通过 `prefabRect` 是否为空切换
+- **详情接口** — `IDetailFiller.Fill(container, itemKey)`，挂载到 `detailRect` 预制体即可
 
 ---
 
@@ -56,25 +77,134 @@ https://github.com/lookloop/ItemManager.git
 
 ### 依赖
 
-- `com.unity.addressables` ≥ 1.21.0
-- `com.unity.textmeshpro` ≥ 3.0.0
-- `com.unity.ugui` ≥ 1.0.0
+| 包 | 最低版本 |
+|---|---|
+| `com.unity.addressables` | 1.21.0 |
+| `com.unity.textmeshpro` | 3.0.0 |
+| `com.unity.ugui` | 1.0.0 |
 
 ---
 
 ## 快速开始
 
-1. Canvas 下新建空 GameObject，挂 `Core` 组件
-2. 在 `specs` 数组中填容器蓝图参数
-3. 运行 → 自动构建容器 UI
+### 数据驱动模式（无预制体）
+
+1. Canvas 下新建空 GameObject，挂载 `Core` 组件
+2. 设置 `Font`（TMP 字体资源）
+3. 在 `Specs` 数组中填入容器参数：
 
 ```
 specs[0]:
-    totalItems  = 80           // 总物品数
-    everyPageCells = 40        // 每页格子数
-    row = 5                    // 每行格子数
-    cellWidth = 10             // 格子边长
-    maskHeight = 40            // 显示区域高度
+    Total Items        = 80        // 总物品容量
+    Every Page Cells   = 40        // 每页格子数
+    Row                = 5         // 每行格子数
+    Cell Width         = 10        // 格子边长
+    Mask Height        = 40        // 可视区域高度
+    Container Fill Up  = 8         // 容器上边距
+    Container Fill Down = 4        // 容器下边距
+```
+
+4. 运行 → 自动生成完整容器 UI，随机填充测试物品
+
+### 预制体模式
+
+将 `Prefab Rect` 拖入 `ContainerSpec`：
+- 自动 `Instantiate` 预制体
+- 扫描所有 `tag="Cell"` 的子对象作为格子
+- `items` 数组长度 = Cell 数量，单页模式（无翻页）
+
+### 创建物品表
+
+Project 窗口右键 → `Create → ItemTable`，填入：
+- `Id` — 物品唯一标识
+- `Item Sprite` — 物品图标
+- `Glow Sprite` — 边框/光效
+- `Item Name` / `Item Description` — 名称与描述
+
+将 `ItemTable` 标记为 Addressable，Key 使用 `Id.ToString()`。
+
+---
+
+## 触控交互
+
+| 操作 | 行为 |
+|---|---|
+| 点击 Cell | 无长按则 Grid 拖拽滚动 |
+| 长按 Cell (0.3s) | 提取物品到幽灵拖拽，原 Cell 隐藏 |
+| 拖拽中命中 Cell | 悬停阴影显示，实时追踪 `targetItemKey` |
+| 拖拽到 Mask 边缘 | 自动滚动 Grid |
+| 拖拽到 Mask 左右边缘 | 自动翻页 |
+| 松开手指 | 交换 source ↔ target 物品，UI 自动刷新 |
+| 点击翻页按钮 | 上一页 / 下一页 |
+| 点击页码输入框 | 输入数字跳页 |
+
+---
+
+## API
+
+### Core（公开字段）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `specs` | `ContainerSpec[]` | 容器蓝图数组，每项生成一个独立容器 |
+| `font` | `TMP_FontAsset` | 全局 TMP 字体 |
+| `pressTime` | `float` | 长按判定时间（默认 0.3s） |
+| `scrollSpeed` | `float` | 边缘滚动速度（默认 60） |
+| `edgeThreshold` | `float` | 边缘触发距离（默认 3） |
+| `turnThreshold` | `float` | 翻页冷却时间（默认 0.5s） |
+
+### SetItem
+
+```csharp
+// 创建物品并自动刷新 UI（当前页时才刷新）
+SetItem.Set(core, container, itemKey, id, type, tier, count, data);
+
+// 从 Addressables 加载 ItemTable 并刷新单个 Cell
+await SetItem.View(core, container, itemKey);
+
+// 隐藏 Cell 显示，不触碰数据
+SetItem.NoView(container, itemKey);
+```
+
+### SetPage
+
+```csharp
+// 跳转到指定页，刷新所有可见 Cell
+SetPage.Set(core, container, page);
+```
+
+### TouchExchangeItem
+
+```csharp
+// 交换 source 和 target 位置的物品（支持跨容器）
+TouchExchangeItem.Exchange(core);
+```
+
+### IDetailFiller
+
+```csharp
+public interface IDetailFiller
+{
+    void Fill(Container container, int itemKey);
+}
+```
+
+将实现了 `IDetailFiller` 的组件挂在 `detailRect` 预制体上，点击物品时自动回调。
+
+---
+
+## 数据流
+
+```
+按下 Cell
+  → Begin: 计算 sourceItemKey, 定位 sourceContainer
+  → OnPointerDown: tag="Cell" → TouchCell.On (启动长按计时)
+    → 长按触发: ExtractItem (拖拽幽灵 + NoView 隐藏原 Cell)
+      → OnDrag: 每帧更新 targetRect / targetContainer / targetItemKey
+        → TouchMask: 边缘滚动 + 翻页 (SetPage 后补 NoView)
+    → 抬手: OnPointerUp
+      → tag="Cell" → TouchCell.End → ExchangeItem (数据互换 + UI 刷新)
+      → Reset: 在当前页则 View 恢复 source Cell, 清空全部状态
 ```
 
 ---
