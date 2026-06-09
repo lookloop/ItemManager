@@ -143,8 +143,10 @@ public partial class Core : MonoBehaviour,
             sourcePos = Vector2.zero;
             onPos = Vector2.zero;
 
-            OtherTool.dragRect.gameObject.SetActive(false);
-            OtherTool.Shadow.gameObject.SetActive(false);
+            if (OtherTool.dragRect != null)
+                OtherTool.dragRect.gameObject.SetActive(false);
+            if (OtherTool.Shadow != null)
+                OtherTool.Shadow.gameObject.SetActive(false);
 
             isLongPress = false;
             if (longPressCoroutine != null)
