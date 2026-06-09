@@ -103,6 +103,14 @@ public partial class Core : MonoBehaviour,
                 }
                 t = t.parent;
             }
+
+            // 用 Cell 的 name (cellKey) → 全局 itemKey
+            if (sourceRect.CompareTag("Cell") &&
+                sourceContainer != null &&
+                int.TryParse(sourceRect.name, out int cellKey))
+            {
+                sourceItemKey = sourceContainer.cells.Length * (sourceContainer.currentPage - 1) + cellKey;
+            }
         }
 
     public virtual void Reset()
@@ -123,6 +131,7 @@ public partial class Core : MonoBehaviour,
 
             targetRect = null;
             targetContainer = null;
+            sourceItemKey = 0;
             lastTurnTime = 0f;
 
             OtherTool.dragRect.gameObject.SetActive(false);
