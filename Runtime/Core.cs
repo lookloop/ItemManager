@@ -22,6 +22,7 @@ public partial class Core : MonoBehaviour,
     [HideInInspector] public PointerEventData eventData;
     [HideInInspector] public RectTransform targetRect;
     [HideInInspector] public Container targetContainer;
+    [HideInInspector] public int? targetItemKey;
     [HideInInspector] public int sourceItemKey;
 
     public virtual void OnPointerDown(PointerEventData eventData)
@@ -125,6 +126,7 @@ public partial class Core : MonoBehaviour,
             }
 
             sourceItemKey = 0;
+            targetItemKey = null;
             lastTurnTime = 0f;
 
             targetRect = null;

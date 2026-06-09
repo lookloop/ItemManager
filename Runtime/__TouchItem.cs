@@ -65,14 +65,22 @@ namespace Lookloop.ItemManager
                     t = t.parent;
                 }
 
-                // 命中 Cell：Shadow 挂到目标 Cell 下，居中覆盖
+                // 命中 Cell：Shadow 挂到目标 Cell 下，居中覆盖，同时计算 targetItemKey
                 if (core.targetRect != null && core.targetRect.CompareTag("Cell"))
                 {
+                    if (core.targetContainer != null &&
+                        int.TryParse(core.targetRect.name, out int cellKey))
+                    {
+                        core.targetItemKey = core.targetContainer.cells.Length *
+                            (core.targetContainer.currentPage - 1) + cellKey;
+                    }
+
                     OtherTool.Shadow.SetParent(core.targetRect, false);
                     OtherTool.Shadow.gameObject.SetActive(true);
                 }
                 else
                 {
+                    core.targetItemKey = null;
                     OtherTool.Shadow.SetParent(core.canvas.transform, false);
                     OtherTool.Shadow.gameObject.SetActive(false);
                 }
@@ -81,6 +89,7 @@ namespace Lookloop.ItemManager
             {
                 core.targetRect = null;
                 core.targetContainer = null;
+                core.targetItemKey = null;
                 OtherTool.Shadow.gameObject.SetActive(false);
             }
         }
