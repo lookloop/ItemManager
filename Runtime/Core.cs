@@ -72,6 +72,9 @@ public partial class Core : MonoBehaviour,
             case "TurnPage":
                 TouchTurnPage.End(this);
                 break;
+            case "Cell":
+                TouchCell.End(this);
+                break;
         }
 
         Reset();

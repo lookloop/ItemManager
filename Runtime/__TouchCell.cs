@@ -35,7 +35,7 @@ namespace Lookloop.ItemManager
 
         public static void End(Core core)
         {
-
+            TouchExchangeItem.Exchange(core);
         }
     }
 }
