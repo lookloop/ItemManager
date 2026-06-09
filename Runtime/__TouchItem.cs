@@ -10,12 +10,9 @@ namespace Lookloop.ItemManager
 
         public static async void ExtractItem(Core core)
         {
-            // sourceRect 就是被按下的 Cell 的 RectTransform，name 就是本页索引
-            if (!int.TryParse(core.sourceRect.name, out int cellKey)) return;
             var container = core.sourceContainer;
             if (container == null || container.items == null) return;
-            // cell 索引 → 全局 items 索引
-            int itemKey = container.cells.Length * (container.currentPage - 1) + cellKey;
+            int itemKey = core.sourceItemKey;
             var item = container.items[itemKey];
             if (item == null) return;
 
