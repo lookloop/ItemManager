@@ -41,6 +41,13 @@ namespace Lookloop.ItemManager
             // 同步 TMP 翻页输入框显示
             if (container.pageInput != null)
                 container.pageInput.text = page + "/" + Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
+
+            // 翻页后检测：当前 container 是否是 sourceContainer，且 sourceItemKey 是否在当前页
+            if (container == core.sourceContainer &&
+                core.sourceItemKey >= start && core.sourceItemKey <= end)
+            {
+                SetItem.NoView(container, core.sourceItemKey);
+            }
         }
 
         static void LastPage(Container container)

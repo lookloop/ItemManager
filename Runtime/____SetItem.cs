@@ -56,7 +56,7 @@ namespace Lookloop.ItemManager
             cell.edge.gameObject.SetActive(true);
             cell.count.gameObject.SetActive(true);
         }
-        public static void NoView(Core core, Container container, int itemKey)
+        public static void NoView(Container container, int itemKey)
         {
             var item = container.items[itemKey];
 
