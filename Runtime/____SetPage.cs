@@ -17,7 +17,6 @@ namespace Lookloop.ItemManager
             int end = container.cells.Length * page - 1;
 
             // 检测最后一页
-            int totalPages = Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
             if (totalPages > 1 && page == totalPages)
             {
                 //执行隐藏cell
