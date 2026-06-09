@@ -62,7 +62,7 @@ public static class ContainerBuilder
         //创建一个详情面板，基于详情面板预制体，所以没有创建细节，无论container是数据创建还是预制体创建，detail都是预制体创建，并且在自己的脚本实现接口。
         if(spec.detailRect != null)
             {
-                container.detailRect = Object.Instantiate(spec.detailRect, prefabContainer.transform);
+                container.detailRect = Object.Instantiate(spec.detailRect, core.canvas.transform);
                 container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
                 container.detailRect.gameObject.SetActive(false);
             }   
@@ -181,7 +181,7 @@ public static class ContainerBuilder
         //创建一个详情面板，基于详情面板预制体，所以没有创建细节，无论container是数据创建还是预制体创建，detail都是预制体创建，并且在自己的脚本实现接口。
         if (spec.detailRect != null)
         {
-            container.detailRect = Object.Instantiate(spec.detailRect, containerRect);
+            container.detailRect = Object.Instantiate(spec.detailRect, core.canvas.transform);
             container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
             container.detailRect.gameObject.SetActive(false);
         }
