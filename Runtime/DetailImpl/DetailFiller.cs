@@ -20,11 +20,8 @@ namespace Lookloop.ItemManager
 
         public void Fill(Core core, Container container, int itemKey)
         {
-            
-
-            // To-do: 根据 cellData 填充 detailRect 内容
             PositionAtCell(core, container, itemKey);
-            gameObject.SetActive(true);
+            
         }
 
         void PositionAtCell(Core core, Container container, int itemKey)
@@ -57,6 +54,7 @@ namespace Lookloop.ItemManager
             }
             rt.pivot = pivot;
             rt.anchoredPosition = localPos;
+            gameObject.SetActive(true);
 
         }
     }
