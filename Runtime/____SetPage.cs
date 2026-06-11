@@ -83,7 +83,8 @@ namespace Lookloop.ItemManager
 
             float maskWidth = maskRect.rect.width;
             float half = core.flipDuration / 2f;
-            Vector2 origin = maskRect.anchoredPosition;
+            // origin.x 强制为 0，防止快速连点时捕获到非零的偏移 x
+            Vector2 origin = new Vector2(0f, maskRect.anchoredPosition.y);
 
             // 滑出
             float elapsed = 0f;
@@ -107,6 +108,7 @@ namespace Lookloop.ItemManager
                 yield return null;
             }
 
+            // 结束必须 mask x 清零
             maskRect.anchoredPosition = origin;
         }
     }

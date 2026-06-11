@@ -123,6 +123,13 @@ public partial class Core : MonoBehaviour,
             if (sourceContainer != null && sourceContainer.containerRect != null)
                 sourceContainer.containerRect.SetAsLastSibling();
 
+            // 每次按下都重置 mask x，防止快速连点翻页时动画残留导致 mask 偏移
+            if (sourceContainer != null && sourceContainer.maskRect != null)
+            {
+                var p = sourceContainer.maskRect.anchoredPosition;
+                sourceContainer.maskRect.anchoredPosition = new Vector2(0f, p.y);
+            }
+
             // 用 Cell 的 name (cellKey) → 全局 itemKey
             if (sourceRect.CompareTag("Cell") &&
                 sourceContainer != null && sourceContainer.cells != null &&
