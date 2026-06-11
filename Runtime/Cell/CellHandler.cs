@@ -130,9 +130,7 @@ namespace Lookloop.ItemManager
             var item = container.items[globalKey];
             if (item == null || item.Id == 0) return;
 
-            // 写入跨组件共享状态，供 SetPage 翻页时使用
-            core.sourceContainer = container;
-            core.sourceItemKey = globalKey;
+            DragSession.Begin(container, globalKey);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 core.canvas.transform as RectTransform,
@@ -332,8 +330,7 @@ namespace Lookloop.ItemManager
             isDrag = false;
             isLongPress = false;
 
-            core.sourceContainer = null;
-            core.sourceItemKey = 0;
+            DragSession.End();
 
             DragTool.dragRect.gameObject.SetActive(false);
             DragTool.Shadow.gameObject.SetActive(false);
