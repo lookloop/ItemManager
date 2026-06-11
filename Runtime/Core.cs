@@ -14,16 +14,17 @@ public partial class Core : MonoBehaviour,
 
     [HideInInspector] public RectTransform sourceRect;
     [HideInInspector] public Container sourceContainer;
+    [HideInInspector] public RectTransform targetRect;
+    [HideInInspector] public Container targetContainer;
+    [HideInInspector] public int? targetItemKey;
+    [HideInInspector] public int sourceItemKey;
     [HideInInspector] public bool isDrag = false;
     [HideInInspector] public Vector2 sourcePos;
     [HideInInspector] public Vector2 onPos;
     [HideInInspector] public bool isLongPress;
     [HideInInspector] public Coroutine longPressCoroutine;
     [HideInInspector] public PointerEventData eventData;
-    [HideInInspector] public RectTransform targetRect;
-    [HideInInspector] public Container targetContainer;
-    [HideInInspector] public int? targetItemKey;
-    [HideInInspector] public int sourceItemKey;
+    
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
