@@ -1,199 +1,51 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Lookloop.ItemManager
 {
 
-public partial class Core : MonoBehaviour,
-    IPointerDownHandler,   // A — 手指按下
-    IDragHandler,          // C — 拖拽中（每帧）
-    IPointerUpHandler      // D — 手指抬起
+public partial class Core : MonoBehaviour, IPointerDownHandler
 {
-    //有关触控的字段
-
-    [HideInInspector] public RectTransform sourceRect;
-    [HideInInspector] public Container sourceContainer;
-    [HideInInspector] public RectTransform targetRect;
-    [HideInInspector] public Container targetContainer;
-    [HideInInspector] public int? targetItemKey;
-    [HideInInspector] public int sourceItemKey;
-    [HideInInspector] public bool isDrag = false;
-    [HideInInspector] public Vector2 sourcePos;
-    [HideInInspector] public Vector2 onPos;
-    [HideInInspector] public bool isLongPress;
-    [HideInInspector] public Coroutine longPressCoroutine;
-    [HideInInspector] public PointerEventData eventData;
-    
-
+    /// <summary>
+    /// 空白区域点击 → 关闭所有 Detail 面板。
+    /// Cell/Container/TurnPage 的交互已由各自的 Handler 组件处理，
+    /// Core 不再参与路由分发。
+    /// </summary>
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.pointerId != 0) return;
-        Begin(eventData);
 
-        switch (sourceRect.gameObject.tag)
+        var clicked = eventData.pointerCurrentRaycast.gameObject;
+
+        // 点击了 Core 自身（全屏透明接收器）= 空白区域
+        // 或者点击了 Container 本身（非 Cell/按钮区域）
+        if (containers != null)
         {
-            case "Container":
-                TouchContainer.On(this);
-                break;
-            case "Cell":
-                TouchCell.On(this);
-                break;
-        }
-
-
-    }
-
-    public virtual void OnDrag(PointerEventData eventData)
-    {
-        if (eventData.pointerId != 0) return;
-        isDrag = true;
-
-        switch (sourceRect.gameObject.tag)
-        {
-            case "Container":
-                TouchContainer.OnDrag(this);
-                break;
-            case "Cell":
-                TouchCell.OnDrag(this);
-                break;
-        }
-
-
-    }
-
-    public virtual void OnPointerUp(PointerEventData eventData)
-    {
-        if (eventData.pointerId != 0) return;
-        
-
-        switch (sourceRect.gameObject.tag)
-        {
-            case "TurnPage":
-                TouchTurnPage.End(this);
-                break;
-            case "Cell":
-                TouchCell.End(this);
-                break;
-        }
-
-        Reset();
-
-    }
-
-
-
-
-
-
-
-
-    
-    public virtual void Begin(PointerEventData eventData)
-        {
-            this.eventData = eventData;
-
-            // 点击空白 → 隐藏显示中的 detail
-            var clicked = eventData.pointerCurrentRaycast.gameObject;
-            if (containers != null)
-                foreach (var c in containers)
+            foreach (var c in containers)
+            {
+                var df = c?.detailFiller as DetailFiller;
+                if (df != null && df.gameObject.activeSelf &&
+                    (clicked == null || !clicked.transform.IsChildOf(df.transform)))
                 {
-                    var df = c?.detailFiller as DetailFiller;
-                    if (df != null && df.gameObject.activeSelf &&
-                        (clicked == null || !clicked.transform.IsChildOf(df.transform)))
-                        df.gameObject.SetActive(false);
+                    df.gameObject.SetActive(false);
                 }
+            }
+        }
 
-            sourceRect = eventData.pointerCurrentRaycast.gameObject.GetComponent<RectTransform>();
-            sourcePos = sourceRect.anchoredPosition;
-
-            // 沿父级向上找 tag=Container，通过 name 定位 container
-            Transform t = sourceRect;
+        // 将命中的 container 提到最前
+        if (clicked != null)
+        {
+            Transform t = clicked.transform;
             while (t != null)
             {
                 if (t.CompareTag("Container"))
                 {
-                    if (int.TryParse(t.name, out int index) && index < containers.Length)
-                        sourceContainer = containers[index];
+                    t.SetAsLastSibling();
                     break;
                 }
                 t = t.parent;
             }
-
-            if (sourceContainer != null && sourceContainer.containerRect != null)
-                sourceContainer.containerRect.SetAsLastSibling();
-
-            // 每次按下都重置 mask x，防止快速连点翻页时动画残留导致 mask 偏移
-            if (sourceContainer != null && sourceContainer.maskRect != null)
-            {
-                var p = sourceContainer.maskRect.anchoredPosition;
-                sourceContainer.maskRect.anchoredPosition = new Vector2(0f, p.y);
-            }
-
-            // 用 Cell 的 name (cellKey) → 全局 itemKey
-            if (sourceRect.CompareTag("Cell") &&
-                sourceContainer != null && sourceContainer.cells != null &&
-                int.TryParse(sourceRect.name, out int cellKey))
-            {
-                sourceItemKey = sourceContainer.cells.Length * (sourceContainer.currentPage - 1) + cellKey;
-            }
-        }
-
-    public virtual void Reset()
-        {
-            // 拖拽结束，恢复 source Cell 显示（仅当 sourceItemKey 在当前页）
-            if (sourceContainer != null && sourceContainer.cells != null)
-            {
-                int start = sourceContainer.cells.Length * (sourceContainer.currentPage - 1);
-                int end   = sourceContainer.cells.Length * sourceContainer.currentPage - 1;
-                if (sourceItemKey >= start && sourceItemKey <= end)
-                    _ = SetItem.View(this, sourceContainer, sourceItemKey);
-            }
-
-            sourceItemKey = 0;
-            targetItemKey = null;
-            lastTurnTime = 0f;
-
-            targetRect = null;
-            targetContainer = null;
-            sourceRect = null;
-            sourceContainer = null;
-            isDrag = false;
-            sourcePos = Vector2.zero;
-            onPos = Vector2.zero;
-
-            if (OtherTool.dragRect != null)
-                OtherTool.dragRect.gameObject.SetActive(false);
-            if (OtherTool.Shadow != null)
-                OtherTool.Shadow.gameObject.SetActive(false);
-
-            isLongPress = false;
-            if (longPressCoroutine != null)
-            {
-                StopCoroutine(longPressCoroutine);
-                longPressCoroutine = null;
-            }
-            eventData = null;
-        }
-
-
-    public IEnumerator LongPressTimer()
-    {
-        yield return new WaitForSeconds(pressTime);
-        isLongPress = true;
-        _ = TouchItem.ExtractItem(this);
-        lastTurnTime = Time.time;
-
-        while (true)
-        {
-            TouchMask.ScrollPage(this);
-            TouchMask.TurnPage(this);
-            yield return null;
         }
     }
-
-
-
-
 }
 }

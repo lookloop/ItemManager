@@ -20,21 +20,28 @@ namespace Lookloop.ItemManager
 
         public async void Fill(Core core, Container container, int itemKey)
         {
-            var item = container.items[itemKey];
-            if (item == null || item.Id == 0) return;
+            try
+            {
+                var item = container.items[itemKey];
+                if (item == null || item.Id == 0) return;
 
-            var table = await core.GetItemTable(item.Id.ToString());
-            if (table == null) return;
+                var table = await core.GetItemTable(item.Id.ToString());
+                if (table == null) return;
 
-            fakeItemImage.sprite = table.ItemSprite;
-            fakeEdgeImage.sprite = table.GlowSprite;
-            itemNameText.text = table.ItemName;
-            itemCountText.text = item.Count.ToString();
-            tierText.text = item.Tier.ToString();
-            introductionText.text = table.ItemDescription;
+                fakeItemImage.sprite = table.ItemSprite;
+                fakeEdgeImage.sprite = table.GlowSprite;
+                itemNameText.text = table.ItemName;
+                itemCountText.text = item.Count.ToString();
+                tierText.text = item.Tier.ToString();
+                introductionText.text = table.ItemDescription;
 
-            PositionAtCell(core, container, itemKey);
-            gameObject.SetActive(true);
+                PositionAtCell(core, container, itemKey);
+                gameObject.SetActive(true);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[DetailFiller] Fill 异常: {ex}");
+            }
         }
 
         void PositionAtCell(Core core, Container container, int itemKey)

@@ -5,33 +5,27 @@ using UnityEngine.UI;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// OtherTool — 通用工具方法，供 TouchCell、TouchItem 等模块调用。
+    /// 拖拽工具 — 幽灵图标 + 悬停阴影。
+    /// 由 Core.Start 初始化，CellHandler 在拖拽时使用。
     /// </summary>
-    public static class OtherTool
+    public static class DragTool
     {
-        /// <summary>
-        /// 拖拽显示的幽灵 Cell — 挂在 Canvas 下，跟随手指。
-        /// </summary>
         public static RectTransform dragRect;
         public static Image dragItem;
         public static Image dragEdge;
         public static TextMeshProUGUI dragCount;
         public static RectTransform Shadow;
 
-        /// <summary>
-        /// 在 Canvas 下构建一个幽灵 Cell，结构和普通 Cell 一致，用于拖拽显示。
-        /// </summary>
         public static void BuildDragItem(Core core)
         {
             const float size = 10f;
 
-            dragRect = CreateRect("dragitem", core.canvas.transform,
+            dragRect = RectUtility.CreateRect("dragitem", core.canvas.transform,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero,
                 new(size, size));
 
-            // 三个子对象，和 ContainerBuilder.BuildCellView 里一致
-            var itemRect = CreateRect("item", dragRect,
+            var itemRect = RectUtility.CreateRect("item", dragRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, dragRect.sizeDelta * 0.8f,
                 null,
@@ -39,7 +33,7 @@ namespace Lookloop.ItemManager
             dragItem = itemRect.GetComponent<Image>();
             dragItem.raycastTarget = false;
 
-            var edgeRect = CreateRect("edge", dragRect,
+            var edgeRect = RectUtility.CreateRect("edge", dragRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, dragRect.sizeDelta * 0.8f,
                 null,
@@ -47,7 +41,7 @@ namespace Lookloop.ItemManager
             dragEdge = edgeRect.GetComponent<Image>();
             dragEdge.raycastTarget = false;
 
-            var countRect = CreateRect("count", dragRect,
+            var countRect = RectUtility.CreateRect("count", dragRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 Vector2.zero,
                 new(dragRect.sizeDelta.x, dragRect.sizeDelta.y / 4f),
@@ -62,13 +56,9 @@ namespace Lookloop.ItemManager
             dragRect.gameObject.SetActive(false);
         }
 
-        /// <summary>
-        /// 悬停阴影 — 灰色半透明，拖拽时插入目标 Cell 下方作为占位提示。
-        /// </summary>
-
         public static void BuildShadow(Core core)
         {
-            Shadow = CreateRect("Shadow", core.canvas.transform,
+            Shadow = RectUtility.CreateRect("Shadow", core.canvas.transform,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, new(8, 8),
                 null,
@@ -79,29 +69,6 @@ namespace Lookloop.ItemManager
             img.raycastTarget = false;
 
             Shadow.gameObject.SetActive(false);
-        }
-
-        static RectTransform CreateRect(string name, Transform parent,
-            Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
-            Vector2 anchoredPosition, Vector2 sizeDelta,
-            string tag = null,
-            params System.Type[] components)
-        {
-            var types = new System.Type[components.Length + 1];
-            types[0] = typeof(RectTransform);
-            for (int i = 0; i < components.Length; i++)
-                types[i + 1] = components[i];
-
-            var go = new GameObject(name, types);
-            var rect = go.transform as RectTransform;
-            rect.SetParent(parent, false);
-            rect.anchorMin = anchorMin;
-            rect.anchorMax = anchorMax;
-            rect.pivot = pivot;
-            rect.anchoredPosition = anchoredPosition;
-            rect.sizeDelta = sizeDelta;
-            if (tag != null) go.tag = tag;
-            return rect;
         }
     }
 }
