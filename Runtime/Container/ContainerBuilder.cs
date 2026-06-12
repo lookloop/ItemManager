@@ -117,6 +117,7 @@ public static class ContainerBuilder
             tmp.textComponent.alignment = TextAlignmentOptions.Center;
             tmp.textComponent.color = Color.white;
             tmp.text = container.currentPage + "/" + Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
+            // enabled 开关强制刷新 TMP_InputField 文本显示
             tmp.enabled = false;
             tmp.enabled = true;
 
@@ -134,6 +135,7 @@ public static class ContainerBuilder
             var prevHandler = prevButtonRect.gameObject.AddComponent<TurnPageHandler>();
             prevHandler.core = core;
             prevHandler.container = container;
+            prevHandler.direction = -1;
 
             var nextButtonRect = RectUtility.CreateRect("NextButton", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
@@ -145,6 +147,7 @@ public static class ContainerBuilder
             var nextHandler = nextButtonRect.gameObject.AddComponent<TurnPageHandler>();
             nextHandler.core = core;
             nextHandler.container = container;
+            nextHandler.direction = 1;
         }
 
         containerRect.GetComponent<Image>().sprite = spec.containerSprite;

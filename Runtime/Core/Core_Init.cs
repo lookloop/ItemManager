@@ -8,7 +8,6 @@ public partial class Core
 {
     void Awake()
     {
-        Application.targetFrameRate = 60;
         canvas = GetComponentInParent<Canvas>();
 
         var rt = GetComponent<RectTransform>();
@@ -27,8 +26,11 @@ public partial class Core
         ContainerBuilder.BuildAll(this);
         StartCoroutine(LossTimeLoop());
 
-        DragTool.BuildDragItem(this);
-        DragTool.BuildShadow(this);
+        dragTool = new DragTool();
+        dragTool.BuildDragItem(this);
+        dragTool.BuildShadow(this);
+
+        dragSession = new DragSession();
 
 #if UNITY_EDITOR
         Test.Fill(this);

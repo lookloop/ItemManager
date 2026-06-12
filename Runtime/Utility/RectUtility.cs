@@ -7,10 +7,29 @@ namespace Lookloop.ItemManager
     /// </summary>
     public static class RectUtility
     {
+        /// <summary>无额外组件。</summary>
         public static RectTransform CreateRect(string name, Transform parent,
             Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
             Vector2 anchoredPosition, Vector2 sizeDelta,
-            string tag = null,
+            string tag = null)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            var rect = go.transform as RectTransform;
+            rect.SetParent(parent, false);
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.pivot = pivot;
+            rect.anchoredPosition = anchoredPosition;
+            rect.sizeDelta = sizeDelta;
+            if (tag != null) go.tag = tag;
+            return rect;
+        }
+
+        /// <summary>带额外组件（避免 params 堆分配）。</summary>
+        public static RectTransform CreateRect(string name, Transform parent,
+            Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
+            Vector2 anchoredPosition, Vector2 sizeDelta,
+            string tag,
             params System.Type[] components)
         {
             var types = new System.Type[components.Length + 1];

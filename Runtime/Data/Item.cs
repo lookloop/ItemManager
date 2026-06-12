@@ -16,10 +16,6 @@ public class Item
     //数据
     public int[] Data;
 
-    public Item()
-    {
-    }
-
     public Item(int id, int type, int tier, int count, int[] data)
     {
         Id = id;

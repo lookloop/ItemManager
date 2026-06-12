@@ -130,7 +130,7 @@ namespace Lookloop.ItemManager
             var item = container.items[globalKey];
             if (item == null || item.Id == 0) return;
 
-            DragSession.Begin(container, globalKey);
+            core.dragSession.Begin(container, globalKey);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 core.canvas.transform as RectTransform,
@@ -138,15 +138,15 @@ namespace Lookloop.ItemManager
                 core.canvas.worldCamera,
                 out Vector2 localPos);
 
-            DragTool.dragRect.anchoredPosition = localPos;
+            core.dragTool.dragRect.anchoredPosition = localPos;
 
             var table = await core.GetItemTable(item.Id.ToString());
             if (table == null) return;
 
-            DragTool.dragItem.sprite = table.ItemSprite;
-            DragTool.dragEdge.sprite = table.GlowSprite;
-            DragTool.dragCount.text = item.Count.ToString();
-            DragTool.dragRect.gameObject.SetActive(true);
+            core.dragTool.dragItem.sprite = table.ItemSprite;
+            core.dragTool.dragEdge.sprite = table.GlowSprite;
+            core.dragTool.dragCount.text = item.Count.ToString();
+            core.dragTool.dragRect.gameObject.SetActive(true);
 
             SetItem.NoView(container, globalKey);
         }
@@ -156,7 +156,7 @@ namespace Lookloop.ItemManager
         // ═══════════════════════════════════════════════
         void DragItem(PointerEventData eventData)
         {
-            if (!DragTool.dragRect.gameObject.activeSelf) return;
+            if (!core.dragTool.dragRect.gameObject.activeSelf) return;
 
             // 幽灵跟随手指
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -164,7 +164,7 @@ namespace Lookloop.ItemManager
                 eventData.position,
                 core.canvas.worldCamera,
                 out Vector2 localPos);
-            DragTool.dragRect.anchoredPosition = localPos;
+            core.dragTool.dragRect.anchoredPosition = localPos;
 
             // 射线找目标
             var raycast = eventData.pointerCurrentRaycast;
@@ -181,8 +181,8 @@ namespace Lookloop.ItemManager
 
                     // Shadow 挂到目标格子下
                     var cellRect = targetCell.container.cells[targetCell.cellKey].cell;
-                    DragTool.Shadow.SetParent(cellRect, false);
-                    DragTool.Shadow.gameObject.SetActive(true);
+                    core.dragTool.Shadow.SetParent(cellRect, false);
+                    core.dragTool.Shadow.gameObject.SetActive(true);
                 }
                 else
                 {
@@ -198,8 +198,8 @@ namespace Lookloop.ItemManager
         void ClearTarget()
         {
             targetCell = null;
-            DragTool.Shadow.SetParent(core.canvas.transform, false);
-            DragTool.Shadow.gameObject.SetActive(false);
+            core.dragTool.Shadow.SetParent(core.canvas.transform, false);
+            core.dragTool.Shadow.gameObject.SetActive(false);
         }
 
         // ═══════════════════════════════════════════════
@@ -330,10 +330,10 @@ namespace Lookloop.ItemManager
             isDrag = false;
             isLongPress = false;
 
-            DragSession.End();
+            core.dragSession.End();
 
-            DragTool.dragRect.gameObject.SetActive(false);
-            DragTool.Shadow.gameObject.SetActive(false);
+            core.dragTool.dragRect.gameObject.SetActive(false);
+            core.dragTool.Shadow.gameObject.SetActive(false);
 
             CancelLongPress();
         }

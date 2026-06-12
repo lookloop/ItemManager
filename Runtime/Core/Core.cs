@@ -6,6 +6,8 @@ namespace Lookloop.ItemManager
 
 public partial class Core : MonoBehaviour, IPointerDownHandler
 {
+    const string ContainerTag = "Container";
+
     /// <summary>
     /// 空白区域点击 → 关闭所有 Detail 面板。
     /// Cell/Container/TurnPage 的交互已由各自的 Handler 组件处理，
@@ -38,7 +40,7 @@ public partial class Core : MonoBehaviour, IPointerDownHandler
             Transform t = clicked.transform;
             while (t != null)
             {
-                if (t.CompareTag("Container"))
+                if (t.CompareTag(ContainerTag))
                 {
                     t.SetAsLastSibling();
                     break;

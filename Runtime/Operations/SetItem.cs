@@ -25,7 +25,7 @@ namespace Lookloop.ItemManager
                 if (page != container.currentPage) return;
             }
 
-            _ = View(core, container, itemKey);
+            TaskSafeguard.FireAndForget(View(core, container, itemKey));
         }
 
         /// <summary>

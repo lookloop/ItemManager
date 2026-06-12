@@ -8,19 +8,14 @@ namespace Lookloop.ItemManager
     /// </summary>
     public class TurnPageHandler : ItemHandler
     {
+        /// <summary>-1 = 上一页, +1 = 下一页</summary>
+        public int direction;
+
         public override void OnPointerUp(PointerEventData eventData)
         {
             if (eventData.pointerId != 0) return;
 
-            int page = container.currentPage;
-
-            switch (gameObject.name)
-            {
-                case "PrevButton": page--; break;
-                case "NextButton": page++; break;
-                default: return;
-            }
-
+            int page = container.currentPage + direction;
             SetPage.Set(core, container, page);
         }
     }

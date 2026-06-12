@@ -9,9 +9,8 @@ namespace Lookloop.ItemManager
 public partial class Core
 {
 
-    //没有字段，只有一个结构体
-    //用于增加一个float的时间time，用于辅助计时，所以特地装了一个结构体。
-    struct HandleTime
+    //用于增加一个float的时间time，用于辅助计时。
+    class HandleTime
     {
         public AsyncOperationHandle<ItemTable> handle;
         public float time;
@@ -29,13 +28,7 @@ public partial class Core
             //再问问，是否加载成功。加载中和加载失败就不行。
             if (entry.handle.IsValid() && entry.handle.Status == AsyncOperationStatus.Succeeded)
             {
-                //对结构体的时间进行重置一下，因为又有新的访问来了，刷新时间。
-                //时间刷新为游戏运行最新时间。
                 entry.time = Time.time;
-                //这里使用key从字典获取值，再用值=字典key，再被字典的key引用。
-                //值类型发生改变，结构体只能一整个更换。
-                handleTimes[key] = entry;
-                //直接返回之前加载好的result，因为句柄早就存在且有值了，所以不用await。
                 return entry.handle.Result;
             }
             //加载没有成功，if没有成功，所以没有return。那么就代表这个key，用不了。先清理了。
@@ -63,17 +56,14 @@ public partial class Core
     }
     public void LossTime()
     {
-        //建立一个空list，用来装要loss的a。
+        // 直接遍历字典，同步释放过期资源 + 移除条目
+        // 先收集过期 key，避免在遍历中修改字典
         var loss = new List<string>();
-        //遍历handTimes
         foreach (var a in handleTimes)
         {
-            //判断a的value的值，也就是时间，是否过期。如果过期的就添加进list里。
-            //当前游戏运行时间，和过去这个句柄的记录的游戏运行时间的差异，如果大于30分钟，那么进行清理
             if (Time.time - a.Value.time > 1800f)
                 loss.Add(a.Key);
         }
-        //把过期的装完了
         foreach (var key in loss)
         {
             //字典还有吗？addres句柄指向的资源还有吗？

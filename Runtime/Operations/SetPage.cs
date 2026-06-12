@@ -45,10 +45,10 @@ namespace Lookloop.ItemManager
                 container.pageInput.text = page + "/" + Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
 
             // 翻页后检测：当前 container 是否是 sourceContainer，且 sourceItemKey 是否在当前页
-            if (container == DragSession.sourceContainer &&
-                DragSession.sourceItemKey >= start && DragSession.sourceItemKey <= end)
+            if (container == core.dragSession.sourceContainer &&
+                core.dragSession.sourceItemKey >= start && core.dragSession.sourceItemKey <= end)
             {
-                SetItem.NoView(container, DragSession.sourceItemKey);
+                SetItem.NoView(container, core.dragSession.sourceItemKey);
             }
 
             if (page != oldPage)

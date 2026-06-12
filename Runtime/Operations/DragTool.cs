@@ -7,16 +7,17 @@ namespace Lookloop.ItemManager
     /// <summary>
     /// 拖拽工具 — 幽灵图标 + 悬停阴影。
     /// 由 Core.Start 初始化，CellHandler 在拖拽时使用。
+    /// 每个 Core 持有一个实例，避免多容器场景下的静态状态冲突。
     /// </summary>
-    public static class DragTool
+    public class DragTool
     {
-        public static RectTransform dragRect;
-        public static Image dragItem;
-        public static Image dragEdge;
-        public static TextMeshProUGUI dragCount;
-        public static RectTransform Shadow;
+        public RectTransform dragRect;
+        public Image dragItem;
+        public Image dragEdge;
+        public TextMeshProUGUI dragCount;
+        public RectTransform Shadow;
 
-        public static void BuildDragItem(Core core)
+        public void BuildDragItem(Core core)
         {
             const float size = 10f;
 
@@ -56,7 +57,7 @@ namespace Lookloop.ItemManager
             dragRect.gameObject.SetActive(false);
         }
 
-        public static void BuildShadow(Core core)
+        public void BuildShadow(Core core)
         {
             Shadow = RectUtility.CreateRect("Shadow", core.canvas.transform,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),

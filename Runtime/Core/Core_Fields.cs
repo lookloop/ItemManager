@@ -19,5 +19,7 @@ public partial class Core
     // ── 运行时引用 ──
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public Container[] containers;
+    [HideInInspector] public DragTool dragTool;
+    [HideInInspector] public DragSession dragSession;
 }
 }
