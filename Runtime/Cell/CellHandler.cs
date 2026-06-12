@@ -87,7 +87,7 @@ namespace Lookloop.ItemManager
             {
                 // 纯点击 → 显示详情
                 int globalKey = container.cells.Length * (container.currentPage - 1) + cellKey;
-                container.detailFiller?.Fill(core, container, globalKey);
+                TaskSafeguard.FireAndForget(container.detailFiller?.Fill(core, container, globalKey) ?? Task.CompletedTask);
             }
 
             Reset();
@@ -100,7 +100,7 @@ namespace Lookloop.ItemManager
         {
             yield return new WaitForSeconds(core.pressTime);
             isLongPress = true;
-            _ = ExtractItem(eventData);
+            TaskSafeguard.FireAndForget(ExtractItem(eventData));
             lastTurnTime = Time.time;
 
             while (true)
@@ -322,7 +322,7 @@ namespace Lookloop.ItemManager
                 int end = container.cells.Length * container.currentPage - 1;
                 int globalKey = start + cellKey;
                 if (globalKey >= start && globalKey <= end)
-                    _ = SetItem.View(core, container, globalKey);
+                    TaskSafeguard.FireAndForget(SetItem.View(core, container, globalKey));
             }
 
             targetCell = null;

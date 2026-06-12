@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace Lookloop.ItemManager
 {
     /// <summary>
@@ -5,6 +7,6 @@ namespace Lookloop.ItemManager
     /// </summary>
     public interface IDetailFiller
     {
-        void Fill(Core core, Container container, int itemKey);
+        Task Fill(Core core, Container container, int itemKey);
     }
 }

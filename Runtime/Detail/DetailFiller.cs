@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -18,7 +19,7 @@ namespace Lookloop.ItemManager
         public TMP_Text attributesText;
         public TMP_Text introductionText;
 
-        public async void Fill(Core core, Container container, int itemKey)
+        public async Task Fill(Core core, Container container, int itemKey)
         {
             try
             {

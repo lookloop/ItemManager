@@ -38,7 +38,7 @@ namespace Lookloop.ItemManager
             }
 
             for (int i = start; i <= end; i++)
-                _ = SetItem.View(core, container, i);
+                TaskSafeguard.FireAndForget(SetItem.View(core, container, i));
 
             // 同步 TMP 翻页输入框显示
             if (container.pageInput != null)
