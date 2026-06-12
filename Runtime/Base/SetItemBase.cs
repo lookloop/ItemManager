@@ -1,26 +1,30 @@
-using UnityEngine;
+using System;
 
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 容器准入过滤器基类 — ScriptableObject，可直接拖入 Inspector。
+    /// 容器准入过滤器基类 — [SerializeReference] 内联展开，直接在 Inspector 面板里配。
     ///
     /// 派生示例（装备槽只接受武器）：
     /// <code>
-    /// [CreateAssetMenu(menuName = "ItemManager/WeaponOnlyFilter")]
+    /// [Serializable]
     /// public class WeaponOnlyFilter : SetItemBase
     /// {
+    ///     public int[] allowedTypes;
+    ///
     ///     public override bool CanExchange(Item incoming, Item outgoing)
-    ///         => incoming.Id == 0 || incoming.Type == (int)ItemType.Weapon;
+    ///         => incoming.Id == 0
+    ///         || Array.IndexOf(allowedTypes, incoming.Type) >= 0;
     /// }
     /// </code>
     ///
-    /// 运行时也可直接 new：
+    /// 运行时直接 new 就行：
     /// <code>
-    /// container.itemFilter = ScriptableObject.CreateInstance&lt;WeaponOnlyFilter&gt;();
+    /// container.itemFilter = new WeaponOnlyFilter { allowedTypes = new[] { 1, 2 } };
     /// </code>
     /// </summary>
-    public class SetItemBase : ScriptableObject
+    [Serializable]
+    public class SetItemBase
     {
         /// <summary>
         /// 交换前准入检查。

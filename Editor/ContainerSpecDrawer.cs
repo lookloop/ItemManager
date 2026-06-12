@@ -6,8 +6,7 @@ namespace Lookloop.ItemManager.Editor
 {
     /// <summary>
     /// ContainerSpec 的自定义 Inspector 显示。
-    /// 只做一件事：prefab 始终可见，其余字段收到三角折叠下面。
-    /// 分组间距由 ContainerSpec 自身的 [Header]/[Space] 控制，这里不干预。
+    /// prefab / detail / itemFilter 始终可见，其余字段收到三角折叠下面。
     /// </summary>
     [CustomPropertyDrawer(typeof(ContainerSpec))] // 注册：告诉 Unity "碰到 ContainerSpec 就用我画"
     public class ContainerSpecDrawer : PropertyDrawer
@@ -16,9 +15,10 @@ namespace Lookloop.ItemManager.Editor
         static readonly Dictionary<string, bool> Foldouts = new();
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            // prefab + detail — 始终可见，不参与折叠
+            // prefab + detail + filter — 始终可见，不参与折叠
             EditorGUILayout.PropertyField(property.FindPropertyRelative("prefabRect"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("detailRect"));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("itemFilter"));
             // 三角折叠按钮
             string key = property.propertyPath;
             if (!Foldouts.ContainsKey(key)) Foldouts[key] = false;

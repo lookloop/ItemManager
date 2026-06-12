@@ -30,7 +30,8 @@ namespace Lookloop.ItemManager
 
         [Space]
         [Header("过滤")]
-        [Tooltip("物品准入过滤器，为空则无限制。")]
+        [Tooltip("物品准入过滤器，为空则无限制。类型下拉选派生类，字段内联展开。")]
+        [SerializeReference]
         public SetItemBase itemFilter;
 
         [Space]
