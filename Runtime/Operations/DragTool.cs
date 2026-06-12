@@ -66,7 +66,7 @@ namespace Lookloop.ItemManager
                 typeof(Image));
 
             var img = Shadow.GetComponent<Image>();
-            img.color = new Color(0f, 0f, 0f, 0.9f);
+            img.color = core.shadowColor;
             img.raycastTarget = false;
 
             Shadow.gameObject.SetActive(false);

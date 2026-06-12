@@ -2,27 +2,26 @@ using System;
 
 namespace Lookloop.ItemManager
 {
-[Serializable]
-public class Item
-{
-    //唯一id
-    public int Id;
-    //类型
-    public int Type;
-    //等级
-    public int Tier;
-    //数量
-    public int Count;
-    //数据
-    public int[] Data;
-
-    public Item(int id, int type, int tier, int count, int[] data)
+    /// <summary>
+    /// 物品运行时数据 — 纯值类型，避免数组存取产生 GC 分配。
+    /// Id == 0 视为空槽位。
+    /// </summary>
+    [Serializable]
+    public readonly struct Item
     {
-        Id = id;
-        Type = type;
-        Tier = tier;
-        Count = count;
-        Data = data;
+        public readonly int Id;
+        public readonly int Type;
+        public readonly int Tier;
+        public readonly int Count;
+        public readonly int[] Data;
+
+        public Item(int id, int type, int tier, int count, int[] data)
+        {
+            Id = id;
+            Type = type;
+            Tier = tier;
+            Count = count;
+            Data = data;
+        }
     }
-}
 }

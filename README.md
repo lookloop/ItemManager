@@ -12,45 +12,49 @@
 ## 架构
 
 ```
-Core.cs                     ← 触控中枢 (IPointerDown/Drag/UpHandler)
-├── Core_Fields.cs          ← 公开字段 (specs[] / font / pressTime / scrollSpeed …)
-├── Core_Init.cs            ← 启动流程 (Awake + Start)
+Core.cs                     ← 空白点击关闭 Detail / Container 置顶
+├── Core_Fields.cs          ← 公开字段 (specs[] / font / shadowColor / pressTime …)
+├── Core_Init.cs            ← 启动流程 (Awake + Start + 过期回收协程)
 └── Core_Addressables.cs    ← ItemTable 异步加载 + 缓存 + 30min 过期回收
 
 数据层
-├── _Item.cs                ← 物品数据 (Id / Type / Tier / Count / Data[])
-├── _ItemTable.cs           ← ScriptableObject 物品表 (图标 / 边框 / 名称 / 描述)
-├── _Cell.cs                ← 格子 UI 引用 (cell / item 图标 / edge 边框 / count 数量)
-├── _Container.cs           ← 运行时容器实例 (Rect 引用 + items[] + cells[] + 翻页状态)
-├── _ContainerSpec.cs       ← 容器蓝图 (尺寸 / 每页格子 / 行数 / 视觉精灵)
-└── _IDetailFiller.cs       ← 详情面板填充接口
+├── Item.cs                 ← 物品运行时数据 (readonly struct: Id / Type / Tier / Count)
+├── ItemTable.cs            ← ScriptableObject 物品表 (图标 / 边框 / 名称 / 描述)
+├── CellData.cs             ← 格子 UI 引用 (cell / item 图标 / edge 边框 / count 数量)
+├── ContainerData.cs        ← 运行时容器实例 (Rect 引用 + items[] + cells[] + 翻页状态)
+├── ContainerSpec.cs        ← 容器蓝图 (尺寸 / 每页格子 / 行数 / 视觉精灵)
+└── IDetailFiller.cs        ← 详情面板填充接口
 
 构建层
-└── ___ContainerBuilder.cs  ← Container → Mask → Grid → Cell 全程序化构建
+└── ContainerBuilder.cs     ← Container → Mask → Grid → Cell 全程序化构建 + Handler 挂载
+
+基类
+└── TouchBase.cs            ← 交互基类 (IPointerDown/Drag/UpHandler)，Cell/Container/TurnPage 继承它
 
 触控层
-├── __TouchCell.cs          ← Cell 触控路由 (On / OnDrag / End)
-├── __TouchCell_Grid.cs     ← Grid 拖拽滚动 (坐标换算 + 钳制)
-├── __TouchContainer.cs     ← Container 整体拖拽
-├── __TouchItem.cs          ← 长按提取物品 + 幽灵拖拽跟随 + target 射线追踪
-├── __TouchMask.cs          ← 长按拖拽时 Mask 边缘自动滚动 + 翻页
-├── __TouchTurnPage.cs      ← 翻页按钮点击
-└── __TouchExchangeItem.cs  ← 跨容器物品交换 (source ↔ target 纯互换)
+├── CellHandler.cs          ← 格子全交互：短按滚动 Grid / 长按提取物品 / 幽灵拖拽 / 射线追踪 / 边缘滚动翻页 / 交换物品
+├── ContainerHandler.cs     ← 容器整体拖拽
+└── TurnPageHandler.cs      ← 翻页按钮点击
+
+详情层
+└── DetailFiller.cs         ← IDetailFiller 默认实现，异步加载 ItemTable + 自动定位
+
+操作层
+├── DragTool.cs             ← 拖拽幽灵图标 + 悬停阴影
+├── SetItem.cs              ← 物品数据写入 + View 刷新 + NoView 隐藏
+└── SetPage.cs              ← 翻页逻辑 + 最后一页高度适配 + 滑动动画反馈
 
 工具层
-├── ____OtherTool.cs        ← 拖拽幽灵构建 + 悬停阴影
-├── ____SetItem.cs          ← 物品数据写入 + View 刷新 + NoView 隐藏
-└── ____SetPage.cs          ← 翻页逻辑 + 最后一页高度适配
+├── RectUtility.cs          ← 程序化 RectTransform 创建
+└── TaskSafeguard.cs        ← FireAndForget 异常捕获
 
 测试
-└── _______________Test.cs  ← 启动时随机填充物品 (1/3 概率)
+└── Test.cs                 ← 启动时随机填充物品 (EDITOR only, 1/3 概率)
 
 Editor
 ├── ContainerSpecDrawer.cs  ← ContainerSpec 自定义折叠 Inspector
 └── ItemDataEditorTools.cs  ← Project 右键 → Create → ItemTable
 ```
-
-> 文件名下划线数量 = 层级优先级。在 Project 窗口中自然按层级排序，无需子文件夹。
 
 ---
 
@@ -152,6 +156,7 @@ Project 窗口右键 → `Create → ItemTable`，填入：
 | `scrollSpeed` | `float` | 边缘滚动速度（默认 60） |
 | `edgeThreshold` | `float` | 边缘触发距离（默认 3） |
 | `turnThreshold` | `float` | 翻页冷却时间（默认 0.5s） |
+| `shadowColor` | `Color` | 拖拽悬停阴影颜色（默认黑色半透明） |
 
 ### SetItem
 

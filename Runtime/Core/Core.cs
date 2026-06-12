@@ -25,11 +25,11 @@ public partial class Core : MonoBehaviour, IPointerDownHandler
         {
             foreach (var c in containers)
             {
-                var df = c?.detailFiller as DetailFiller;
-                if (df != null && df.gameObject.activeSelf &&
-                    (clicked == null || !clicked.transform.IsChildOf(df.transform)))
+                var dr = c?.detailRect;
+                if (dr != null && dr.gameObject.activeSelf &&
+                    (clicked == null || !clicked.transform.IsChildOf(dr)))
                 {
-                    df.gameObject.SetActive(false);
+                    dr.gameObject.SetActive(false);
                 }
             }
         }

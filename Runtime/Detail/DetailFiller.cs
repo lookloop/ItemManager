@@ -24,7 +24,7 @@ namespace Lookloop.ItemManager
             try
             {
                 var item = container.items[itemKey];
-                if (item == null || item.Id == 0) return;
+                if (item.Id == 0) return;
 
                 var table = await core.GetItemTable(item.Id.ToString());
                 if (table == null) return;

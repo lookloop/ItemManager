@@ -105,8 +105,15 @@ namespace Lookloop.ItemManager
 
             while (true)
             {
-                ScrollPageByEdge(eventData);
-                TurnPageByEdge(eventData);
+                var edgeC = targetCell?.container ?? container;
+                var edgeMask = edgeC?.maskRect;
+                if (edgeMask != null)
+                {
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                        edgeMask, eventData.position, core.canvas.worldCamera, out Vector2 lp);
+                    ScrollPageByEdge(lp, edgeMask, edgeC);
+                    TurnPageByEdge(lp, edgeMask, edgeC);
+                }
                 yield return null;
             }
         }
@@ -128,7 +135,7 @@ namespace Lookloop.ItemManager
             if (container == null || container.items == null) return;
             int globalKey = container.cells.Length * (container.currentPage - 1) + cellKey;
             var item = container.items[globalKey];
-            if (item == null || item.Id == 0) return;
+            if (item.Id == 0) return;
 
             core.dragSourceContainer = container;
             core.dragSourceItemKey = globalKey;
@@ -231,15 +238,8 @@ namespace Lookloop.ItemManager
         // ═══════════════════════════════════════════════
         //  长按时 Mask 边缘滚动 + 翻页
         // ═══════════════════════════════════════════════
-        void ScrollPageByEdge(PointerEventData eventData)
+        void ScrollPageByEdge(Vector2 localPos, RectTransform maskRect, Container c)
         {
-            var c = targetCell?.container ?? container;
-            var maskRect = c?.maskRect;
-            if (maskRect == null) return;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                maskRect, eventData.position, core.canvas.worldCamera, out Vector2 localPos);
-
             float maskH = maskRect.rect.height;
             float distTop = Mathf.Abs(localPos.y);
             float distBottom = Mathf.Abs(localPos.y + maskH);
@@ -258,15 +258,8 @@ namespace Lookloop.ItemManager
             gridRect.anchoredPosition = new Vector2(gridRect.anchoredPosition.x, targetY);
         }
 
-        void TurnPageByEdge(PointerEventData eventData)
+        void TurnPageByEdge(Vector2 localPos, RectTransform maskRect, Container c)
         {
-            var c = targetCell?.container ?? container;
-            var maskRect = c?.maskRect;
-            if (maskRect == null) return;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                maskRect, eventData.position, core.canvas.worldCamera, out Vector2 localPos);
-
             float maskW = maskRect.rect.width;
             float halfW = maskW * 0.5f;
             float distLeft = Mathf.Abs(localPos.x + halfW);
@@ -305,7 +298,7 @@ namespace Lookloop.ItemManager
 
             var srcItem = srcC.items[srcKey];
             var tgtItem = tgtC.items[tgtKey];
-            if (srcItem == null && tgtItem == null) return;
+            if (srcItem.Id == 0 && tgtItem.Id == 0) return;
 
             SetItem.Set(core, srcC, srcKey, tgtItem);
             SetItem.Set(core, tgtC, tgtKey, srcItem);
@@ -316,14 +309,17 @@ namespace Lookloop.ItemManager
         // ═══════════════════════════════════════════════
         void Reset()
         {
-            // 恢复 source Cell 显示（仅当在当前页）
-            if (container != null && container.cells != null)
+            // 恢复 source Cell 显示（仅当源物品 key 仍在当前页范围内）
+            if (container != null && container.cells != null &&
+                core.dragSourceContainer == container)
             {
                 int start = container.cells.Length * (container.currentPage - 1);
-                int end = container.cells.Length * container.currentPage - 1;
-                int globalKey = start + cellKey;
-                if (globalKey >= start && globalKey <= end)
-                    TaskSafeguard.FireAndForget(SetItem.View(core, container, globalKey));
+                int end = Mathf.Min(
+                    container.cells.Length * container.currentPage - 1,
+                    container.items.Length - 1);
+                if (core.dragSourceItemKey >= start && core.dragSourceItemKey <= end)
+                    TaskSafeguard.FireAndForget(
+                        SetItem.View(core, container, core.dragSourceItemKey));
             }
 
             targetCell = null;

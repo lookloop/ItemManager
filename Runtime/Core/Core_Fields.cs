@@ -12,6 +12,7 @@ public partial class Core
     public float turnThreshold = 0.5f;
     public float fontSize = 3.9f;
     public float flipDuration = 0.5f;
+    public Color shadowColor = new(0f, 0f, 0f, 0.9f);
     public TMP_FontAsset font;
 
     public ContainerSpec[] specs;

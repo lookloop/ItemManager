@@ -49,16 +49,9 @@ public static class ContainerBuilder
         container.containerRect = prefabContainer;
 
         // 给预制体容器挂 ContainerHandler
-        var containerHandler = prefabContainer.gameObject.AddComponent<ContainerHandler>();
-        containerHandler.core = core;
-        containerHandler.container = container;
+        AttachContainerHandler(core, container, prefabContainer.gameObject);
 
-        if (spec.detailRect != null)
-        {
-            container.detailRect = Object.Instantiate(spec.detailRect, core.canvas.transform);
-            container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
-            container.detailRect.gameObject.SetActive(false);
-        }
+        AttachDetail(core, container, spec);
 
         container.cells = BuildCellView(core, container, cellRects);
     }
@@ -160,16 +153,9 @@ public static class ContainerBuilder
         container.cellWidth = spec.cellWidth;
 
         // 给容器挂 ContainerHandler
-        var cHandler = containerRect.gameObject.AddComponent<ContainerHandler>();
-        cHandler.core = core;
-        cHandler.container = container;
+        AttachContainerHandler(core, container, containerRect.gameObject);
 
-        if (spec.detailRect != null)
-        {
-            container.detailRect = Object.Instantiate(spec.detailRect, core.canvas.transform);
-            container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
-            container.detailRect.gameObject.SetActive(false);
-        }
+        AttachDetail(core, container, spec);
 
         var cellRects = new List<RectTransform>();
         for (int i = 0; i < spec.everyPageCells; i++)
@@ -241,6 +227,22 @@ public static class ContainerBuilder
             handler.cellKey = i;
         }
         return cells;
+    }
+
+    // ─── Handler 挂载辅助 ───
+    static void AttachContainerHandler(Core core, Container container, GameObject go)
+    {
+        var handler = go.AddComponent<ContainerHandler>();
+        handler.core = core;
+        handler.container = container;
+    }
+
+    static void AttachDetail(Core core, Container container, ContainerSpec spec)
+    {
+        if (spec.detailRect == null) return;
+        container.detailRect = Object.Instantiate(spec.detailRect, core.canvas.transform);
+        container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
+        container.detailRect.gameObject.SetActive(false);
     }
 
     // ─── 页码输入 ───
