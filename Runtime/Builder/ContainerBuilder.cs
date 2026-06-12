@@ -17,6 +17,7 @@ public static class ContainerBuilder
         for (int i = 0; i < core.specs.Length; i++)
         {
             var container = new Container();
+            container.itemFilter = core.specs[i].itemFilter;
             core.containers[i] = container;
 
             if (core.specs[i].prefabRect != null)

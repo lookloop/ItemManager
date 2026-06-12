@@ -18,6 +18,9 @@ namespace Lookloop.ItemManager
         {
             container.items[itemKey] = item;
 
+            // filter 回调 — 数据层变更通知
+            container.itemFilter?.OnItemSet(container, itemKey);
+
             // 不在当前页则不刷新 UI
             if (container.items.Length > container.cells.Length)
             {

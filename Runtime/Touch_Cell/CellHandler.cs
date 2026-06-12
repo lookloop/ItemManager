@@ -300,6 +300,15 @@ namespace Lookloop.ItemManager
             var tgtItem = tgtC.items[tgtKey];
             if (srcItem.Id == 0 && tgtItem.Id == 0) return;
 
+            // ── 双向准入检查 ──
+            // srcC filter: tgtItem 放入 srcC，srcItem 从 srcC 取出
+            bool srcOk = srcC.itemFilter == null
+                || srcC.itemFilter.CanExchange(tgtItem, srcItem);
+            // tgtC filter: srcItem 放入 tgtC，tgtItem 从 tgtC 取出
+            bool tgtOk = tgtC.itemFilter == null
+                || tgtC.itemFilter.CanExchange(srcItem, tgtItem);
+            if (!srcOk || !tgtOk) return;
+
             SetItem.Set(core, srcC, srcKey, tgtItem);
             SetItem.Set(core, tgtC, tgtKey, srcItem);
         }

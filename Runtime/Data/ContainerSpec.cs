@@ -29,6 +29,11 @@ namespace Lookloop.ItemManager
         public float containerFillDown = 4f;
 
         [Space]
+        [Header("过滤")]
+        [Tooltip("物品准入过滤器，为空则无限制。")]
+        public SetItemBase itemFilter;
+
+        [Space]
         [Header("翻页")]
         public float pageTextWidth = 24f;
         public float pageTextHeight = 4f;
