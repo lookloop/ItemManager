@@ -20,6 +20,7 @@ public partial class Core
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public Container[] containers;
     [HideInInspector] public DragTool dragTool;
-    [HideInInspector] public DragSession dragSession;
+    [HideInInspector] public Container dragSourceContainer;
+    [HideInInspector] public int dragSourceItemKey;
 }
 }

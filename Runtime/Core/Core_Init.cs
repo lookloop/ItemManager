@@ -30,7 +30,6 @@ public partial class Core
         dragTool.BuildDragItem(this);
         dragTool.BuildShadow(this);
 
-        dragSession = new DragSession();
 
 #if UNITY_EDITOR
         Test.Fill(this);

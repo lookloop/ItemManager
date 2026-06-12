@@ -130,7 +130,8 @@ namespace Lookloop.ItemManager
             var item = container.items[globalKey];
             if (item == null || item.Id == 0) return;
 
-            core.dragSession.Begin(container, globalKey);
+            core.dragSourceContainer = container;
+            core.dragSourceItemKey = globalKey;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 core.canvas.transform as RectTransform,
@@ -330,7 +331,8 @@ namespace Lookloop.ItemManager
             isDrag = false;
             isLongPress = false;
 
-            core.dragSession.End();
+            core.dragSourceContainer = null;
+            core.dragSourceItemKey = 0;
 
             core.dragTool.dragRect.gameObject.SetActive(false);
             core.dragTool.Shadow.gameObject.SetActive(false);
