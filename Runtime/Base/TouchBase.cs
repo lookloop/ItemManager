@@ -8,7 +8,7 @@ namespace Lookloop.ItemManager
     /// 子类按需 override：CellHandler / ContainerHandler / TurnPageHandler。
     /// 构建时由 ContainerBuilder 注入 core、container 引用，无需运行时查找。
     /// </summary>
-    public abstract class ItemHandler : MonoBehaviour,
+    public abstract class TouchBase : MonoBehaviour,
         IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
         [HideInInspector] public Core core;

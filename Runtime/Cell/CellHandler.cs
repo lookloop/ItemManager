@@ -10,7 +10,7 @@ namespace Lookloop.ItemManager
     /// 吸收原 TouchCell / TouchCell_Grid / TouchItem / TouchMask / TouchExchangeItem 全部逻辑。
     /// 构建时由 ContainerBuilder 注入 core、container、cellKey。
     /// </summary>
-    public class CellHandler : ItemHandler
+    public class CellHandler : TouchBase
     {
         [HideInInspector] public int cellKey;
 
