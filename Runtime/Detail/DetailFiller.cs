@@ -9,7 +9,7 @@ namespace Lookloop.ItemManager
     /// Detail 面板 — 点击物品时显示详情。
     /// 点击空白隐藏由 Core.OnPointerDown 统一处理。
     /// </summary>
-    public class DetailFiller : MonoBehaviour, IDetailFiller
+    public class DetailFiller : DetailBase
     {
         public Image fakeItemImage;
         public Image fakeEdgeImage;
@@ -19,7 +19,7 @@ namespace Lookloop.ItemManager
         public TMP_Text attributesText;
         public TMP_Text introductionText;
 
-        public async Task Fill(Core core, Container container, int itemKey)
+        public override async Task Fill(Core core, Container container, int itemKey)
         {
             try
             {

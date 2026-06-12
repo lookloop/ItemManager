@@ -17,7 +17,7 @@ namespace Lookloop.ItemManager
         public int currentPage = 1;
         public int row;
         public float cellWidth;
-        [System.NonSerialized] public IDetailFiller detailFiller;
+        [System.NonSerialized] public DetailBase detailFiller;
         [System.NonSerialized] public TMPro.TMP_InputField pageInput;
         [System.NonSerialized] public SetItemBase itemFilter;
     }

@@ -242,7 +242,7 @@ public static class ContainerBuilder
     {
         if (spec.detailRect == null) return;
         container.detailRect = Object.Instantiate(spec.detailRect, core.canvas.transform);
-        container.detailFiller = container.detailRect.GetComponent<IDetailFiller>();
+        container.detailFiller = container.detailRect.GetComponent<DetailBase>();
         container.detailRect.gameObject.SetActive(false);
     }
 
