@@ -16,7 +16,7 @@ namespace Lookloop.ItemManager
             if (eventData.pointerId != 0) return;
 
             int page = container.currentPage + direction;
-            SetPage.Set(core, container, page);
+            core.SetPage(container, page);
         }
     }
 }

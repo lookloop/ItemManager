@@ -87,7 +87,7 @@ namespace Lookloop.ItemManager
             {
                 // 纯点击 → 显示详情
                 int globalKey = container.cells.Length * (container.currentPage - 1) + cellKey;
-                TaskSafeguard.FireAndForget(container.detailFiller?.Fill(core, container, globalKey) ?? Task.CompletedTask);
+                core.FireAndForget(container.detailFiller?.Fill(core, container, globalKey) ?? Task.CompletedTask);
             }
 
             Reset();
@@ -100,7 +100,7 @@ namespace Lookloop.ItemManager
         {
             yield return new WaitForSeconds(core.pressTime);
             isLongPress = true;
-            TaskSafeguard.FireAndForget(ExtractItem(eventData));
+            core.FireAndForget(ExtractItem(eventData));
             lastTurnTime = Time.time;
 
             while (true)
@@ -146,17 +146,17 @@ namespace Lookloop.ItemManager
                 core.canvas.worldCamera,
                 out Vector2 localPos);
 
-            core.dragTool.dragRect.anchoredPosition = localPos;
+            core.dragRect.anchoredPosition = localPos;
 
             var table = await core.GetItemTable(item.Id.ToString());
             if (table == null) return;
 
-            core.dragTool.dragItem.sprite = table.ItemSprite;
-            core.dragTool.dragEdge.sprite = table.GlowSprite;
-            core.dragTool.dragCount.text = item.Count.ToString();
-            core.dragTool.dragRect.gameObject.SetActive(true);
+            core.dragItem.sprite = table.ItemSprite;
+            core.dragEdge.sprite = table.GlowSprite;
+            core.dragCount.text = item.Count.ToString();
+            core.dragRect.gameObject.SetActive(true);
 
-            SetItem.NoView(container, globalKey);
+            core.NoView(container, globalKey);
         }
 
         // ═══════════════════════════════════════════════
@@ -164,7 +164,7 @@ namespace Lookloop.ItemManager
         // ═══════════════════════════════════════════════
         void DragItem(PointerEventData eventData)
         {
-            if (!core.dragTool.dragRect.gameObject.activeSelf) return;
+            if (!core.dragRect.gameObject.activeSelf) return;
 
             // 幽灵跟随手指
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -172,7 +172,7 @@ namespace Lookloop.ItemManager
                 eventData.position,
                 core.canvas.worldCamera,
                 out Vector2 localPos);
-            core.dragTool.dragRect.anchoredPosition = localPos;
+            core.dragRect.anchoredPosition = localPos;
 
             // 射线找目标
             var raycast = eventData.pointerCurrentRaycast;
@@ -189,8 +189,8 @@ namespace Lookloop.ItemManager
 
                     // Shadow 挂到目标格子下
                     var cellRect = targetCell.container.cells[targetCell.cellKey].cell;
-                    core.dragTool.Shadow.SetParent(cellRect, false);
-                    core.dragTool.Shadow.gameObject.SetActive(true);
+                    core.Shadow.SetParent(cellRect, false);
+                    core.Shadow.gameObject.SetActive(true);
                 }
                 else
                 {
@@ -206,8 +206,8 @@ namespace Lookloop.ItemManager
         void ClearTarget()
         {
             targetCell = null;
-            core.dragTool.Shadow.SetParent(core.canvas.transform, false);
-            core.dragTool.Shadow.gameObject.SetActive(false);
+            core.Shadow.SetParent(core.canvas.transform, false);
+            core.Shadow.gameObject.SetActive(false);
         }
 
         // ═══════════════════════════════════════════════
@@ -275,7 +275,7 @@ namespace Lookloop.ItemManager
                     int page = c.currentPage;
                     if (inLeft) page--;
                     if (inRight) page++;
-                    SetPage.Set(core, c, page);
+                    core.SetPage(c, page);
                     lastTurnTime = now;
                 }
             }
@@ -309,8 +309,8 @@ namespace Lookloop.ItemManager
                 || tgtC.itemFilter.CanExchange(srcItem, tgtItem);
             if (!srcOk || !tgtOk) return;
 
-            SetItem.Set(core, srcC, srcKey, tgtItem);
-            SetItem.Set(core, tgtC, tgtKey, srcItem);
+            core.SetItem(srcC, srcKey, tgtItem);
+            core.SetItem(tgtC, tgtKey, srcItem);
         }
 
         // ═══════════════════════════════════════════════
@@ -327,8 +327,8 @@ namespace Lookloop.ItemManager
                     container.cells.Length * container.currentPage - 1,
                     container.items.Length - 1);
                 if (core.dragSourceItemKey >= start && core.dragSourceItemKey <= end)
-                    TaskSafeguard.FireAndForget(
-                        SetItem.View(core, container, core.dragSourceItemKey));
+                    core.FireAndForget(
+                        core.View(container, core.dragSourceItemKey));
             }
 
             targetCell = null;
@@ -339,8 +339,8 @@ namespace Lookloop.ItemManager
             core.dragSourceContainer = null;
             core.dragSourceItemKey = 0;
 
-            core.dragTool.dragRect.gameObject.SetActive(false);
-            core.dragTool.Shadow.gameObject.SetActive(false);
+            core.dragRect.gameObject.SetActive(false);
+            core.Shadow.gameObject.SetActive(false);
 
             CancelLongPress();
         }

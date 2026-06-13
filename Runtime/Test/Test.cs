@@ -21,7 +21,7 @@ namespace Lookloop.ItemManager
                     // 1/3 概率写入
                     if (Random.Range(0, 3) != 0) continue;
 
-                    SetItem.Set(core, container, itemKey: i,
+                    core.SetItem(container, itemKey: i,
                         id: Random.Range(1, 5), type: 1, tier: 2, count: Random.Range(1, 100), data: null);
                 }
             }

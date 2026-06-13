@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 namespace Lookloop.ItemManager
@@ -20,8 +21,14 @@ public partial class Core
     // ── 运行时引用 ──
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public Container[] containers;
-    [HideInInspector] public DragTool dragTool;
     [HideInInspector] public Container dragSourceContainer;
     [HideInInspector] public int dragSourceItemKey;
+
+    // ── 拖拽幽灵 ──
+    [HideInInspector] public RectTransform dragRect;
+    [HideInInspector] public Image dragItem;
+    [HideInInspector] public Image dragEdge;
+    [HideInInspector] public TextMeshProUGUI dragCount;
+    [HideInInspector] public RectTransform Shadow;
 }
 }

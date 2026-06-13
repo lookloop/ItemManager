@@ -5,33 +5,29 @@ using TMPro;
 
 namespace Lookloop.ItemManager
 {
-/// <summary>
-/// 容器 UI 构建 — 生成 Container→Mask→Grid→Cell 完整层级。
-/// 同时给各 Rect 挂载对应的交互 Handler（CellHandler / ContainerHandler / TurnPageHandler）。
-/// </summary>
-public static class ContainerBuilder
+public partial class Core
 {
-    public static void BuildAll(Core core)
+    void BuildAll()
     {
-        core.containers = new Container[core.specs.Length];
-        for (int i = 0; i < core.specs.Length; i++)
+        containers = new Container[specs.Length];
+        for (int i = 0; i < specs.Length; i++)
         {
             var container = new Container();
-            container.itemFilter = core.specs[i].itemFilter;
-            core.containers[i] = container;
+            container.itemFilter = specs[i].itemFilter;
+            containers[i] = container;
 
-            if (core.specs[i].prefabRect != null)
-                BuildPrefab(core, core.specs[i], container);
+            if (specs[i].prefabRect != null)
+                BuildPrefab(specs[i], container);
             else
-                Build(core, core.specs[i], container);
+                Build(specs[i], container);
 
             container.containerRect.name = i.ToString();
         }
     }
 
-    static void BuildPrefab(Core core, ContainerSpec spec, Container container)
+    void BuildPrefab(ContainerSpec spec, Container container)
     {
-        var prefabContainer = Object.Instantiate(spec.prefabRect, core.transform);
+        var prefabContainer = Object.Instantiate(spec.prefabRect, transform);
         var allRects = prefabContainer.GetComponentsInChildren<RectTransform>(true);
         var cellRects = new List<RectTransform>();
 
@@ -49,17 +45,14 @@ public static class ContainerBuilder
         container.cellWidth = spec.cellWidth;
         container.containerRect = prefabContainer;
 
-        // 给预制体容器挂 ContainerHandler
-        AttachContainerHandler(core, container, prefabContainer.gameObject);
-
-        AttachDetail(core, container, spec);
-
-        container.cells = BuildCellView(core, container, cellRects);
+        AttachContainerHandler(container, prefabContainer.gameObject);
+        AttachDetail(container, spec);
+        container.cells = BuildCellView(container, cellRects);
     }
 
-    static void Build(Core core, ContainerSpec spec, Container container)
+    void Build(ContainerSpec spec, Container container)
     {
-        var containerRect = RectUtility.CreateRect("Container", core.transform,
+        var containerRect = CreateRect("Container", transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
             Vector2.zero,
             new(spec.row * spec.cellWidth + spec.containerFillHorizontal * 2,
@@ -67,14 +60,14 @@ public static class ContainerBuilder
             "Container",
             typeof(Image), typeof(RectMask2D));
 
-        var maskRect = RectUtility.CreateRect("Mask", containerRect,
+        var maskRect = CreateRect("Mask", containerRect,
             new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
             new(0, -spec.containerFillUp),
             new(spec.row * spec.cellWidth, spec.maskHeight),
             null,
             typeof(Image), typeof(RectMask2D));
 
-        var gridRect = RectUtility.CreateRect("Grid", maskRect,
+        var gridRect = CreateRect("Grid", maskRect,
             new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
             Vector2.zero,
             new(spec.row * spec.cellWidth,
@@ -83,20 +76,20 @@ public static class ContainerBuilder
 
         if (spec.totalItems > spec.everyPageCells)
         {
-            var pageTextRect = RectUtility.CreateRect("PageText", containerRect,
+            var pageTextRect = CreateRect("PageText", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 Vector2.zero,
                 new(spec.pageTextWidth, spec.pageTextHeight),
                 null,
                 typeof(TMP_InputField));
 
-            var textArea = RectUtility.CreateRect("Text Area", pageTextRect,
+            var textArea = CreateRect("Text Area", pageTextRect,
                 Vector2.zero, Vector2.one, new(0.5f, 0.5f),
                 Vector2.zero, Vector2.zero,
                 null,
                 typeof(RectMask2D));
 
-            var textRect = RectUtility.CreateRect("Text", textArea,
+            var textRect = CreateRect("Text", textArea,
                 Vector2.zero, Vector2.one, new(0.5f, 0.5f),
                 Vector2.zero, Vector2.zero,
                 null,
@@ -106,7 +99,7 @@ public static class ContainerBuilder
             container.pageInput = tmp;
             tmp.textViewport = textArea;
             tmp.textComponent = textRect.GetComponent<TextMeshProUGUI>();
-            tmp.textComponent.font = core.font;
+            tmp.textComponent.font = font;
             tmp.textComponent.fontSize = spec.pageTextHeight;
             tmp.textComponent.alignment = TextAlignmentOptions.Center;
             tmp.textComponent.color = Color.white;
@@ -116,10 +109,10 @@ public static class ContainerBuilder
             tmp.enabled = true;
 
             tmp.onSelect.AddListener(delegate { OnPageInput(tmp, container); });
-            tmp.onEndEdit.AddListener(delegate { OffPageInput(core, tmp, container); });
+            tmp.onEndEdit.AddListener(delegate { OffPageInput(tmp, container); });
 
             // ── 翻页按钮 + TurnPageHandler ──
-            var prevButtonRect = RectUtility.CreateRect("PrevButton", containerRect,
+            var prevButtonRect = CreateRect("PrevButton", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 new(-spec.pageTextWidth / 2 - spec.pageTextHeight / 2, 0),
                 new(spec.pageTextHeight, spec.pageTextHeight),
@@ -127,11 +120,11 @@ public static class ContainerBuilder
                 typeof(Image));
 
             var prevHandler = prevButtonRect.gameObject.AddComponent<TurnPageHandler>();
-            prevHandler.core = core;
+            prevHandler.core = this;
             prevHandler.container = container;
             prevHandler.direction = -1;
 
-            var nextButtonRect = RectUtility.CreateRect("NextButton", containerRect,
+            var nextButtonRect = CreateRect("NextButton", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 new(spec.pageTextWidth / 2 + spec.pageTextHeight / 2, 0),
                 new(spec.pageTextHeight, spec.pageTextHeight),
@@ -139,7 +132,7 @@ public static class ContainerBuilder
                 typeof(Image));
 
             var nextHandler = nextButtonRect.gameObject.AddComponent<TurnPageHandler>();
-            nextHandler.core = core;
+            nextHandler.core = this;
             nextHandler.container = container;
             nextHandler.direction = 1;
         }
@@ -153,15 +146,13 @@ public static class ContainerBuilder
         container.row = spec.row;
         container.cellWidth = spec.cellWidth;
 
-        // 给容器挂 ContainerHandler
-        AttachContainerHandler(core, container, containerRect.gameObject);
-
-        AttachDetail(core, container, spec);
+        AttachContainerHandler(container, containerRect.gameObject);
+        AttachDetail(container, spec);
 
         var cellRects = new List<RectTransform>();
         for (int i = 0; i < spec.everyPageCells; i++)
         {
-            var rect = RectUtility.CreateRect(i.ToString(), gridRect,
+            var rect = CreateRect(i.ToString(), gridRect,
                 new(0f, 1f), new(0f, 1f), new(0f, 1f),
                 new((i % spec.row) * spec.cellWidth, -(i / spec.row) * spec.cellWidth),
                 new(spec.cellWidth, spec.cellWidth),
@@ -170,18 +161,18 @@ public static class ContainerBuilder
             rect.GetComponent<Image>().sprite = spec.cellSprite;
             cellRects.Add(rect);
         }
-        container.cells = BuildCellView(core, container, cellRects);
+        container.cells = BuildCellView(container, cellRects);
     }
 
     // ─── Cell 视图 + CellHandler 挂载 ───
-    static Cell[] BuildCellView(Core core, Container container, List<RectTransform> cellRects)
+    Cell[] BuildCellView(Container container, List<RectTransform> cellRects)
     {
         var cells = new Cell[cellRects.Count];
         for (int i = 0; i < cellRects.Count; i++)
         {
             var cellRect = cellRects[i];
 
-            var itemRect = RectUtility.CreateRect("ItemUI", cellRect,
+            var itemRect = CreateRect("ItemUI", cellRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, cellRect.sizeDelta * 0.8f,
                 null,
@@ -189,7 +180,7 @@ public static class ContainerBuilder
             var itemImage = itemRect.GetComponent<Image>();
             itemImage.raycastTarget = false;
 
-            var edgeRect = RectUtility.CreateRect("edge", cellRect,
+            var edgeRect = CreateRect("edge", cellRect,
                 new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
                 Vector2.zero, cellRect.sizeDelta * 0.8f,
                 null,
@@ -197,15 +188,15 @@ public static class ContainerBuilder
             var edgeImage = edgeRect.GetComponent<Image>();
             edgeImage.raycastTarget = false;
 
-            var countRect = RectUtility.CreateRect("count", cellRect,
+            var countRect = CreateRect("count", cellRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 Vector2.zero,
                 new(cellRect.sizeDelta.x, cellRect.sizeDelta.y / 4f),
                 null,
                 typeof(TextMeshProUGUI));
             var countText = countRect.GetComponent<TextMeshProUGUI>();
-            countText.fontSize = core.fontSize;
-            countText.font = core.font;
+            countText.fontSize = fontSize;
+            countText.font = font;
             countText.alignment = TextAlignmentOptions.Right;
             countText.raycastTarget = false;
 
@@ -223,7 +214,7 @@ public static class ContainerBuilder
 
             // ── 挂载 CellHandler ──
             var handler = cellRect.gameObject.AddComponent<CellHandler>();
-            handler.core = core;
+            handler.core = this;
             handler.container = container;
             handler.cellKey = i;
         }
@@ -231,17 +222,17 @@ public static class ContainerBuilder
     }
 
     // ─── Handler 挂载辅助 ───
-    static void AttachContainerHandler(Core core, Container container, GameObject go)
+    void AttachContainerHandler(Container container, GameObject go)
     {
         var handler = go.AddComponent<ContainerHandler>();
-        handler.core = core;
+        handler.core = this;
         handler.container = container;
     }
 
-    static void AttachDetail(Core core, Container container, ContainerSpec spec)
+    void AttachDetail(Container container, ContainerSpec spec)
     {
         if (spec.detailRect == null) return;
-        container.detailRect = Object.Instantiate(spec.detailRect, core.canvas.transform);
+        container.detailRect = Object.Instantiate(spec.detailRect, canvas.transform);
         container.detailFiller = container.detailRect.GetComponent<DetailBase>();
         container.detailRect.gameObject.SetActive(false);
     }
@@ -252,12 +243,10 @@ public static class ContainerBuilder
         tmp.text = container.currentPage.ToString();
     }
 
-    static void OffPageInput(Core core, TMP_InputField tmp, Container container)
+    void OffPageInput(TMP_InputField tmp, Container container)
     {
         if (int.TryParse(tmp.text, out int page))
-        {
-            SetPage.Set(core, container, page);
-        }
+            SetPage(container, page);
     }
 }
 }

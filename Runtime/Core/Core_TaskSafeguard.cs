@@ -3,16 +3,16 @@ using UnityEngine;
 
 namespace Lookloop.ItemManager
 {
+public partial class Core
+{
     /// <summary>
     /// Safeguard for discarded Tasks — wraps fire-and-forget so exceptions
     /// are logged to the Console instead of being silently swallowed.
     /// </summary>
-    public static class TaskSafeguard
+    async void FireAndForget(Task task)
     {
-        public static async void FireAndForget(Task task)
-        {
-            try { await task; }
-            catch (System.Exception e) { Debug.LogException(e); }
-        }
+        try { await task; }
+        catch (System.Exception e) { Debug.LogException(e); }
     }
+}
 }

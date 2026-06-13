@@ -23,12 +23,10 @@ public partial class Core
 
     void Start()
     {
-        ContainerBuilder.BuildAll(this);
+        BuildAll();
         StartCoroutine(LossTimeLoop());
 
-        dragTool = new DragTool();
-        dragTool.BuildDragItem(this);
-        dragTool.BuildShadow(this);
+        BuildDragTool();
 
 
 #if UNITY_EDITOR
