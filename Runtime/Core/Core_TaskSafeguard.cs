@@ -15,10 +15,9 @@ public partial class Core
         catch (System.Exception e)
         {
             Debug.LogException(e);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
             if (tmpText != null)
                 tmpText.text = $"[Task Error] {e.GetType().Name}: {e.Message}";
-#endif
         }
     }
 }
