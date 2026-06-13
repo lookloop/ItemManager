@@ -21,15 +21,11 @@ namespace Lookloop.ItemManager
         Vector2 fingerStartLocal;
         // 拖拽目标
         CellTouch targetCell;
-
-        // ═══════════════════════════════════════════════
-        //  按下
-        // ═══════════════════════════════════════════════
         public override void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.pointerId != 0) return;
 
-            // 启动长按计时
+
             longPressCoroutine = StartCoroutine(LongPressTimer(eventData));
 
             // 记录 Grid 起始位置
@@ -44,10 +40,6 @@ namespace Lookloop.ItemManager
                     out fingerStartLocal);
             }
         }
-
-        // ═══════════════════════════════════════════════
-        //  拖拽
-        // ═══════════════════════════════════════════════
         public override void OnDrag(PointerEventData eventData)
         {
             if (eventData.pointerId != 0) return;
@@ -62,9 +54,6 @@ namespace Lookloop.ItemManager
             }
         }
 
-        // ═══════════════════════════════════════════════
-        //  释放
-        // ═══════════════════════════════════════════════
         public override void OnPointerUp(PointerEventData eventData)
         {
             if (eventData.pointerId != 0) return;
