@@ -12,7 +12,14 @@ public partial class Core
     public async void FireAndForget(Task task)
     {
         try { await task; }
-        catch (System.Exception e) { Debug.LogException(e); }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (tmpText != null)
+                tmpText.text = $"[Task Error] {e.GetType().Name}: {e.Message}";
+#endif
+        }
     }
 }
 }

@@ -33,5 +33,6 @@ public partial class Core
     [HideInInspector] public Image dragEdge;
     [HideInInspector] public TextMeshProUGUI dragCount;
     [HideInInspector] public RectTransform Shadow;
+    [HideInInspector] public TextMeshProUGUI tmpText;
 }
 }

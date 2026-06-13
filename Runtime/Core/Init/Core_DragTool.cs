@@ -55,6 +55,18 @@ public partial class Core
         img.raycastTarget = false;
 
         Shadow.gameObject.SetActive(false);
+
+        // ── Debug Text ──
+        var tmpRect = CreateRect("tmpText", canvas.transform,
+            new(0f, 1f), new(0f, 1f), new(0f, 1f),
+            new(10f, -10f),
+            new(cellSize * 6f, cellSize * 4f),
+            null,
+            typeof(TextMeshProUGUI));
+        tmpText = tmpRect.GetComponent<TextMeshProUGUI>();
+        tmpText.fontSize = fontSize;
+        tmpText.font = font;
+        tmpText.raycastTarget = false;
     }
 }
 }
