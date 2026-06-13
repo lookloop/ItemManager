@@ -5,7 +5,7 @@ namespace Lookloop.ItemManager
 {
     /// <summary>
     /// 交互基类 — 所有可交互 UI 对象的统一入口。
-    /// 子类按需 override：CellHandler / ContainerHandler / TurnPageHandler。
+    /// 子类按需 override：CellTouch / ContainerTouch / TurnPageTouch。
     /// 构建时由 ContainerBuilder 注入 core、container 引用，无需运行时查找。
     /// </summary>
     public abstract class TouchBase : MonoBehaviour,

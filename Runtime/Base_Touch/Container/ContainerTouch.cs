@@ -6,7 +6,7 @@ namespace Lookloop.ItemManager
     /// <summary>
     /// Container 交互 — 挂载在 Container RectTransform 上，处理整体拖拽。
     /// </summary>
-    public class ContainerHandler : TouchBase
+    public class ContainerTouch : TouchBase
     {
         Vector2 originalPos;
         Vector2 pointerOffset;

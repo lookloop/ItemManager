@@ -10,7 +10,7 @@ namespace Lookloop.ItemManager
     /// 吸收原 TouchCell / TouchCell_Grid / TouchItem / TouchMask / TouchExchangeItem 全部逻辑。
     /// 构建时由 ContainerBuilder 注入 core、container、cellKey。
     /// </summary>
-    public class CellHandler : TouchBase
+    public class CellTouch : TouchBase
     {
         [HideInInspector] public int cellKey;
 
@@ -24,8 +24,8 @@ namespace Lookloop.ItemManager
         Vector2 gridStartPos;
         Vector2 fingerStartLocal;
 
-        // 拖拽目标（通过射线命中对方的 CellHandler 直接拿到引用）
-        CellHandler targetCell;
+        // 拖拽目标（通过射线命中对方的 CellTouch 直接拿到引用）
+        CellTouch targetCell;
 
         // ═══════════════════════════════════════════════
         //  按下
@@ -178,7 +178,7 @@ namespace Lookloop.ItemManager
             var raycast = eventData.pointerCurrentRaycast;
             if (raycast.gameObject != null)
             {
-                var otherHandler = raycast.gameObject.GetComponent<CellHandler>();
+                var otherHandler = raycast.gameObject.GetComponent<CellTouch>();
                 if (otherHandler != null && otherHandler != this)
                 {
                     targetCell = otherHandler;

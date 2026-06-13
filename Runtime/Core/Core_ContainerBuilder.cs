@@ -119,7 +119,7 @@ public partial class Core
                 "TurnPage",
                 typeof(Image));
 
-            var prevHandler = prevButtonRect.gameObject.AddComponent<TurnPageHandler>();
+            var prevHandler = prevButtonRect.gameObject.AddComponent<TurnPageTouch>();
             prevHandler.core = this;
             prevHandler.container = container;
             prevHandler.direction = -1;
@@ -131,7 +131,7 @@ public partial class Core
                 "TurnPage",
                 typeof(Image));
 
-            var nextHandler = nextButtonRect.gameObject.AddComponent<TurnPageHandler>();
+            var nextHandler = nextButtonRect.gameObject.AddComponent<TurnPageTouch>();
             nextHandler.core = this;
             nextHandler.container = container;
             nextHandler.direction = 1;
@@ -213,7 +213,7 @@ public partial class Core
             countText.gameObject.SetActive(false);
 
             // ── 挂载 CellHandler ──
-            var handler = cellRect.gameObject.AddComponent<CellHandler>();
+            var handler = cellRect.gameObject.AddComponent<CellTouch>();
             handler.core = this;
             handler.container = container;
             handler.cellKey = i;
@@ -224,7 +224,7 @@ public partial class Core
     // ─── Handler 挂载辅助 ───
     void AttachContainerHandler(Container container, GameObject go)
     {
-        var handler = go.AddComponent<ContainerHandler>();
+        var handler = go.AddComponent<ContainerTouch>();
         handler.core = this;
         handler.container = container;
     }
