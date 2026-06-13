@@ -49,19 +49,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pressTime: 0.3
-  scrollSpeed: 60
+  scrollSpeed: 120
   edgeThreshold: 3
   turnThreshold: 0.5
   cellSize: 10
+  cacheExpireSeconds: 1800
+  cacheCheckSeconds: 300
   fontSize: 3.9
   flipDuration: 0.5
   shadowColor: {r: 0, g: 0, b: 0, a: 0.9}
   font: {fileID: 11400000, guid: b2163a178670612479907edfd4091118, type: 2}
   specs:
   - prefabRect: {fileID: 0}
-    detailRect: {fileID: 0}
-    totalItems: 80
-    everyPageCells: 40
+    detailRect: {fileID: 2478877157012687352, guid: 3b8313e5dd796f94aa31a94846260960,
+      type: 3}
+    totalItems: 1000
+    everyPageCells: 100
     row: 5
     maskHeight: 40
     containerFillHorizontal: 2
