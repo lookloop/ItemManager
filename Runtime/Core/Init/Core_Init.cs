@@ -12,13 +12,17 @@ public partial class Core
 
     void Start()
     {
+        //启用杂项
         SundriesInit();
-
+        //启用初始构建
         BuildAll();
+        //启用addres缓存计时器
         StartCoroutine(LossTimeLoop());
+        //启用拖拽时专用工具构建
         BuildDragTool();
 
 #if UNITY_EDITOR
+//临时放点东西，提供我手动测试
         Test.Fill(this);
 #endif
     }
