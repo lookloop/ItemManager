@@ -8,7 +8,7 @@ public partial class Core
     /// <summary>
     /// Core 铺满全屏、沉到最底层、挂透明 Image 接收空白点击。
     /// </summary>
-    void InitCoreRectAndReceiver()
+    void SundriesInit()
     {
         canvas = GetComponentInParent<Canvas>();
 

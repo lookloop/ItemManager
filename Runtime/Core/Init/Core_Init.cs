@@ -12,7 +12,7 @@ public partial class Core
 
     void Start()
     {
-        InitCoreRectAndReceiver();
+        SundriesInit();
 
         BuildAll();
         StartCoroutine(LossTimeLoop());
