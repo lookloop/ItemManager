@@ -25,11 +25,11 @@ public partial class Core
 
     IEnumerator LossTimeLoop()
     {
-        yield return new WaitForSeconds(1800f);
+        yield return new WaitForSeconds(cacheCheckSeconds);
         while (true)
         {
             LossTime();
-            yield return new WaitForSeconds(1800f);
+            yield return new WaitForSeconds(cacheCheckSeconds);
         }
     }
 

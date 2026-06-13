@@ -61,7 +61,7 @@ public partial class Core
         var loss = new List<string>();
         foreach (var a in handleTimes)
         {
-            if (Time.time - a.Value.time > 1800f)
+            if (Time.time - a.Value.time > cacheExpireSeconds)
                 loss.Add(a.Key);
         }
         foreach (var key in loss)
