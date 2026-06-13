@@ -33,7 +33,6 @@ namespace Lookloop.ItemManager.Editor
                 property.FindPropertyRelative("totalItems").intValue = 80;
                 property.FindPropertyRelative("everyPageCells").intValue = 40;
                 property.FindPropertyRelative("row").intValue = 5;
-                property.FindPropertyRelative("cellWidth").floatValue = 10f;
                 property.FindPropertyRelative("maskHeight").floatValue = 40f;
                 property.FindPropertyRelative("containerFillHorizontal").floatValue = 2f;
                 property.FindPropertyRelative("containerFillUp").floatValue = 8f;
@@ -47,7 +46,6 @@ namespace Lookloop.ItemManager.Editor
                 Prop(property, "totalItems",            "物品总数 (默认80)");
                 Prop(property, "everyPageCells",        "每页格子数 (默认40)");
                 Prop(property, "row",                   "每行格子数 (默认5)");
-                Prop(property, "cellWidth",             "格子边长 (默认10)");
                 Prop(property, "maskHeight",            "遮罩高度 (默认40)");
                 Prop(property, "containerFillHorizontal","水平内边距 (默认2)");
                 Prop(property, "containerFillUp",       "上边距 (默认8)");
