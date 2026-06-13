@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using System.Collections;
+
 
 namespace Lookloop.ItemManager
 {
@@ -14,6 +16,15 @@ public partial class Core
     {
         public AsyncOperationHandle<ItemTable> handle;
         public float time;
+    }
+    IEnumerator LossTimeLoop()
+    {
+        yield return new WaitForSeconds(cacheCheckSeconds);
+        while (true)
+        {
+            LossTime();
+            yield return new WaitForSeconds(cacheCheckSeconds);
+        }
     }
     //里面装着没有过期的句柄，作为缓存句柄
     readonly Dictionary<string, HandleTime> handleTimes = new();

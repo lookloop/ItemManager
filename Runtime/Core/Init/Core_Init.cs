@@ -23,15 +23,7 @@ public partial class Core
 #endif
     }
 
-    IEnumerator LossTimeLoop()
-    {
-        yield return new WaitForSeconds(cacheCheckSeconds);
-        while (true)
-        {
-            LossTime();
-            yield return new WaitForSeconds(cacheCheckSeconds);
-        }
-    }
+    
 
 }
 }
