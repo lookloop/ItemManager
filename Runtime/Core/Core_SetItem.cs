@@ -31,7 +31,7 @@ public partial class Core
     /// <summary>
     /// 根据 items[key] 的 id 异步加载 ItemTable，刷新 Cell 的图标/边框/数量。
     /// </summary>
-    async Task View(Container container, int itemKey)
+    public async Task View(Container container, int itemKey)
     {
         var item = container.items[itemKey];
 
@@ -62,7 +62,7 @@ public partial class Core
         cell.count.gameObject.SetActive(true);
     }
 
-    void NoView(Container container, int itemKey)
+    public void NoView(Container container, int itemKey)
     {
         var item = container.items[itemKey];
 

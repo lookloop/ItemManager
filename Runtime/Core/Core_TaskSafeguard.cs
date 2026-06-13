@@ -9,7 +9,7 @@ public partial class Core
     /// Safeguard for discarded Tasks — wraps fire-and-forget so exceptions
     /// are logged to the Console instead of being silently swallowed.
     /// </summary>
-    async void FireAndForget(Task task)
+    public async void FireAndForget(Task task)
     {
         try { await task; }
         catch (System.Exception e) { Debug.LogException(e); }
