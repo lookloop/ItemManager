@@ -27,7 +27,7 @@ public partial class Core
 
     void BuildPrefab(ContainerSpec spec, Container container)
     {
-        var prefabContainer = Object.Instantiate(spec.prefabRect, transform);
+        var prefabContainer = Instantiate(spec.prefabRect, transform);
         var allRects = prefabContainer.GetComponentsInChildren<RectTransform>(true);
         var cellRects = new List<RectTransform>();
 
@@ -232,7 +232,7 @@ public partial class Core
     void AttachDetail(Container container, ContainerSpec spec)
     {
         if (spec.detailRect == null) return;
-        container.detailRect = Object.Instantiate(spec.detailRect, canvas.transform);
+        container.detailRect = Instantiate(spec.detailRect, canvas.transform);
         container.detailFiller = container.detailRect.GetComponent<DetailBase>();
         container.detailRect.gameObject.SetActive(false);
     }
