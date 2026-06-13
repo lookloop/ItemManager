@@ -8,12 +8,10 @@ public partial class Core
 {
     void BuildDragTool()
     {
-        const float size = 10f;
-
         dragRect = CreateRect("dragitem", canvas.transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
             Vector2.zero,
-            new(size, size));
+            new(cellSize, cellSize));
 
         var itemRect = CreateRect("item", dragRect,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
@@ -48,7 +46,7 @@ public partial class Core
         // ── Shadow ──
         Shadow = CreateRect("Shadow", canvas.transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
-            Vector2.zero, new(8, 8),
+            Vector2.zero, new(cellSize * 0.8f, cellSize * 0.8f),
             null,
             typeof(Image));
 

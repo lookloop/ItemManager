@@ -42,7 +42,7 @@ public partial class Core
 
         container.items = new Item[cellRects.Count];
         container.row = spec.row;
-        container.cellWidth = spec.cellWidth;
+        container.cellWidth = cellSize;
         container.containerRect = prefabContainer;
 
         AttachContainerHandler(container, prefabContainer.gameObject);
@@ -55,7 +55,7 @@ public partial class Core
         var containerRect = CreateRect("Container", transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
             Vector2.zero,
-            new(spec.row * spec.cellWidth + spec.containerFillHorizontal * 2,
+            new(spec.row * cellSize + spec.containerFillHorizontal * 2,
                 spec.maskHeight + spec.containerFillUp + spec.containerFillDown),
             "Container",
             typeof(Image), typeof(RectMask2D));
@@ -63,15 +63,15 @@ public partial class Core
         var maskRect = CreateRect("Mask", containerRect,
             new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
             new(0, -spec.containerFillUp),
-            new(spec.row * spec.cellWidth, spec.maskHeight),
+            new(spec.row * cellSize, spec.maskHeight),
             null,
             typeof(Image), typeof(RectMask2D));
 
         var gridRect = CreateRect("Grid", maskRect,
             new(0.5f, 1f), new(0.5f, 1f), new(0.5f, 1f),
             Vector2.zero,
-            new(spec.row * spec.cellWidth,
-                Mathf.CeilToInt((float)spec.everyPageCells / spec.row) * spec.cellWidth),
+            new(spec.row * cellSize,
+                Mathf.CeilToInt((float)spec.everyPageCells / spec.row) * cellSize),
             "Grid");
 
         if (spec.totalItems > spec.everyPageCells)
@@ -144,7 +144,7 @@ public partial class Core
         container.gridRect      = gridRect;
         container.items = new Item[spec.totalItems];
         container.row = spec.row;
-        container.cellWidth = spec.cellWidth;
+        container.cellWidth = cellSize;
 
         AttachContainerHandler(container, containerRect.gameObject);
         AttachDetail(container, spec);
@@ -154,8 +154,8 @@ public partial class Core
         {
             var rect = CreateRect(i.ToString(), gridRect,
                 new(0f, 1f), new(0f, 1f), new(0f, 1f),
-                new((i % spec.row) * spec.cellWidth, -(i / spec.row) * spec.cellWidth),
-                new(spec.cellWidth, spec.cellWidth),
+                new((i % spec.row) * cellSize, -(i / spec.row) * cellSize),
+                new(cellSize, cellSize),
                 "Cell",
                 typeof(Image));
             rect.GetComponent<Image>().sprite = spec.cellSprite;

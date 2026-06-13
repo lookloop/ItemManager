@@ -22,7 +22,6 @@ namespace Lookloop.ItemManager
         public int totalItems = 80;
         public int everyPageCells = 40;
         public int row = 5;
-        public float cellWidth = 10f;
         public float maskHeight = 40f;
         public float containerFillHorizontal = 2f;
         public float containerFillUp = 8f;
