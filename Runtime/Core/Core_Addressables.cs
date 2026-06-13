@@ -58,8 +58,6 @@ public partial class Core
             //返回handle给外部，没有命中缓存有点慢。
             return handle.Result;
         }
-        //加载失败，提醒一下正在编辑器的开发者。
-        Debug.LogError($"[Core] ItemTable 加载失败: {key}");
         //释放这个有问题的句柄，因为await了，句柄有了，同时又加载失败，释放一下把。
         Addressables.Release(handle);
         // 抛出异常，让 FireAndForget catch 将错误输出到 tmpText 屏幕文本
