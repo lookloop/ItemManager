@@ -1,5 +1,4 @@
 using UnityEngine;
-#if UNITY_EDITOR
 
 namespace Lookloop.ItemManager
 {
@@ -28,4 +27,3 @@ namespace Lookloop.ItemManager
         }
     }
 }
-#endif
