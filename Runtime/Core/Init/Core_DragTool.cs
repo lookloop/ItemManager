@@ -59,7 +59,7 @@ public partial class Core
         // ── Debug Text ──
         var tmpTipRect = CreateRect("tmpTip", canvas.transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
-            new(10f, -10f),
+            new(0, 0),
             new(cellSize * 6f, cellSize * 4f),
             null,
             typeof(TextMeshProUGUI));
