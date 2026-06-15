@@ -68,6 +68,7 @@ public partial class Core
         tmpTip.font = font;
         tmpTip.alignment = TextAlignmentOptions.Center;
         tmpTip.raycastTarget = false;
+        tmpTip.gameObject.SetActive(false);
     }
 }
 }
