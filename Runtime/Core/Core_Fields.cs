@@ -13,8 +13,6 @@ public partial class Core
     public float fontSize = 3.9f;
     public TMP_FontAsset font;
     public Color shadowColor = new(0f, 0f, 0f, 0.9f);
-    
-    
     public float scrollSpeed = 60f;
     public float flipDistance = 3f;
     public float flipCool = 0.5f;
