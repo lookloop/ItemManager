@@ -16,8 +16,8 @@ namespace Lookloop.ItemManager
             var item = container.items[globalKey];
             if (item.Id == 0) return;
 
-            core.dragSourceContainer = container;
-            core.dragSourceItemKey = globalKey;
+            core.sourceContainer = container;
+            core.sourceItemKey = globalKey;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 core.canvas.transform as RectTransform,

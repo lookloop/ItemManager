@@ -42,10 +42,10 @@ public partial class Core
             container.pageInput.text = page + "/" + Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
 
         // 翻页后检测：当前 container 是否是 sourceContainer，且 sourceItemKey 是否在当前页
-        if (container == dragSourceContainer &&
-            dragSourceItemKey >= start && dragSourceItemKey <= end)
+        if (container == sourceContainer &&
+            sourceItemKey >= start && sourceItemKey <= end)
         {
-            NoView(container, dragSourceItemKey);
+            NoView(container, sourceItemKey);
         }
 
         if (page != oldPage)

@@ -39,15 +39,15 @@ namespace Lookloop.ItemManager
         {
             // 恢复 source Cell 显示
             if (container != null && container.cells != null &&
-                core.dragSourceContainer == container)
+                core.sourceContainer == container)
             {
                 int start = container.cells.Length * (container.currentPage - 1);
                 int end = UnityEngine.Mathf.Min(
                     container.cells.Length * container.currentPage - 1,
                     container.items.Length - 1);
-                if (core.dragSourceItemKey >= start && core.dragSourceItemKey <= end)
+                if (core.sourceItemKey >= start && core.sourceItemKey <= end)
                     core.FireAndForget(
-                        core.View(container, core.dragSourceItemKey));
+                        core.View(container, core.sourceItemKey));
             }
 
             targetCell = null;
@@ -55,8 +55,8 @@ namespace Lookloop.ItemManager
             isDrag = false;
             isLongPress = false;
 
-            core.dragSourceContainer = null;
-            core.dragSourceItemKey = 0;
+            core.sourceContainer = null;
+            core.sourceItemKey = 0;
 
             core.dragParent.gameObject.SetActive(false);
             core.Shadow.gameObject.SetActive(false);
