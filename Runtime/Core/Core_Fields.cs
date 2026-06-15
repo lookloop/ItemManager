@@ -9,8 +9,8 @@ public partial class Core
     // ── Inspector 配置 ──
     public float pressTime = 0.3f;
     public float scrollSpeed = 60f;
-    public float edgeThreshold = 3f;
-    public float turnThreshold = 0.5f;
+    public float flipDistance = 3f;
+    public float flipCool = 0.5f;
     public float cellSize = 10f;
     public float cacheExpireSeconds = 1800f;
     public float cacheCheckSeconds = 300f;

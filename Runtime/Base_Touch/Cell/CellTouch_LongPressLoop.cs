@@ -41,8 +41,8 @@ namespace Lookloop.ItemManager
             float maskH = maskRect.rect.height;
             float distTop = Mathf.Abs(localPos.y);
             float distBottom = Mathf.Abs(localPos.y + maskH);
-            bool inTop = distTop <= core.edgeThreshold && distTop < distBottom;
-            bool inBottom = distBottom <= core.edgeThreshold && distBottom < distTop;
+            bool inTop = distTop <= core.flipDistance && distTop < distBottom;
+            bool inBottom = distBottom <= core.flipDistance && distBottom < distTop;
             if (!inTop && !inBottom) return;
 
             var gridRect = c.gridRect;
@@ -65,13 +65,13 @@ namespace Lookloop.ItemManager
             float halfW = maskW * 0.5f;
             float distLeft = Mathf.Abs(localPos.x + halfW);
             float distRight = Mathf.Abs(localPos.x - halfW);
-            bool inLeft = distLeft <= core.edgeThreshold && distLeft < distRight;
-            bool inRight = distRight <= core.edgeThreshold && distRight < distLeft;
+            bool inLeft = distLeft <= core.flipDistance && distLeft < distRight;
+            bool inRight = distRight <= core.flipDistance && distRight < distLeft;
 
             if (inLeft || inRight)
             {
                 float now = Time.time;
-                if (now - lastTurnTime >= core.turnThreshold)
+                if (now - lastTurnTime >= core.flipCool)
                 {
                     int page = c.currentPage;
                     if (inLeft) page--;
