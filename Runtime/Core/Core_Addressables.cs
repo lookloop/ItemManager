@@ -10,8 +10,7 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
-    public float retainTime = 1800f;
-    public float checkTime = 300f;
+    
 
     //用于增加一个float的时间time，用于辅助计时。
     class HandleTime

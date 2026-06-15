@@ -12,6 +12,8 @@ public partial class Core
     public float pressTime = 0.3f;
     public float fontSize = 3.9f;
     public TMP_FontAsset font;
+    public float retainTime = 1800f;
+    public float checkTime = 300f;
     public Color shadowColor = new(0f, 0f, 0f, 0.9f);
     public float scrollSpeed = 60f;
     public float flipDistance = 3f;
