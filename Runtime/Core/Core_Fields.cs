@@ -7,17 +7,19 @@ namespace Lookloop.ItemManager
 public partial class Core
 {
     // ── Inspector 配置 ──
+
+    public float cellSize = 10f;
     public float pressTime = 0.3f;
+    public float fontSize = 3.9f;
+    public TMP_FontAsset font;
+    public Color shadowColor = new(0f, 0f, 0f, 0.9f);
+    
+    
     public float scrollSpeed = 60f;
     public float flipDistance = 3f;
     public float flipCool = 0.5f;
-    public float cellSize = 10f;
-    public float cacheExpireSeconds = 1800f;
-    public float cacheCheckSeconds = 300f;
-    public float fontSize = 3.9f;
     public float flipDuration = 0.5f;
-    public Color shadowColor = new(0f, 0f, 0f, 0.9f);
-    public TMP_FontAsset font;
+    
 
     public ContainerSpec[] specs;
 

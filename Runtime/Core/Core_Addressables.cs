@@ -10,6 +10,8 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
+    public float retainTime = 1800f;
+    public float checkTime = 300f;
 
     //用于增加一个float的时间time，用于辅助计时。
     class HandleTime
@@ -19,11 +21,11 @@ public partial class Core
     }
     IEnumerator LossTimeLoop()
     {
-        yield return new WaitForSeconds(cacheCheckSeconds);
+        yield return new WaitForSeconds(checkTime);
         while (true)
         {
             LossTime();
-            yield return new WaitForSeconds(cacheCheckSeconds);
+            yield return new WaitForSeconds(checkTime);
         }
     }
     //里面装着没有过期的句柄，作为缓存句柄
@@ -70,7 +72,7 @@ public partial class Core
         var loss = new List<string>();
         foreach (var a in handleTimes)
         {
-            if (Time.time - a.Value.time > cacheExpireSeconds)
+            if (Time.time - a.Value.time > retainTime)
                 loss.Add(a.Key);
         }
         foreach (var key in loss)
