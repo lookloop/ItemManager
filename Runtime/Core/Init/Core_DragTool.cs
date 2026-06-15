@@ -66,6 +66,7 @@ public partial class Core
         tmpTip = tmpTipRect.GetComponent<TextMeshProUGUI>();
         tmpTip.fontSize = fontSize;
         tmpTip.font = font;
+        tmpTip.alignment = TextAlignmentOptions.Center;
         tmpTip.raycastTarget = false;
     }
 }
