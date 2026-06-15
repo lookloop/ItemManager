@@ -58,7 +58,7 @@ namespace Lookloop.ItemManager
             core.dragSourceContainer = null;
             core.dragSourceItemKey = 0;
 
-            core.dragRect.gameObject.SetActive(false);
+            core.dragParent.gameObject.SetActive(false);
             core.Shadow.gameObject.SetActive(false);
 
             CancelLongPress();

@@ -10,8 +10,8 @@ public partial class Core
         try { await task; }
         catch (Exception e)
         {
-            if (tmpText != null)
-                tmpText.text = $"[Task Error] {e.GetType().Name}: {e.Message}";
+            if (tmpTip != null)
+                tmpTip.text = $"[Task Error] {e.GetType().Name}: {e.Message}";
         }
     }
 }

@@ -28,11 +28,11 @@ public partial class Core
     [HideInInspector] public int dragSourceItemKey;
 
     // ── 拖拽幽灵 ──
-    [HideInInspector] public RectTransform dragRect;
+    [HideInInspector] public RectTransform dragParent;
     [HideInInspector] public Image dragItem;
     [HideInInspector] public Image dragEdge;
     [HideInInspector] public TextMeshProUGUI dragCount;
     [HideInInspector] public RectTransform Shadow;
-    [HideInInspector] public TextMeshProUGUI tmpText;
+    [HideInInspector] public TextMeshProUGUI tmpTip;
 }
 }

@@ -25,7 +25,7 @@ namespace Lookloop.ItemManager
                 core.canvas.worldCamera,
                 out Vector2 localPos);
 
-            core.dragRect.anchoredPosition = localPos;
+            core.dragParent.anchoredPosition = localPos;
 
             var table = await core.GetItemTable(item.Id.ToString());
             if (table == null) return;
@@ -33,7 +33,7 @@ namespace Lookloop.ItemManager
             core.dragItem.sprite = table.ItemSprite;
             core.dragEdge.sprite = table.GlowSprite;
             core.dragCount.text = item.Count.ToString();
-            core.dragRect.gameObject.SetActive(true);
+            core.dragParent.gameObject.SetActive(true);
 
             core.NoView(container, globalKey);
         }
@@ -43,7 +43,7 @@ namespace Lookloop.ItemManager
         // ═══════════════════════════════════════════════
         void DragItem(PointerEventData eventData)
         {
-            if (!core.dragRect.gameObject.activeSelf) return;
+            if (!core.dragParent.gameObject.activeSelf) return;
 
             // 幽灵跟随手指
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -51,7 +51,7 @@ namespace Lookloop.ItemManager
                 eventData.position,
                 core.canvas.worldCamera,
                 out Vector2 localPos);
-            core.dragRect.anchoredPosition = localPos;
+            core.dragParent.anchoredPosition = localPos;
 
             // 射线找目标
             var raycast = eventData.pointerCurrentRaycast;

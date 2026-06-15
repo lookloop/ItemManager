@@ -8,31 +8,31 @@ public partial class Core
 {
     void BuildDragTool()
     {
-        dragRect = CreateRect("dragitem", canvas.transform,
+        dragParent = CreateRect("dragitem", canvas.transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
             Vector2.zero,
             new(cellSize, cellSize));
 
-        var itemRect = CreateRect("item", dragRect,
+        var itemRect = CreateRect("item", dragParent,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
-            Vector2.zero, dragRect.sizeDelta * 0.8f,
+            Vector2.zero, dragParent.sizeDelta * 0.8f,
             null,
             typeof(Image));
         dragItem = itemRect.GetComponent<Image>();
         dragItem.raycastTarget = false;
 
-        var edgeRect = CreateRect("edge", dragRect,
+        var edgeRect = CreateRect("edge", dragParent,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
-            Vector2.zero, dragRect.sizeDelta * 0.8f,
+            Vector2.zero, dragParent.sizeDelta * 0.8f,
             null,
             typeof(Image));
         dragEdge = edgeRect.GetComponent<Image>();
         dragEdge.raycastTarget = false;
 
-        var countRect = CreateRect("count", dragRect,
+        var countRect = CreateRect("count", dragParent,
             new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
             Vector2.zero,
-            new(dragRect.sizeDelta.x, dragRect.sizeDelta.y / 4f),
+            new(dragParent.sizeDelta.x, dragParent.sizeDelta.y / 4f),
             null,
             typeof(TextMeshProUGUI));
         dragCount = countRect.GetComponent<TextMeshProUGUI>();
@@ -41,7 +41,7 @@ public partial class Core
         dragCount.alignment = TextAlignmentOptions.Right;
         dragCount.raycastTarget = false;
 
-        dragRect.gameObject.SetActive(false);
+        dragParent.gameObject.SetActive(false);
 
         // ── Shadow ──
         Shadow = CreateRect("Shadow", canvas.transform,
@@ -57,16 +57,16 @@ public partial class Core
         Shadow.gameObject.SetActive(false);
 
         // ── Debug Text ──
-        var tmpRect = CreateRect("tmpText", canvas.transform,
+        var tmpTipRect = CreateRect("tmpTip", canvas.transform,
             new(0f, 1f), new(0f, 1f), new(0f, 1f),
             new(10f, -10f),
             new(cellSize * 6f, cellSize * 4f),
             null,
             typeof(TextMeshProUGUI));
-        tmpText = tmpRect.GetComponent<TextMeshProUGUI>();
-        tmpText.fontSize = fontSize;
-        tmpText.font = font;
-        tmpText.raycastTarget = false;
+        tmpTip = tmpTipRect.GetComponent<TextMeshProUGUI>();
+        tmpTip.fontSize = fontSize;
+        tmpTip.font = font;
+        tmpTip.raycastTarget = false;
     }
 }
 }
