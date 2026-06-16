@@ -9,27 +9,10 @@ namespace Lookloop.ItemManager
         {
             if (targetCell == null) return;
 
-            var srcC = container;
-            var tgtC = targetCell.container;
-            if (srcC == null || tgtC == null) return;
-            if (srcC.items == null || tgtC.items == null) return;
+            int srcKey = container.cells.Length * (container.currentPage - 1) + cellKey;
+            int tgtKey = targetCell.container.cells.Length * (targetCell.container.currentPage - 1) + targetCell.cellKey;
 
-            int srcKey = srcC.cells.Length * (srcC.currentPage - 1) + cellKey;
-            int tgtKey = tgtC.cells.Length * (tgtC.currentPage - 1) + targetCell.cellKey;
-
-            var srcItem = srcC.items[srcKey];
-            var tgtItem = tgtC.items[tgtKey];
-            if (srcItem.Id == 0 && tgtItem.Id == 0) return;
-
-            // 双向准入检查
-            bool srcOk = srcC.itemFilter == null
-                || srcC.itemFilter.CanExchange(tgtItem, srcItem);
-            bool tgtOk = tgtC.itemFilter == null
-                || tgtC.itemFilter.CanExchange(srcItem, tgtItem);
-            if (!srcOk || !tgtOk) return;
-
-            core.SetItem(srcC, srcKey, tgtItem);
-            core.SetItem(tgtC, tgtKey, srcItem);
+            core.Exchange(container, srcKey, targetCell.container, tgtKey);
         }
 
         // ═══════════════════════════════════════════════
