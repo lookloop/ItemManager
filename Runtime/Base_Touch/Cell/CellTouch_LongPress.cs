@@ -160,6 +160,10 @@ namespace Lookloop.ItemManager
                     lastTurnTime = now;
                 }
             }
+            else
+            {
+                lastTurnTime = Time.time;
+            }
         }
     }
 }
