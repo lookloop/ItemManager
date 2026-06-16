@@ -21,14 +21,14 @@ namespace Lookloop.ItemManager
 
             while (true)
             {
-                var edgeC = targetCell?.container ?? container;
-                var edgeMask = edgeC?.maskRect;
-                if (edgeMask != null)
+                var targetContainer = targetCell?.container ?? container;
+                var maskRect = targetContainer?.maskRect;
+                if (maskRect != null)
                 {
                     RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                        edgeMask, eventData.position, core.canvas.worldCamera, out Vector2 lp);
-                    ScrollPageByEdge(lp, edgeMask, edgeC);
-                    TurnPageByEdge(lp, edgeMask, edgeC);
+                        maskRect, eventData.position, core.canvas.worldCamera, out Vector2 localPos);
+                    ScrollPageByEdge(localPos, maskRect, targetContainer);
+                    TurnPageByEdge(localPos, maskRect, targetContainer);
                 }
                 yield return null;
             }
