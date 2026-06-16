@@ -8,20 +8,20 @@ namespace Lookloop.ItemManager
     /// </summary>
     public class ContainerTouch : TouchBase
     {
-        Vector2 originalPos;
-        Vector2 pointerOffset;
+        Vector2 containerPos;
+        Vector2 originPos;
 
         public override void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.pointerId != 0) return;
 
-            originalPos = ((RectTransform)transform).anchoredPosition;
+            containerPos = ((RectTransform)transform).anchoredPosition;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 (RectTransform)transform.parent,
                 eventData.position,
                 core.canvas.worldCamera,
-                out pointerOffset);
+                out originPos);
         }
 
         public override void OnDrag(PointerEventData eventData)
@@ -32,10 +32,10 @@ namespace Lookloop.ItemManager
                 (RectTransform)transform.parent,
                 eventData.position,
                 core.canvas.worldCamera,
-                out Vector2 current);
+                out Vector2 offPos);
 
             ((RectTransform)transform).anchoredPosition =
-                originalPos + (current - pointerOffset);
+                containerPos + (offPos - originPos);
         }
     }
 }
