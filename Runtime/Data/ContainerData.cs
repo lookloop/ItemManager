@@ -8,6 +8,7 @@ namespace Lookloop.ItemManager
     [System.Serializable]
     public class Container
     {
+        public int containerIndex;
         public RectTransform containerRect;
         public RectTransform detailRect;
         public RectTransform maskRect;

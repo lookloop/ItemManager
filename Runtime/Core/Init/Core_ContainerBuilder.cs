@@ -14,6 +14,7 @@ public partial class Core
         {
             var container = new Container();
             container.itemFilter = specs[i].itemFilter;
+            container.containerIndex = i;
             containers[i] = container;
 
             if (specs[i].prefabRect != null)
