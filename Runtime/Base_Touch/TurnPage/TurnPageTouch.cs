@@ -4,11 +4,12 @@ using UnityEngine.EventSystems;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 翻页按钮交互 — 挂载在 PrevButton / NextButton 上。
+    /// Page‑flip button handler. Attached to the PrevButton / NextButton
+    /// RectTransforms at build time.
     /// </summary>
     public class TurnPageTouch : TouchBase
     {
-        /// <summary>-1 = 上一页, +1 = 下一页</summary>
+        /// <summary>-1 = previous page, +1 = next page</summary>
         public int direction;
 
         public override void OnPointerUp(PointerEventData eventData)

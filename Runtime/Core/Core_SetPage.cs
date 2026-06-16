@@ -15,7 +15,7 @@ public partial class Core
         int start = container.cells.Length * (page - 1);
         int end = container.cells.Length * page - 1;
 
-        // 检测最后一页
+        // Handle the last (partial) page
         if (totalPages > 1 && page == totalPages)
         {
             int lastIndex = container.items.Length - 1;
@@ -24,7 +24,7 @@ public partial class Core
         }
         else
         {
-            // 恢复满页 grid 高度
+            // Restore full‑page grid height
             int fullRows = Mathf.CeilToInt((float)container.cells.Length / container.row);
             container.gridRect.sizeDelta = new Vector2(
                 container.gridRect.sizeDelta.x,
@@ -37,7 +37,7 @@ public partial class Core
         for (int i = start; i <= end; i++)
             Launch(View(container, i));
 
-        // 同步 TMP 翻页输入框显示
+        // Sync the page‑number input field
         if (container.pageInput != null)
             container.pageInput.text = page + "/" + Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
 
@@ -55,7 +55,7 @@ public partial class Core
             container.gridRect.sizeDelta.x,
             rows * container.cellWidth);
 
-        // 高度缩小后，钳制 y 到合法范围
+        // After shrinking, clamp y to the valid scroll range
         float gridH = container.gridRect.sizeDelta.y;
         float maskH = container.maskRect.sizeDelta.y;
         float maxY = Mathf.Max(0f, gridH - maskH);
@@ -73,10 +73,11 @@ public partial class Core
 
         float maskWidth = maskRect.rect.width;
         float half = flipDuration / 2f;
-        // origin.x 强制为 0，防止快速连点时捕获到非零的偏移 x
+        // Force origin.x to 0 — prevents picking up a non‑zero x offset
+        // during rapid repeated taps
         Vector2 origin = new Vector2(0f, maskRect.anchoredPosition.y);
 
-        // 滑出
+        // Slide out
         float elapsed = 0f;
         float outDir = forward ? -1f : 1f;
         while (elapsed < half)
@@ -87,7 +88,7 @@ public partial class Core
             yield return null;
         }
 
-        // 滑入
+        // Slide in
         elapsed = 0f;
         float inStart = forward ? maskWidth : -maskWidth;
         while (elapsed < half)
@@ -98,7 +99,7 @@ public partial class Core
             yield return null;
         }
 
-        // 结束必须 mask x 清零
+        // Always reset mask x to 0 when done
         maskRect.anchoredPosition = origin;
     }
 }

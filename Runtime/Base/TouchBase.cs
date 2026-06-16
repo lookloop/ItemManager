@@ -4,9 +4,12 @@ using UnityEngine.EventSystems;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 交互基类 — 所有可交互 UI 对象的统一入口。
-    /// 子类按需 override：CellTouch / ContainerTouch / TurnPageTouch。
-    /// 构建时由 ContainerBuilder 注入 core、container 引用，无需运行时查找。
+    /// Base class for all interactable UI elements. Implements the three pointer
+    /// events so subclasses only override what they need.
+    ///
+    /// Concrete types: CellTouch / ContainerTouch / TurnPageTouch.
+    /// References to <c>core</c> and <c>container</c> are injected at build time
+    /// by the container builder — no runtime lookups required.
     /// </summary>
     public abstract class TouchBase : MonoBehaviour,
         IPointerDownHandler, IDragHandler, IPointerUpHandler

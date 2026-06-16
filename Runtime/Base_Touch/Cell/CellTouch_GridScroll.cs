@@ -5,9 +5,7 @@ namespace Lookloop.ItemManager
 {
     public partial class CellTouch
     {
-        // ═══════════════════════════════════════════════
-        //  Grid 滑动（短按拖拽）
-        // ═══════════════════════════════════════════════
+        // ── Short drag (no long-press) → scroll the grid ──
         void ScrollGrid(PointerEventData eventData)
         {
             var gridRect = container.gridRect;

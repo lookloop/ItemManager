@@ -4,7 +4,7 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
-    /// <summary>无额外组件。</summary>
+    /// <summary>Creates a bare <c>RectTransform</c> with no extra components.</summary>
     RectTransform CreateRect(string name, Transform parent,
         Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
         Vector2 anchoredPosition, Vector2 sizeDelta,
@@ -22,7 +22,8 @@ public partial class Core
         return rect;
     }
 
-    /// <summary>带额外组件（避免 params 堆分配）。</summary>
+    /// <summary>Same as above but also attaches additional components
+    /// (avoids a <c>params</c> allocation).</summary>
     RectTransform CreateRect(string name, Transform parent,
         Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
         Vector2 anchoredPosition, Vector2 sizeDelta,

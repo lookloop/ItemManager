@@ -105,14 +105,14 @@ public partial class Core
             tmp.textComponent.alignment = TextAlignmentOptions.Center;
             tmp.textComponent.color = Color.white;
             tmp.text = container.currentPage + "/" + Mathf.CeilToInt((float)spec.totalItems / spec.everyPageCells);
-            // enabled 开关强制刷新 TMP_InputField 文本显示
+            // Toggle enabled to force TMP_InputField to refresh its visible text
             tmp.enabled = false;
             tmp.enabled = true;
 
             tmp.onSelect.AddListener(delegate { OnPageInput(tmp, container); });
             tmp.onEndEdit.AddListener(delegate { OffPageInput(tmp, container); });
 
-            // ── 翻页按钮 + TurnPageHandler ──
+            // ── Page‑flip buttons + TurnPageTouch handlers ──
             var prevButtonRect = CreateRect("PrevButton", containerRect,
                 new(0.5f, 0f), new(0.5f, 0f), new(0.5f, 0f),
                 new(-spec.pageTextWidth / 2 - spec.pageTextHeight / 2, 0),
@@ -175,7 +175,7 @@ public partial class Core
         container.cells = BuildCellView(container, cellRects);
     }
 
-    // ─── Cell 视图 + CellHandler 挂载 ───
+    // ─── Build child views for each cell + attach CellTouch handlers ───
     Cell[] BuildCellView(Container container, List<RectTransform> cellRects)
     {
         var cells = new Cell[cellRects.Count];
@@ -223,7 +223,7 @@ public partial class Core
             edgeImage.gameObject.SetActive(false);
             countText.gameObject.SetActive(false);
 
-            // ── 挂载 CellHandler ──
+            // ── Attach CellTouch handler ──
             var handler = cellRect.gameObject.AddComponent<CellTouch>();
             handler.core = this;
             handler.container = container;
@@ -232,7 +232,7 @@ public partial class Core
         return cells;
     }
 
-    // ─── Handler 挂载辅助 ───
+    // ─── Handler attachment helpers ───
     void AttachContainerTouch(Container container, GameObject go)
     {
         var handler = go.AddComponent<ContainerTouch>();
@@ -248,7 +248,7 @@ public partial class Core
         container.detailRect.gameObject.SetActive(false);
     }
 
-    // ─── 页码输入 ───
+    // ─── Page‑number input callbacks ───
     static void OnPageInput(TMP_InputField tmp, Container container)
     {
         tmp.text = container.currentPage.ToString();

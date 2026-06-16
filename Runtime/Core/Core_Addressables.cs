@@ -12,7 +12,10 @@ public partial class Core
 {
     
 
-    //用于增加一个float的时间time，用于辅助计时。
+    /// <summary>
+    /// Wraps an Addressables handle with a timestamp so the cache expiry
+    /// loop can release stale entries.
+    /// </summary>
     class HandleTime
     {
         public AsyncOperationHandle<ItemTable> handle;
@@ -27,47 +30,51 @@ public partial class Core
             yield return new WaitForSeconds(checkTime);
         }
     }
-    //里面装着没有过期的句柄，作为缓存句柄
+    // In‑memory cache: only unexpired handles live here
     readonly Dictionary<string, HandleTime> handleTimes = new();
 
-    //获取itemtable的主要方法，也是这个addres的核心。
+    /// <summary>
+    /// Load an <c>ItemTable</c> by its Addressables key.
+    /// Hits the in‑memory cache first; falls back to an async load.
+    /// </summary>
     public async Task<ItemTable> GetItemTable(string key)
     {
-        //通过key取结构体，var=HandleTime，如果取成功了就用缓存的。
+        // Cache hit — reuse the existing handle if it's still valid
         if (handleTimes.TryGetValue(key, out var entry))
         {
-            //先问问，这个key在实际addres还有实际的东西么
-            //再问问，是否加载成功。加载中和加载失败就不行。
+            // Confirm the handle is still alive and fully loaded
             if (entry.handle.IsValid() && entry.handle.Status == AsyncOperationStatus.Succeeded)
             {
                 entry.time = Time.time;
                 return entry.handle.Result;
             }
-            //加载没有成功，if没有成功，所以没有return。那么就代表这个key，用不了。先清理了。
+            // Stale or failed handle — evict from cache
             handleTimes.Remove(key);
         }
-        //if没有成功，用缓存没有成功。开始自己加载。
-        //声明加载。
+        // Cache miss — start a fresh async load
         var handle = Addressables.LoadAssetAsync<ItemTable>(key);
-        //异步加载，先去做别的，加载成功了再通知。
+        // Await the async operation
         await handle.Task;
-        //判断加载情况，如果成功，那就存入缓存。
+        // On success, store in the cache with a fresh timestamp
         if (handle.Status == AsyncOperationStatus.Succeeded)
         {
-            //时间刷新为最新游戏运行时间，句柄也是刚刚出炉。
+            // Timestamp with current game time; handle is fresh from the loader
             handleTimes[key] = new HandleTime { handle = handle, time = Time.time };
-            //返回handle给外部，没有命中缓存有点慢。
+            // Return the result — slower path than a cache hit
             return handle.Result;
         }
-        //释放这个有问题的句柄，因为await了，句柄有了，同时又加载失败，释放一下把。
+        // Release the failed handle (address has been resolved via await)
         Addressables.Release(handle);
-        // 抛出异常，让 Launch catch 将错误输出到 tmpTip 屏幕文本
-        throw new System.Exception($"[Core] ItemTable 加载失败: {key}");
+        // Let Launch() catch this and display the error via tmpTip
+        throw new System.Exception($"[Core] Failed to load ItemTable: {key}");
     }
+    /// <summary>
+    /// Iterate the cache and release any handle whose timestamp exceeds
+    /// <c>retainTime</c>. Called periodically by <c>LossTimeLoop</c>.
+    /// </summary>
     public void LossTime()
     {
-        // 直接遍历字典，同步释放过期资源 + 移除条目
-        // 先收集过期 key，避免在遍历中修改字典
+        // Collect expired keys first to avoid mutating the dict during enumeration
         var loss = new List<string>();
         foreach (var a in handleTimes)
         {
@@ -76,15 +83,14 @@ public partial class Core
         }
         foreach (var key in loss)
         {
-            //字典还有吗？addres句柄指向的资源还有吗？
+            // Is the entry still in the dict and is the handle alive?
             if (handleTimes.TryGetValue(key, out var entry) && entry.handle.IsValid())
-                //先释放实际资源。
+                // Release the Addressables asset first
                 Addressables.Release(entry.handle);
 
-            //资源释放完了，开始释放字典。
+            // Then remove from the cache dict
             handleTimes.Remove(key);
-            //双释放完毕。
-            Debug.Log($"[Core] 卸载过期句柄: {key}");
+            Debug.Log($"[Core] Expired handle released: {key}");
         }
     }
 }

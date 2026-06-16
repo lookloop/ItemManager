@@ -5,19 +5,22 @@ using UnityEngine.EventSystems;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// Cell 交互 — 路由 PointerDown/Drag/Up 到各 partial 实现。
-    /// 构建时由 Core 注入 core、container、cellKey。
+    /// Per-cell touch handler. Routes <c>PointerDown</c> / <c>Drag</c> / <c>Up</c>
+    /// events to the corresponding partial methods.
+    ///
+    /// References to <c>core</c>, <c>container</c>, and <c>cellKey</c> are injected
+    /// by the container builder at construction time.
     /// </summary>
     public partial class CellTouch : TouchBase
     {
         [HideInInspector] public int cellKey;
 
-        // ── 会话状态 ──
+        // ── Per‑drag session state ──
         bool isDrag;
         internal bool isLongPress;
         Coroutine longPressCoroutine;
         int originPage;
-        // Grid 滑动用
+        // Grid scroll tracking
         Vector2 gridPos;
         Vector2 originPos;
         CellTouch targetCell;
@@ -29,7 +32,7 @@ namespace Lookloop.ItemManager
 
             longPressCoroutine = StartCoroutine(LongPressTimer(eventData));
 
-            // 记录 Grid 起始位置
+            // Capture the grid's initial position for scroll calculations
             var gridRect = container.gridRect;
             if (gridRect != null)
             {

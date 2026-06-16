@@ -9,9 +9,11 @@ public partial class Core : MonoBehaviour, IPointerDownHandler
     const string ContainerTag = "Container";
 
     /// <summary>
-    /// 空白区域点击 → 关闭所有 Detail 面板。
-    /// Cell/Container/TurnPage 的交互已由各自的 Handler 组件处理，
-    /// Core 不再参与路由分发。
+    /// Handles taps on empty space: closes all open detail panels and raises
+    /// the clicked container to the top of the sibling order.
+    ///
+    /// Cell, container, and turn‑page interactions are handled by their own
+    /// <c>TouchBase</c> components — <c>Core</c> does not participate in routing.
     /// </summary>
     public virtual void OnPointerDown(PointerEventData eventData)
     {
@@ -19,8 +21,8 @@ public partial class Core : MonoBehaviour, IPointerDownHandler
 
         var clicked = eventData.pointerCurrentRaycast.gameObject;
 
-        // 点击了 Core 自身（全屏透明接收器）= 空白区域
-        // 或者点击了 Container 本身（非 Cell/按钮区域）
+        // Clicked Core itself (the full‑screen transparent receiver) or
+        // clicked a container background (not a cell / button) → hide details
         if (containers != null)
         {
             foreach (var c in containers)
@@ -34,7 +36,7 @@ public partial class Core : MonoBehaviour, IPointerDownHandler
             }
         }
 
-        // 将命中的 container 提到最前
+        // Raise the clicked container to the top
         if (clicked != null)
         {
             Transform t = clicked.transform;

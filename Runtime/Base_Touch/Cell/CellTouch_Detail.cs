@@ -5,9 +5,7 @@ namespace Lookloop.ItemManager
 {
     public partial class CellTouch
     {
-        // ═══════════════════════════════════════════════
-        //  纯点击 → 显示详情面板
-        // ═══════════════════════════════════════════════
+        // ── Tap (no drag) → show the detail panel ──
         void ShowDetail()
         {
             int globalKey = container.cells.Length * (container.currentPage - 1) + cellKey;

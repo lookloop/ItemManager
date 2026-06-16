@@ -43,7 +43,7 @@ public partial class Core
 
         dragParent.gameObject.SetActive(false);
 
-        // ── Shadow ──
+        // ── Drop‑target shadow ──
         Shadow = CreateRect("Shadow", canvas.transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
             Vector2.zero, new(cellSize * 0.8f, cellSize * 0.8f),
@@ -56,7 +56,7 @@ public partial class Core
 
         Shadow.gameObject.SetActive(false);
 
-        // ── Debug Text ──
+        // ── On‑screen debug text ──
         var tmpTipRect = CreateRect("tmpTip", canvas.transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
             new(0, 0),

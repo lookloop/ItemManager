@@ -3,8 +3,8 @@ using System;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 物品运行时数据 — 纯值类型，避免数组存取产生 GC 分配。
-    /// Id == 0 视为空槽位。
+    /// Runtime item data — a readonly struct that avoids per-element GC allocations
+    /// when stored in arrays. An Id of 0 represents an empty slot.
     /// </summary>
     [Serializable]
     public readonly struct Item

@@ -3,12 +3,13 @@ using System;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 类型限制过滤器 — 只允许指定 Type 的物品进入。
-    /// 装备槽、消耗品槽等场景可直接用。
+    /// Restricts a container so it only accepts items whose <c>Type</c> is in the
+    /// whitelist. Useful for equipment slots, consumable slots, etc.
     ///
-    /// Inspector 示例：
-    ///   Allowed Types  [1] [2]        ← 只接受 Type=1 或 2 的物品
-    ///   Allow Empty    ☑              ← 允许清空格子
+    /// <example>
+    /// Inspector setup:
+    ///   Allowed Types  [1] [2]        ← only Type == 1 or 2 may enter
+    /// </example>
     /// </summary>
     [Serializable]
     public class TypeRestrictFilter : SetItemBase
@@ -17,11 +18,11 @@ namespace Lookloop.ItemManager
 
         public override bool CanExchange(Item incoming, Item outgoing)
         {
-            // 清空格子或移出空手 → 放行
+            // Clearing a slot or incoming empty hand — always allowed
             if (incoming.Id == 0) return true;
 
             if (allowedTypes == null || allowedTypes.Length == 0)
-                return true; // 没配白名单 → 放行
+                return true; // no whitelist configured — allow everything
 
             return Array.IndexOf(allowedTypes, incoming.Type) >= 0;
         }

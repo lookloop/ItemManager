@@ -3,9 +3,12 @@ using System;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 容器准入过滤器基类 — [SerializeReference] 内联展开，直接在 Inspector 面板里配。
+    /// Base class for container-admission filters. Marked with [SerializeReference]
+    /// so derived types appear in a drop-down inside the Inspector and their fields
+    /// are expanded inline.
     ///
-    /// 派生示例（装备槽只接受武器）：
+    /// <example>
+    /// An equipment slot that only accepts weapons:
     /// <code>
     /// [Serializable]
     /// public class WeaponOnlyFilter : SetItemBase
@@ -18,27 +21,30 @@ namespace Lookloop.ItemManager
     /// }
     /// </code>
     ///
-    /// 运行时直接 new 就行：
+    /// Assign at runtime with a single line:
     /// <code>
     /// container.itemFilter = new WeaponOnlyFilter { allowedTypes = new[] { 1, 2 } };
     /// </code>
+    /// </example>
     /// </summary>
     [Serializable]
     public class SetItemBase
     {
         /// <summary>
-        /// 交换前准入检查。
+        /// Pre-exchange admission check. Called bidirectionally during a swap.
         /// </summary>
-        /// <param name="incoming">将要放入本容器的物品（Id==0 表示对方空手放入空槽）</param>
-        /// <param name="outgoing">将从本容器取出的物品（Id==0 表示本槽为空）</param>
-        /// <returns>true 允许交换，false 阻止</returns>
+        /// <param name="incoming">The item being placed into this container
+        /// (Id == 0 means the other side is empty-handed / an empty slot).</param>
+        /// <param name="outgoing">The item being removed from this container
+        /// (Id == 0 means this slot is currently empty).</param>
+        /// <returns><c>true</c> to allow the exchange, <c>false</c> to block it.</returns>
         public virtual bool CanExchange(Item incoming, Item outgoing) => true;
 
         /// <summary>
-        /// SetItem 完成后的回调。
+        /// Callback invoked after <c>SetItem</c> has written data into this container.
         /// </summary>
-        /// <param name="container">发生变更的容器</param>
-        /// <param name="itemKey">被修改的全局物品 key</param>
+        /// <param name="container">The container that was mutated.</param>
+        /// <param name="itemKey">The global item index that was changed.</param>
         public virtual void OnItemSet(Container container, int itemKey) { }
     }
 }

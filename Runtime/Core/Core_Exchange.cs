@@ -3,7 +3,8 @@ namespace Lookloop.ItemManager
 public partial class Core
 {
     /// <summary>
-    /// 交换两个容器中的物品（双向准入检查）。
+    /// Swap items between two containers after a bidirectional admission check.
+    /// Both the source and target filters must approve the exchange.
     /// </summary>
     public void Exchange(Container srcC, int srcKey, Container tgtC, int tgtKey)
     {
@@ -14,7 +15,7 @@ public partial class Core
         var tgtItem = tgtC.items[tgtKey];
         if (srcItem.Id == 0 && tgtItem.Id == 0) return;
 
-        // 双向准入检查
+        // Bidirectional admission check
         bool srcOk = srcC.itemFilter == null
             || srcC.itemFilter.CanExchange(tgtItem, srcItem);
         bool tgtOk = tgtC.itemFilter == null

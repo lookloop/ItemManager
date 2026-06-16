@@ -4,7 +4,8 @@ using UnityEngine.EventSystems;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// Container 交互 — 挂载在 Container RectTransform 上，处理整体拖拽。
+    /// Enables dragging an entire container around on the canvas.
+    /// Attached to the container's root RectTransform at build time.
     /// </summary>
     public class ContainerTouch : TouchBase
     {

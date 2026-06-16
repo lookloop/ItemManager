@@ -3,8 +3,9 @@ using System;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 测试用过滤器 — 只允许奇数 Id 的物品进入。
-    /// 验证 [SerializeReference] 类型下拉 + CanExchange 生效。
+    /// A demo filter that only admits items with an odd Id.
+    /// Used to verify the [SerializeReference] type drop-down and the
+    /// <c>CanExchange</c> / <c>OnItemSet</c> callbacks work end-to-end.
     /// </summary>
     [Serializable]
     public class OddIdOnlyFilter : SetItemBase

@@ -9,9 +9,8 @@ namespace Lookloop.ItemManager
     {
         float lastTurnTime;
 
-        // ═══════════════════════════════════════════════
-        //  长按协程
-        // ═══════════════════════════════════════════════
+        // ── Long-press coroutine: after pressTime expires, extract the item
+        //     then enter a per-frame loop for edge-scroll and edge-turn-page. ──
         IEnumerator LongPressTimer(PointerEventData eventData)
         {
             yield return new WaitForSeconds(core.pressTime);
@@ -35,9 +34,7 @@ namespace Lookloop.ItemManager
             }
         }
 
-        // ═══════════════════════════════════════════════
-        //  提取物品 → 幽灵图标
-        // ═══════════════════════════════════════════════
+        // ── Pull the item out of its cell and show the drag‑ghost icon ──
         async Task ExtractItem(PointerEventData eventData)
         {
             if (container == null || container.items == null) return;
@@ -65,14 +62,12 @@ namespace Lookloop.ItemManager
             core.NoView(container, globalKey);
         }
 
-        // ═══════════════════════════════════════════════
-        //  拖拽幽灵 + 射线找目标
-        // ═══════════════════════════════════════════════
+        // ── Move the drag‑ghost to follow the finger and raycast for a target cell ──
         void DragItem(PointerEventData eventData)
         {
             if (!core.dragParent.gameObject.activeSelf) return;
 
-            // 幽灵跟随手指
+            // ghost follows the finger
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 core.canvas.transform as RectTransform,
                 eventData.position,
@@ -80,7 +75,7 @@ namespace Lookloop.ItemManager
                 out Vector2 localPos);
             core.dragParent.anchoredPosition = localPos;
 
-            // 射线找目标
+            // raycast to find the cell under the finger
             var raycast = eventData.pointerCurrentRaycast;
             if (raycast.gameObject != null)
             {
@@ -114,9 +109,8 @@ namespace Lookloop.ItemManager
             core.Shadow.gameObject.SetActive(false);
         }
 
-        // ═══════════════════════════════════════════════
-        //  Mask 滚动（长按时每帧检测）
-        // ═══════════════════════════════════════════════
+        // ── Edge‑scroll: auto-scroll the grid when the finger is near the
+        //     top or bottom edge of the mask (checked every frame). ──
         void ScrollPage(Vector2 localPos, RectTransform maskRect, Container c)
         {
             float maskH = maskRect.rect.height;
@@ -137,9 +131,8 @@ namespace Lookloop.ItemManager
             gridRect.anchoredPosition = new Vector2(gridRect.anchoredPosition.x, targetY);
         }
 
-        // ═══════════════════════════════════════════════
-        //  翻页检测（长按时每帧检测）
-        // ═══════════════════════════════════════════════
+        // ── Edge‑turn‑page: auto-flip pages when the finger is near the
+        //     left or right edge of the mask (checked every frame, with a cooldown). ──
         void TurnPage(Vector2 localPos, RectTransform maskRect, Container c)
         {
             float maskW = maskRect.rect.width;
@@ -160,7 +153,8 @@ namespace Lookloop.ItemManager
                     core.SetPage(c, page);
                     lastTurnTime = now;
 
-                    // 翻页成功且是自己的容器 → 翻到原页则隐藏原 Cell
+                    // If we flipped back to the same container and landed on
+                    // the original page, hide the source cell.
                     if (c == container && container.currentPage == originPage)
                     {
                         int globalKey = container.cells.Length * (originPage - 1) + cellKey;

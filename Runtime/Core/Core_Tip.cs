@@ -8,7 +8,9 @@ public partial class Core
     Coroutine tipCoroutine;
 
     /// <summary>
-    /// 在屏幕中央显示白色临时提示，duration 秒后自动消失。新提示重置计时。
+    /// Shows a white temporary message at the center of the screen that
+    /// auto-hides after <paramref name="duration"/> seconds. Calling again
+    /// resets the timer.
     /// </summary>
     public void ShowTip(string text, float duration = 1f)
     {
@@ -16,7 +18,7 @@ public partial class Core
     }
 
     /// <summary>
-    /// 指定颜色的临时提示。
+    /// Same as <c>ShowTip(text, duration)</c> but lets you pick the color.
     /// </summary>
     public void ShowTip(string text, float duration, Color color)
     {

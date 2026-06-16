@@ -4,8 +4,9 @@ using UnityEngine;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// Detail 面板填充基类 — 挂在 detailRect prefab 上。
-    /// 派生类 override Fill 做自定义详情渲染。
+    /// Abstract base for detail panels. Attach a concrete implementation to your
+    /// <c>detailRect</c> prefab; when the player taps a cell, <c>Fill</c> is called
+    /// so you can render custom item details (stats, description, etc.).
     /// </summary>
     public abstract class DetailBase : MonoBehaviour
     {

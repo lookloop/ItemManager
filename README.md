@@ -1,82 +1,81 @@
 # Item Manager
 
-**纯代码驱动的多容器物品管理框架** — 背包、仓库、装备槽、商店… 一切格子系统的基础设施。
+**A code-driven multi-container inventory framework** — backpacks, warehouses, equipment slots, shops… the shared foundation for every grid-based item system.
 
-零预制体依赖。Addressables 异步加载。多容器并存。跨容器拖拽交换。
+Zero prefab dependency. Async Addressables loading. Multiple independent containers. Cross-container drag-and-drop.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Unity](https://img.shields.io/badge/Unity-2022.3%2B-black)](package.json)
 
 ---
 
-## 架构
+## Architecture
 
 ```
-Core.cs                     ← 空白点击关闭 Detail / Container 置顶
-├── Core_Fields.cs          ← 公开字段 (specs[] / font / shadowColor / pressTime …)
-├── Core_Init.cs            ← 启动流程 (Awake + Start + 过期回收协程)
-├── Core_Addressables.cs    ← ItemTable 异步加载 + 缓存 + 30min 过期回收
-├── Core_ContainerBuilder.cs← Container → Mask → Grid → Cell 全程序化构建 + Handler 挂载
-├── Core_SetItem.cs         ← 物品数据写入 + View 刷新 + NoView 隐藏
-├── Core_SetPage.cs         ← 翻页逻辑 + 最后一页高度适配 + 滑动动画反馈
-├── Core_DragTool.cs        ← 拖拽幽灵图标 + 悬停阴影构建
-├── Core_RectUtility.cs     ← 程序化 RectTransform 创建（两重载）
-└── Core_TaskSafeguard.cs   ← FireAndForget 异常捕获
+Core.cs                     ← Empty‑space clicks → close detail panels & bring containers to front
+├── Core_Fields.cs          ← Public settings (specs[], font, shadowColor, pressTime, …)
+├── Core_Init.cs            ← Startup sequence (Awake + Start + expiry‑check coroutine)
+├── Core_Addressables.cs    ← Async ItemTable loading + 30‑min cache with automatic expiry
+├── Core_ContainerBuilder.cs← Container → Mask → Grid → Cell — full procedural build + handler wiring
+├── Core_SetItem.cs         ← Write item data, refresh the view, or hide off‑page cells
+├── Core_SetPage.cs         ← Page‑flip logic, last‑page height adjustment, slide animation
+├── Core_Exchange.cs        ← Cross‑container item swap with bidirectional admission checks
+├── Core_RectUtility.cs     ← Procedural RectTransform creation (two overloads)
+├── Core_Tip.cs             ← On‑screen temporary toast messages
+└── Core_Watchman.cs        ← Fire‑and‑forget exception guard (Launch)
 
-数据层
-├── Item.cs                 ← 物品运行时数据 (readonly struct: Id / Type / Tier / Count / Data)
-├── ItemTable.cs            ← ScriptableObject 物品表 (图标 / 边框 / 名称 / 描述)
-├── Cell.cs                 ← 格子 UI 引用 (cell / item 图标 / edge 边框 / count 数量)
-├── Container.cs            ← 运行时容器实例 (Rect 引用 + items[] + cells[] + 翻页状态)
-├── ContainerSpec.cs        ← 容器蓝图 (尺寸 / 每页格子 / 行数 / 视觉精灵 / 过滤器)
-└── SetItemBase.cs          ← 容器准入过滤器基类 [SerializeReference]
+Data Layer
+├── Item.cs                 ← Runtime item data (readonly struct: Id / Type / Tier / Count / Data)
+├── ItemTable.cs            ← ScriptableObject lookup table (icon / border / name / description)
+├── Cell.cs                 ← Cell UI references (cell / item icon / edge border / count label)
+├── Container.cs            ← Runtime container instance (Rect refs + items[] + cells[] + page state)
+├── ContainerSpec.cs        ← Container blueprint (dimensions / cells per page / rows / sprites / filter)
+└── SetItemBase.cs          ← Admission‑filter base class [SerializeReference]
 
-基类
-├── TouchBase.cs            ← 交互基类 (IPointerDown/Drag/UpHandler)，CellTouch / ContainerTouch / TurnPageTouch 继承它
-└── DetailBase.cs           ← 详情面板基类，派生类 override Fill 做自定义详情渲染
+Base Classes
+├── TouchBase.cs            ← Interaction base (IPointerDown/Drag/UpHandler) — CellTouch / ContainerTouch / TurnPageTouch inherit it
+└── DetailBase.cs           ← Abstract detail panel — override Fill() for custom item detail rendering
 
-触控层
-├── CellTouch.cs            ← 格子交互主状态机 (PointerDown → Drag → Up 路由)
-├── CellTouch_GridScroll.cs ← 短按拖拽滚动 Grid
-├── CellTouch_ItemDrag.cs   ← 长按提取物品 + 幽灵拖拽 + 射线追踪目标 Cell
-├── CellTouch_LongPressLoop.cs ← 长按计时协程 + 边缘滚动 + 边缘翻页每帧检测
-├── CellTouch_Exchange.cs   ← 交换物品（双向准入检查）+ 状态重置
-├── CellTouch_Detail.cs     ← 纯点击显示详情面板
-├── ContainerTouch.cs       ← 容器整体拖拽
-└── TurnPageTouch.cs        ← 翻页按钮点击
+Touch Layer
+├── CellTouch.cs            ← Cell interaction state machine (PointerDown → Drag → Up routing)
+├── CellTouch_GridScroll.cs ← Short‑drag grid scrolling
+├── CellTouch_LongPress.cs  ← Long‑press timer + item extraction + drag ghost + edge‑scroll + edge‑turn‑page
+├── CellTouch_Detail.cs     ← Pure tap → show detail panel
+├── ContainerTouch.cs       ← Full‑container drag to reposition on canvas
+└── TurnPageTouch.cs        ← Previous / Next page button clicks
 
-详情层
-└── DetailFiller.cs         ← DetailBase 默认实现，异步加载 ItemTable + 自动定位
+Detail Layer
+└── DetailFiller.cs         ← Default DetailBase implementation — async ItemTable load + auto‑position
 
-过滤器
-├── TypeRestrictFilter.cs   ← 类型限制过滤器（只允许指定 Type 的物品进入）
-└── TestFilter.cs           ← 示例过滤器（OddIdOnlyFilter：只允许奇数 Id）
+Filters
+├── TypeRestrictFilter.cs   ← Restricts a container to specific Item Types (e.g. equipment slots)
+└── TestFilter.cs           ← Demo filter (odd Ids only — verifies the pipeline works)
 
-测试
-└── Test.cs                 ← 启动时随机填充物品 (EDITOR only, 1/3 概率)
+Testing
+└── Test.cs                 ← Startup random item fill (debug only, 1‑in‑3 chance per slot)
 
 Editor
-├── ContainerSpecDrawer.cs  ← ContainerSpec 自定义折叠 Inspector + [SerializeReference] 类型下拉
-└── ItemDataEditorTools.cs  ← Project 右键 → Create → ItemTable
+├── ContainerSpecDrawer.cs  ← Custom foldable Inspector for ContainerSpec + [SerializeReference] type drop‑down
+└── ItemDataEditorTools.cs  ← Project right‑click → Create → ItemTable
 ```
 
 ---
 
-## 特性
+## Features
 
-- **零预制体** — 所有 UI 通过 `new GameObject` 程序化生成，Container → Mask → Grid → Cell 完整层级
-- **多容器并存** — 一个 `Core` 组件，`specs[]` 数组驱动任意数量独立容器面板
-- **跨容器交换** — 长按拖拽物品可在不同容器之间互换位置，支持双向准入过滤器
-- **Addressables 异步** — `ItemTable` 按需加载，30 分钟缓存过期自动回收
-- **长按 + 边缘滚动** — 长按提取物品后拖到 Mask 边缘自动滚动列表，拖到左右边缘自动翻页
-- **自定义 Inspector** — `ContainerSpec` 可折叠参数面板，新增元素自动填充默认值；`[SerializeReference]` 类型下拉选择过滤器
-- **两构建模式** — 纯数据驱动（`Build`）或预制体实例化（`BuildPrefab`），通过 `prefabRect` 是否为空切换
-- **详情接口** — 继承 `DetailBase` 并 override `Fill(Core, Container, int)`，挂载到 `detailRect` 预制体即可
-- **准入过滤器** — `SetItemBase.CanExchange(incoming, outgoing)` 在交换时双向检查，支持装备槽、消耗品槽等受限容器
+- **Zero prefabs** — Every piece of UI is built procedurally via `new GameObject`. Container → Mask → Grid → Cell, the full hierarchy.
+- **Multi‑container** — One `Core` component, a `specs[]` array that drives any number of independent container panels.
+- **Cross‑container exchange** — Long‑press drag items between different containers. Bidirectional admission filters on both sides.
+- **Async Addressables** — `ItemTable` loads on demand with a 30‑minute cache and automatic expiry.
+- **Long‑press + edge scrolling** — After extracting an item, hold near the top/bottom of the mask to auto‑scroll the grid, or near the left/right edges to flip pages.
+- **Custom Inspector** — `ContainerSpec` has a collapsible parameter panel; new elements auto‑fill defaults. `[SerializeReference]` drop‑down for filter selection.
+- **Two build modes** — Pure data‑driven (`Build`) or prefab instantiation (`BuildPrefab`), switched automatically based on whether `prefabRect` is set.
+- **Detail interface** — Subclass `DetailBase`, override `Fill(Core, Container, int)`, and attach it to your `detailRect` prefab.
+- **Admission filters** — `SetItemBase.CanExchange(incoming, outgoing)` is called bidirectionally during a swap. Perfect for restricted slots (equipment, consumables, etc.).
 
 ---
 
-## 安装
+## Installation
 
 ### Unity Package Manager (Git URL)
 
@@ -84,9 +83,9 @@ Editor
 https://github.com/lookloop/ItemManager.git
 ```
 
-### 依赖
+### Dependencies
 
-| 包 | 最低版本 |
+| Package | Minimum Version |
 |---|---|
 | `com.unity.addressables` | 1.21.0 |
 | `com.unity.textmeshpro` | 3.0.0 |
@@ -94,130 +93,130 @@ https://github.com/lookloop/ItemManager.git
 
 ---
 
-## 快速开始
+## Quick Start
 
-### 数据驱动模式（无预制体）
+### Data‑driven mode (no prefabs)
 
-1. Canvas 下新建空 GameObject，挂载 `Core` 组件
-2. 设置 `Font`（TMP 字体资源）
-3. 在 `Specs` 数组中填入容器参数：
+1. Create an empty GameObject under your Canvas, add the `Core` component.
+2. Assign a `Font` (TMP Font Asset).
+3. Fill the `Specs` array with your container parameters:
 
 ```
 specs[0]:
-    Total Items        = 80        // 总物品容量
-    Every Page Cells   = 40        // 每页格子数
-    Row                = 5         // 每行格子数
-    Cell Width         = 10        // 格子边长
-    Mask Height        = 40        // 可视区域高度
-    Container Fill Up  = 8         // 容器上边距
-    Container Fill Down = 4        // 容器下边距
+    Total Items        = 80        // total item capacity
+    Every Page Cells   = 40        // cells visible per page
+    Row                = 5         // cells per row
+    Cell Width         = 10        // cell side length
+    Mask Height        = 40        // visible area height
+    Container Fill Up  = 8         // top padding
+    Container Fill Down = 4        // bottom padding
 ```
 
-4. 运行 → 自动生成完整容器 UI，随机填充测试物品
+4. Press Play → the full container UI is generated automatically and populated with random test items.
 
-### 预制体模式
+### Prefab mode
 
-将 `Prefab Rect` 拖入 `ContainerSpec`：
-- 自动 `Instantiate` 预制体
-- 扫描所有 `tag="Cell"` 的子对象作为格子
-- `items` 数组长度 = Cell 数量，单页模式（无翻页）
+Drag a `Prefab Rect` into the `ContainerSpec`:
+- The prefab is instantiated automatically.
+- All child transforms tagged `"Cell"` are detected as the cell registry.
+- The `items` array length equals the number of cells — single‑page mode (no pagination).
 
-### 创建物品表
+### Creating an Item Table
 
-Project 窗口右键 → `Create → ItemTable`，填入：
-- `Id` — 物品唯一标识
-- `Item Sprite` — 物品图标
-- `Glow Sprite` — 边框/光效
-- `Item Name` / `Item Description` — 名称与描述
+Right‑click in the Project window → `Create → ItemTable`, then fill in:
+- `Id` — unique item identifier
+- `Item Sprite` — item icon
+- `Glow Sprite` — border / glow effect
+- `Item Name` / `Item Description` — name and description
 
-将 `ItemTable` 标记为 Addressable，Key 使用 `Id.ToString()`。
+Mark the `ItemTable` as Addressable; use `Id.ToString()` as the Addressables key.
 
 ---
 
-## 触控交互
+## Touch Interactions
 
-| 操作 | 行为 |
+| Action | Behavior |
 |---|---|
-| 点击 Cell（无拖拽） | 显示详情面板（调用 `DetailBase.Fill`） |
-| 点击 Cell 后拖拽（未长按） | Grid 拖拽滚动 |
-| 长按 Cell (0.3s) | 提取物品到幽灵拖拽，原 Cell 隐藏 |
-| 拖拽中命中 Cell | 悬停阴影显示，实时追踪目标 Cell |
-| 拖拽到 Mask 上下边缘 | 自动滚动 Grid |
-| 拖拽到 Mask 左右边缘 | 自动翻页（带冷却时间） |
-| 松开手指（长按+拖拽） | 交换 source ↔ target 物品，UI 自动刷新 |
-| 点击翻页按钮 | 上一页 / 下一页 |
-| 点击页码输入框 | 输入数字跳页 |
-| 点击空白区域 | 关闭所有 Detail 面板 |
+| Tap a cell (no drag) | Show the detail panel (calls `DetailBase.Fill`) |
+| Drag a cell (no long‑press) | Scroll the grid |
+| Long‑press a cell (0.3 s) | Extract the item as a drag ghost; source cell is hidden |
+| Drag over another cell | Hover shadow appears on the target cell |
+| Hold near mask top/bottom edge | Auto‑scroll the grid |
+| Hold near mask left/right edge | Auto‑flip pages (with cooldown) |
+| Release after long‑press + drag | Swap source ↔ target items; UI refreshes automatically |
+| Tap a page‑flip button | Previous / Next page |
+| Tap the page‑number input | Type a page number to jump |
+| Tap empty space | Close all open detail panels |
 
 ---
 
 ## API
 
-### Core（公开字段）
+### Core — Public Fields
 
-| 字段 | 类型 | 说明 |
+| Field | Type | Description |
 |---|---|---|
-| `specs` | `ContainerSpec[]` | 容器蓝图数组，每项生成一个独立容器 |
-| `font` | `TMP_FontAsset` | 全局 TMP 字体 |
-| `fontSize` | `float` | 全局字号（默认 3.9） |
-| `pressTime` | `float` | 长按判定时间（默认 0.3s） |
-| `scrollSpeed` | `float` | 边缘滚动速度（默认 60） |
-| `edgeThreshold` | `float` | 边缘触发距离（默认 3） |
-| `turnThreshold` | `float` | 翻页冷却时间（默认 0.5s） |
-| `flipDuration` | `float` | 翻页动画时长（默认 0.5s） |
-| `shadowColor` | `Color` | 拖拽悬停阴影颜色（默认黑色半透明） |
+| `specs` | `ContainerSpec[]` | Container blueprints — one container per entry |
+| `font` | `TMP_FontAsset` | Global TMP font |
+| `fontSize` | `float` | Global font size (default 3.9) |
+| `pressTime` | `float` | Long‑press threshold in seconds (default 0.3) |
+| `scrollSpeed` | `float` | Edge‑scroll speed (default 60) |
+| `flipDistance` | `float` | Edge‑trigger distance (default 3) |
+| `flipCool` | `float` | Page‑flip cooldown in seconds (default 0.5) |
+| `flipDuration` | `float` | Page‑flip animation duration (default 0.5) |
+| `shadowColor` | `Color` | Drop‑target hover shadow color (default black, 90% alpha) |
 
-### Core.SetItem — 物品数据写入
+### Core.SetItem — Writing Item Data
 
 ```csharp
-// 创建物品并自动刷新 UI（只有当前页才会刷新视图）
+// Create an item and refresh the view (only refreshes if on the current page)
 core.SetItem(container, itemKey, id, type, tier, count, data);
 
-// 或者直接传入 Item struct
+// Or pass an Item struct directly
 core.SetItem(container, itemKey, new Item(id, type, tier, count, data));
 ```
 
-### Core.View / Core.NoView — 视图刷新
+### Core.View / Core.NoView — View Refresh
 
 ```csharp
-// 异步加载 ItemTable 并刷新单个 Cell 的图标/边框/数量
+// Async‑load the ItemTable and refresh a single cell's icon / border / count
 await core.View(container, itemKey);
 
-// 隐藏 Cell 显示（不修改数据）
+// Hide a cell without touching the data
 core.NoView(container, itemKey);
 ```
 
-### Core.SetPage — 翻页
+### Core.SetPage — Page Navigation
 
 ```csharp
-// 跳转到指定页，刷新所有可见 Cell
+// Jump to a specific page and refresh all visible cells
 core.SetPage(container, page);
 ```
 
-### Core.GetItemTable — 加载物品表
+### Core.GetItemTable — Loading an Item Table
 
 ```csharp
-// 异步加载 ItemTable（带缓存）
+// Async‑load an ItemTable (uses the in‑memory cache)
 var table = await core.GetItemTable(itemId.ToString());
 ```
 
-### SetItemBase — 准入过滤器
+### SetItemBase — Admission Filters
 
 ```csharp
 [Serializable]
 public class SetItemBase
 {
-    // 交换前准入检查（双向调用）
+    // Pre‑swap admission check (called bidirectionally)
     public virtual bool CanExchange(Item incoming, Item outgoing) => true;
 
-    // SetItem 完成后的回调
+    // Callback invoked after SetItem writes data
     public virtual void OnItemSet(Container container, int itemKey) { }
 }
 ```
 
-内置实现：`TypeRestrictFilter`（限制 Type）、`OddIdOnlyFilter`（测试用，限制奇数 Id）。
+Built‑in implementations: `TypeRestrictFilter` (restricts by `Type`), `OddIdOnlyFilter` (demo — odd Ids only).
 
-### DetailBase — 详情面板
+### DetailBase — Detail Panel
 
 ```csharp
 public abstract class DetailBase : MonoBehaviour
@@ -226,37 +225,37 @@ public abstract class DetailBase : MonoBehaviour
 }
 ```
 
-将继承 `DetailBase` 的组件挂在 `detailRect` 预制体上，点击物品时自动回调。默认实现：`DetailFiller`。
+Attach a class that inherits from `DetailBase` to your `detailRect` prefab. It will be called automatically when the player taps an item. Default implementation: `DetailFiller`.
 
 ---
 
-## 数据流
+## Data Flow
 
 ```
-按下 Cell
-  → OnPointerDown: 启动长按协程 LongPressTimer (pressTime 倒计时)
-    同时记录 Grid 起始位置用于短按滚动
+Pointer down on a cell
+  → OnPointerDown: start LongPressTimer coroutine (counts down pressTime)
+    also capture the Grid's starting position for short‑drag scrolling
   → OnDrag:
-      - 长按已触发 → DragItem (幽灵跟随手指 + 射线追踪目标 Cell + 阴影定位)
-      - 长按未触发 → 取消计时 → ScrollGrid (Grid 跟随手指滚动)
-  → LongPressTimer 每帧检测:
-      - 手指在 Mask 上下边缘 → 自动滚动 Grid
-      - 手指在 Mask 左右边缘 → 自动翻页（带冷却）
+      - Long‑press already triggered → DragItem (ghost follows finger + raycast target cell + shadow)
+      - Long‑press not yet triggered → cancel timer → ScrollGrid (Grid follows finger)
+  → LongPressTimer per‑frame check:
+      - Finger near mask top/bottom → auto‑scroll Grid
+      - Finger near mask left/right → auto‑flip page (with cooldown)
   → OnPointerUp:
-      - 长按+拖拽 → Exchange
-          → 计算 srcKey / tgtKey
-          → 读取 srcItem / tgtItem
-          → 双向 CanExchange 检查（src 容器过滤器 + tgt 容器过滤器）
-          → core.SetItem 互换数据
-      - 无长按且无拖拽 → ShowDetail (调用 DetailBase.Fill)
-      - 统一 Reset:
-          → 恢复 source Cell 显示（如果在当前页）
-          → 隐藏拖拽幽灵和阴影
-          → 清空所有状态
+      - Long‑press + drag → Exchange
+          → calculate srcKey / tgtKey
+          → read srcItem / tgtItem
+          → bidirectional CanExchange check (src container filter + tgt container filter)
+          → core.SetItem swaps the data
+      - No long‑press & no drag → ShowDetail (calls DetailBase.Fill)
+      - Unified Reset:
+          → restore source cell visibility (if on the current page)
+          → hide drag ghost and shadow
+          → clear all session state
 ```
 
 ---
 
 ## License
 
-MIT © 2026 覃健培 (Qin Jianpei)
+MIT © 2026 Qin Jianpei

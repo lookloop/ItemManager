@@ -6,14 +6,15 @@ using TMPro;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 容器规格 — 构建容器的配方。
-    /// 填入 Core.mods[] 数组，每项生成一个独立容器。
+    /// Container blueprint — a recipe that drives procedural UI construction.
+    /// Add entries to Core.specs[]; each entry produces one independent container.
     /// </summary>
     [Serializable]
     public class ContainerSpec
     {
-        [Header("预制体 (可选)")]
-        [Tooltip("不为空则直接 Instantiate，自动扫描 tag='Item' 的子对象作为 Cell 注册表")]
+        [Header("Prefab (optional)")]
+        [Tooltip("If set, instantiate this prefab instead of building from scratch. "
+            + "Child transforms tagged 'Cell' are auto-detected as the cell registry.")]
         public RectTransform prefabRect;
         public RectTransform detailRect;
 
@@ -28,18 +29,19 @@ namespace Lookloop.ItemManager
         public float containerFillDown = 4f;
 
         [Space]
-        [Header("过滤")]
-        [Tooltip("物品准入过滤器，为空则无限制。类型下拉选派生类，字段内联展开。")]
+        [Header("Filter")]
+        [Tooltip("Item-admission filter. Leave empty for unrestricted. "
+            + "Choose a derived type from the drop-down; its fields expand inline.")]
         [SerializeReference]
         public SetItemBase itemFilter;
 
         [Space]
-        [Header("翻页")]
+        [Header("Pagination")]
         public float pageTextWidth = 24f;
         public float pageTextHeight = 4f;
 
         [Space]
-        [Header("视觉")]
+        [Header("Visuals")]
         public Sprite containerSprite;
         public Sprite maskSprite;
         public Sprite cellSprite;

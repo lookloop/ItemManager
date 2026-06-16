@@ -15,10 +15,10 @@ public partial class Core
     {
         container.items[itemKey] = item;
 
-        // filter 回调 — 数据层变更通知
+        // Notify the filter that data has changed
         container.itemFilter?.OnItemSet(container, itemKey);
 
-        // 不在当前页则不刷新 UI
+        // Skip view refresh if the item lives on a different page
         if (container.items.Length > container.cells.Length)
         {
             int page = itemKey / container.cells.Length + 1;
@@ -29,13 +29,14 @@ public partial class Core
     }
 
     /// <summary>
-    /// 根据 items[key] 的 id 异步加载 ItemTable，刷新 Cell 的图标/边框/数量。
+    /// Loads the <c>ItemTable</c> for <c>items[key]</c> asynchronously and
+    /// updates the cell's icon, border, and count label.
     /// </summary>
     public async Task View(Container container, int itemKey)
     {
         var item = container.items[itemKey];
 
-        // 全局 itemKey → cellKey
+        // Map global itemKey to local cellKey
         int cellKey = itemKey;
         if (container.items.Length > container.cells.Length)
             cellKey = itemKey % container.cells.Length;
@@ -66,7 +67,7 @@ public partial class Core
     {
         var item = container.items[itemKey];
 
-        // 全局 itemKey → cellKey
+        // Map global itemKey to local cellKey
         int cellKey = itemKey;
         if (container.items.Length > container.cells.Length)
             cellKey = itemKey % container.cells.Length;

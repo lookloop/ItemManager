@@ -6,8 +6,9 @@ using TMPro;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// Detail 面板 — 点击物品时显示详情。
-    /// 点击空白隐藏由 Core.OnPointerDown 统一处理。
+    /// Default detail panel implementation. Shown when the player taps an item;
+    /// hidden automatically by <c>Core.OnPointerDown</c> when the player taps
+    /// empty space.
     /// </summary>
     public class DetailFiller : DetailBase
     {

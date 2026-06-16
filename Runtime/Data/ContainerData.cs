@@ -3,7 +3,8 @@ using UnityEngine;
 namespace Lookloop.ItemManager
 {
     /// <summary>
-    /// 容器 — Transform + 物品数据 + 蓝图引用
+    /// Runtime container — holds the RectTransform hierarchy, item data, and
+    /// a reference back to the spec that built it.
     /// </summary>
     [System.Serializable]
     public class Container

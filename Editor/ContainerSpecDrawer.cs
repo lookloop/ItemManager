@@ -10,24 +10,24 @@ namespace Lookloop.ItemManager.Editor
     {
         static readonly Dictionary<string, bool> Foldouts = new();
 
-        // 缓存所有 SetItemBase 派生类型
+        // Lazily‑populated cache of all concrete SetItemBase subclasses
         static Type[] filterTypes;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            // prefab + detail — 始终可见
+            // Prefab and detail panel — always visible
             EditorGUILayout.PropertyField(property.FindPropertyRelative("prefabRect"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("detailRect"));
 
-            // itemFilter — 手动绘制 [SerializeReference] 类型选择器
+            // Item filter — manually draw the [SerializeReference] type selector
             DrawFilterField(property.FindPropertyRelative("itemFilter"));
 
-            // 三角折叠按钮
+            // Collapsible foldout triangle
             string key = property.propertyPath;
             if (!Foldouts.ContainsKey(key)) Foldouts[key] = false;
             Foldouts[key] = EditorGUILayout.Foldout(Foldouts[key], "参数");
 
-            // 新建元素自动写默认值
+            // Auto‑fill defaults for a newly added spec element
             if (property.FindPropertyRelative("totalItems").intValue == 0)
             {
                 property.FindPropertyRelative("totalItems").intValue = 80;
@@ -43,22 +43,22 @@ namespace Lookloop.ItemManager.Editor
 
             if (Foldouts[key])
             {
-                Prop(property, "totalItems",            "物品总数 (默认80)");
-                Prop(property, "everyPageCells",        "每页格子数 (默认40)");
-                Prop(property, "row",                   "每行格子数 (默认5)");
-                Prop(property, "maskHeight",            "遮罩高度 (默认40)");
-                Prop(property, "containerFillHorizontal","水平内边距 (默认2)");
-                Prop(property, "containerFillUp",       "上边距 (默认8)");
-                Prop(property, "containerFillDown",     "下边距 (默认4)");
-                Prop(property, "pageTextWidth",         "翻页输入宽 (默认24)");
-                Prop(property, "pageTextHeight",        "翻页输入高 (默认4)");
+                Prop(property, "totalItems",            "Total Items (default 80)");
+                Prop(property, "everyPageCells",        "Cells Per Page (default 40)");
+                Prop(property, "row",                   "Row Count (default 5)");
+                Prop(property, "maskHeight",            "Mask Height (default 40)");
+                Prop(property, "containerFillHorizontal","Horizontal Padding (default 2)");
+                Prop(property, "containerFillUp",       "Top Padding (default 8)");
+                Prop(property, "containerFillDown",     "Bottom Padding (default 4)");
+                Prop(property, "pageTextWidth",         "Page Input Width (default 24)");
+                Prop(property, "pageTextHeight",        "Page Input Height (default 4)");
                 Prop(property, "containerSprite");
                 Prop(property, "maskSprite");
                 Prop(property, "cellSprite");
             }
         }
 
-        // ── [SerializeReference] 手动类型选择器 ──
+        // ── Custom [SerializeReference] type picker ──
         void DrawFilterField(SerializedProperty prop)
         {
             CacheFilterTypes();
@@ -69,8 +69,8 @@ namespace Lookloop.ItemManager.Editor
 
             if (filterTypes.Length == 0)
             {
-                // 没有派生类 → 只显示提示
-                names = new[] { "(无可用类型)" };
+                // No subclasses found → show a placeholder message
+                names = new[] { "(No types available)" };
             }
             else
             {
@@ -99,7 +99,7 @@ namespace Lookloop.ItemManager.Editor
                     prop.managedReferenceValue = Activator.CreateInstance(filterTypes[selected - 1]);
             }
 
-            // 有值时展开子字段
+            // When a type is selected, expand its child fields inline
             if (current != null)
             {
                 EditorGUI.indentLevel++;

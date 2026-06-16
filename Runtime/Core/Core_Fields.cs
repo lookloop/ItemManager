@@ -6,7 +6,7 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
-    // ── Inspector 配置 ──
+    // ── Inspector‑exposed settings ──
 
     public float cellSize = 10f;
     public float pressTime = 0.3f;
@@ -24,12 +24,12 @@ public partial class Core
 
     public ContainerSpec[] specs;
 
-    // ── 运行时引用 ──
+    // ── Runtime references ──
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public Container[] containers;
 
 
-    // ── 拖拽幽灵 ──
+    // ── Drag‑ghost visuals ──
     [HideInInspector] public RectTransform dragParent;
     [HideInInspector] public Image dragItem;
     [HideInInspector] public Image dragEdge;
