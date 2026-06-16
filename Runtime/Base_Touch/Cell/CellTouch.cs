@@ -49,7 +49,8 @@ namespace Lookloop.ItemManager
                 DragItem(eventData);
             else
             {
-                CancelLongPress();
+                StopCoroutine(longPressCoroutine);
+                longPressCoroutine = null;
                 ScrollGrid(eventData);
             }
         }
@@ -64,15 +65,6 @@ namespace Lookloop.ItemManager
                 ShowDetail();
 
             Reset();
-        }
-
-        void CancelLongPress()
-        {
-            if (longPressCoroutine != null)
-            {
-                StopCoroutine(longPressCoroutine);
-                longPressCoroutine = null;
-            }
         }
 
         void Exchange()
@@ -110,7 +102,8 @@ namespace Lookloop.ItemManager
             core.dragParent.gameObject.SetActive(false);
             core.Shadow.gameObject.SetActive(false);
 
-            CancelLongPress();
+            StopCoroutine(longPressCoroutine);
+            longPressCoroutine = null;
         }
     }
 }
