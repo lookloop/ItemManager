@@ -30,6 +30,7 @@ namespace Lookloop.ItemManager
                     ScrollPage(localPos, maskRect, targetContainer);
                     TurnPage(localPos, maskRect, targetContainer);
                 }
+
                 yield return null;
             }
         }
@@ -158,6 +159,14 @@ namespace Lookloop.ItemManager
                     if (inRight) page++;
                     core.SetPage(c, page);
                     lastTurnTime = now;
+
+                    // 翻页成功且是自己的容器 → 翻到原页则隐藏原 Cell
+                    if (c == container && container.currentPage == originPage)
+                    {
+                        int globalKey = container.cells.Length * (originPage - 1) + cellKey;
+                        if (globalKey >= 0 && globalKey < container.items.Length)
+                            core.NoView(container, globalKey);
+                    }
                 }
             }
             else
