@@ -7,9 +7,9 @@ namespace Lookloop.ItemManager
 public partial class Core : MonoBehaviour, IPointerDownHandler
 {
     /// <summary>
-    /// Handles taps on empty space: closes all open detail panels.
-    /// Container raising is handled by each <c>TouchBase</c> subclass in its
-    /// own <c>OnPointerDown</c>, so <c>Core</c> only deals with blank‑space cleanup.
+    /// Blank-space tap receiver: hides <b>all</b> open detail panels.
+    /// Container-relative taps are intercepted by their own <c>TouchBase</c>,
+    /// which calls <c>FocusContainer()</c> and suppresses this fallback.
     /// </summary>
     public virtual void OnPointerDown(PointerEventData eventData)
     {
@@ -17,16 +17,17 @@ public partial class Core : MonoBehaviour, IPointerDownHandler
 
         var clicked = eventData.pointerCurrentRaycast.gameObject;
 
+        // Only Core's transparent image receives blank-space hits;
+        // container / cell / button hits are handled elsewhere.
+        if (clicked != gameObject) return;
+
         if (containers != null)
         {
             foreach (var c in containers)
             {
                 var dr = c?.detailRect;
-                if (dr != null && dr.gameObject.activeSelf &&
-                    (clicked == null || !clicked.transform.IsChildOf(dr)))
-                {
+                if (dr != null && dr.gameObject.activeSelf)
                     dr.gameObject.SetActive(false);
-                }
             }
         }
     }

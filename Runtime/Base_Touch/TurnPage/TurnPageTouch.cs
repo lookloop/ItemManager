@@ -15,7 +15,7 @@ namespace Lookloop.ItemManager
         public override void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.pointerId != 0) return;
-            RaiseContainer();
+            FocusContainer();
         }
 
         public override void OnPointerUp(PointerEventData eventData)

@@ -17,11 +17,28 @@ namespace Lookloop.ItemManager
         [HideInInspector] public Core core;
         [HideInInspector] public Container container;
 
-        /// <summary>Bring the owning container to the top of the sibling order.</summary>
-        protected void RaiseContainer()
+        /// <summary>
+        /// Bring the owning container to the top and hide detail panels of all
+        /// <b>other</b> containers. Call this at the very beginning of every
+        /// <c>OnPointerDown</c> override.
+        /// </summary>
+        protected void FocusContainer()
         {
             if (container?.containerRect != null)
                 container.containerRect.SetAsLastSibling();
+
+            if (core?.containers != null)
+            {
+                foreach (var c in core.containers)
+                {
+                    if (c != container)
+                    {
+                        var dr = c?.detailRect;
+                        if (dr != null && dr.gameObject.activeSelf)
+                            dr.gameObject.SetActive(false);
+                    }
+                }
+            }
         }
 
         public virtual void OnPointerDown(PointerEventData eventData) { }
