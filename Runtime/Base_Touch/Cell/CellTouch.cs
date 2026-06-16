@@ -72,7 +72,7 @@ namespace Lookloop.ItemManager
         {
             if (targetCell == null) return;
 
-            int srcKey = container.cells.Length * (container.currentPage - 1) + cellKey;
+            int srcKey = container.cells.Length * (originPage - 1) + cellKey;
             int tgtKey = targetCell.container.cells.Length * (targetCell.container.currentPage - 1) + targetCell.cellKey;
 
             core.Exchange(container, srcKey, targetCell.container, tgtKey);
