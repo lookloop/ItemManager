@@ -17,6 +17,13 @@ namespace Lookloop.ItemManager
         [HideInInspector] public Core core;
         [HideInInspector] public Container container;
 
+        /// <summary>Bring the owning container to the top of the sibling order.</summary>
+        protected void RaiseContainer()
+        {
+            if (container?.containerRect != null)
+                container.containerRect.SetAsLastSibling();
+        }
+
         public virtual void OnPointerDown(PointerEventData eventData) { }
         public virtual void OnDrag(PointerEventData eventData)        { }
         public virtual void OnPointerUp(PointerEventData eventData)   { }

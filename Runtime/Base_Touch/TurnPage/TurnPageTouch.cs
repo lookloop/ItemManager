@@ -12,6 +12,12 @@ namespace Lookloop.ItemManager
         /// <summary>-1 = previous page, +1 = next page</summary>
         public int direction;
 
+        public override void OnPointerDown(PointerEventData eventData)
+        {
+            if (eventData.pointerId != 0) return;
+            RaiseContainer();
+        }
+
         public override void OnPointerUp(PointerEventData eventData)
         {
             if (eventData.pointerId != 0) return;

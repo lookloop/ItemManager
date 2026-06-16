@@ -6,14 +6,10 @@ namespace Lookloop.ItemManager
 
 public partial class Core : MonoBehaviour, IPointerDownHandler
 {
-    const string ContainerTag = "Container";
-
     /// <summary>
-    /// Handles taps on empty space: closes all open detail panels and raises
-    /// the clicked container to the top of the sibling order.
-    ///
-    /// Cell, container, and turn‑page interactions are handled by their own
-    /// <c>TouchBase</c> components — <c>Core</c> does not participate in routing.
+    /// Handles taps on empty space: closes all open detail panels.
+    /// Container raising is handled by each <c>TouchBase</c> subclass in its
+    /// own <c>OnPointerDown</c>, so <c>Core</c> only deals with blank‑space cleanup.
     /// </summary>
     public virtual void OnPointerDown(PointerEventData eventData)
     {
@@ -21,8 +17,6 @@ public partial class Core : MonoBehaviour, IPointerDownHandler
 
         var clicked = eventData.pointerCurrentRaycast.gameObject;
 
-        // Clicked Core itself (the full‑screen transparent receiver) or
-        // clicked a container background (not a cell / button) → hide details
         if (containers != null)
         {
             foreach (var c in containers)
@@ -33,21 +27,6 @@ public partial class Core : MonoBehaviour, IPointerDownHandler
                 {
                     dr.gameObject.SetActive(false);
                 }
-            }
-        }
-
-        // Raise the clicked container to the top
-        if (clicked != null)
-        {
-            Transform t = clicked.transform;
-            while (t != null)
-            {
-                if (t.CompareTag(ContainerTag))
-                {
-                    t.SetAsLastSibling();
-                    break;
-                }
-                t = t.parent;
             }
         }
     }
