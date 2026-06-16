@@ -16,6 +16,7 @@ namespace Lookloop.ItemManager
         bool isDrag;
         internal bool isLongPress;
         Coroutine longPressCoroutine;
+        int originPage;
         // Grid 滑动用
         Vector2 gridPos;
         Vector2 originPos;
@@ -24,6 +25,7 @@ namespace Lookloop.ItemManager
         {
             if (eventData.pointerId != 0) return;
 
+            originPage = container.currentPage;
 
             longPressCoroutine = StartCoroutine(LongPressTimer(eventData));
 
