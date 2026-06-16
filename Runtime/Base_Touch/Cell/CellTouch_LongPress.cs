@@ -128,7 +128,7 @@ namespace Lookloop.ItemManager
             var gridRect = c.gridRect;
             float gridH = gridRect.sizeDelta.y;
             float maxY = Mathf.Max(0f, gridH - maskH);
-            if (maxY <= 0f) return;
+            if (maxY == 0f) return;
 
             float dir = inTop ? -1f : 1f;
             float targetY = gridRect.anchoredPosition.y + dir * core.scrollSpeed * Time.deltaTime;
