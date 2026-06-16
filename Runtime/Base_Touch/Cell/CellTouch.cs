@@ -14,7 +14,7 @@ namespace Lookloop.ItemManager
 
         // ── 会话状态 ──
         bool isDrag;
-        bool isLongPress;
+        internal bool isLongPress;
         Coroutine longPressCoroutine;
         // Grid 滑动用
         Vector2 gridPos;
