@@ -15,6 +15,7 @@ public partial class Core
     public float retainTime = 1800f;
     public float checkTime = 300f;
     public Color shadowColor = new(0f, 0f, 0f, 0.9f);
+    public Sprite turnPageSprite;
     public float scrollSpeed = 60f;
     public float flipDistance = 3f;
     public float flipCool = 0.5f;

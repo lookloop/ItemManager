@@ -120,6 +120,12 @@ public partial class Core
                 "TurnPage",
                 typeof(Image));
 
+            if (turnPageSprite != null)
+            {
+                prevButtonRect.GetComponent<Image>().sprite = turnPageSprite;
+                prevButtonRect.localRotation = Quaternion.Euler(0, 0, 180f);
+            }
+
             var prevHandler = prevButtonRect.gameObject.AddComponent<TurnPageTouch>();
             prevHandler.core = this;
             prevHandler.container = container;
@@ -131,6 +137,9 @@ public partial class Core
                 new(spec.pageTextHeight, spec.pageTextHeight),
                 "TurnPage",
                 typeof(Image));
+
+            if (turnPageSprite != null)
+                nextButtonRect.GetComponent<Image>().sprite = turnPageSprite;
 
             var nextHandler = nextButtonRect.gameObject.AddComponent<TurnPageTouch>();
             nextHandler.core = this;
