@@ -122,8 +122,9 @@ public partial class Core
 
             if (turnPageSprite != null)
             {
-                prevButtonRect.GetComponent<Image>().sprite = turnPageSprite;
-                prevButtonRect.localRotation = Quaternion.Euler(0, 0, 180f);
+                var prevImg = prevButtonRect.GetComponent<Image>();
+                prevImg.sprite = turnPageSprite;
+                prevImg.transform.localScale = new Vector3(-1f, 1f, 1f);
             }
 
             var prevHandler = prevButtonRect.gameObject.AddComponent<TurnPageTouch>();
