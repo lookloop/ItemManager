@@ -23,7 +23,7 @@ namespace Lookloop.ItemManager
                     if (Random.Range(0, 3) != 0) continue;
 
                     core.SetItem(container, itemKey: i,
-                        id: Random.Range(1, 5), type: 1, tier: 2, count: Random.Range(1, 100), data: null);
+                        id: Random.Range(1, 5), type: 1, tier: 2, count: 1, data: null);
                 }
             }
         }
