@@ -18,9 +18,9 @@ namespace Lookloop.ItemManager
         [HideInInspector] public Container container;
 
         /// <summary>
-        /// Bring the owning container to the top and hide detail panels of all
-        /// <b>other</b> containers. Call this at the very beginning of every
-        /// <c>OnPointerDown</c> override.
+        /// Bring the owning container to the top and hide <b>all</b> open detail
+        /// panels. Call this at the very beginning of every <c>OnPointerDown</c>
+        /// override.
         /// </summary>
         protected void FocusContainer()
         {
@@ -31,12 +31,9 @@ namespace Lookloop.ItemManager
             {
                 foreach (var c in core.containers)
                 {
-                    if (c != container)
-                    {
-                        var dr = c?.detailRect;
-                        if (dr != null && dr.gameObject.activeSelf)
-                            dr.gameObject.SetActive(false);
-                    }
+                    var dr = c?.detailRect;
+                    if (dr != null && dr.gameObject.activeSelf)
+                        dr.gameObject.SetActive(false);
                 }
             }
         }
