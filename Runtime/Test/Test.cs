@@ -19,8 +19,8 @@ namespace Lookloop.ItemManager
 
                 for (int i = 0; i < container.items.Length; i++)
                 {
-                    // 1-in-3 chance of occupying this slot
-                    if (Random.Range(0, 3) != 0) continue;
+                    // 1-in-2 chance of occupying this slot
+                    if (Random.Range(0, 2) != 0) continue;
 
                     core.SetItem(container, itemKey: i,
                         id: Random.Range(1, 5), type: 1, tier: 2, count: 1, data: null);

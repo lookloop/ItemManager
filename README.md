@@ -4,6 +4,8 @@
 
 Zero prefab dependency. Async Addressables loading. Multiple independent containers. Cross-container drag-and-drop.
 
+![Demo](demo.gif)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Unity](https://img.shields.io/badge/Unity-2022.3%2B-black)](package.json)
 
