@@ -80,16 +80,10 @@ namespace Lookloop.ItemManager
 
         void Reset()
         {
-            if (isLongPress)
+            if (isLongPress && container.currentPage == originPage)
             {
-                int globalKey = container.cells.Length * (container.currentPage - 1) + cellKey;
-                int start = container.cells.Length * (container.currentPage - 1);
-                int end = UnityEngine.Mathf.Min(
-                    container.cells.Length * container.currentPage - 1,
-                    container.items.Length - 1);
-                if (globalKey >= start && globalKey <= end)
-                    core.Launch(
-                        core.View(container, globalKey));
+                int globalKey = container.cells.Length * (originPage - 1) + cellKey;
+                core.Launch(core.View(container, globalKey));
             }
 
             targetCell = null;
