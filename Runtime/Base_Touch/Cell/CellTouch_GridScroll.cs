@@ -17,17 +17,17 @@ namespace Lookloop.ItemManager
                 gridRect.parent as RectTransform,
                 eventData.position,
                 core.canvas.worldCamera,
-                out Vector2 currentLocal);
+                out Vector2 offPos);
 
-            Vector2 diff = currentLocal - fingerStartLocal;
-            float targetY = gridStartPos.y + diff.y;
+            Vector2 diff = offPos - originPos;
+            float targetY = gridPos.y + diff.y;
 
             float gridHeight = gridRect.sizeDelta.y;
             float maskHeight = container.maskRect.sizeDelta.y;
             float maxY = Mathf.Max(0f, gridHeight - maskHeight);
             targetY = Mathf.Clamp(targetY, 0f, maxY);
 
-            gridRect.anchoredPosition = new Vector2(gridStartPos.x, targetY);
+            gridRect.anchoredPosition = new Vector2(gridPos.x, targetY);
         }
     }
 }

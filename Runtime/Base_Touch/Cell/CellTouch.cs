@@ -17,8 +17,8 @@ namespace Lookloop.ItemManager
         bool isLongPress;
         Coroutine longPressCoroutine;
         // Grid 滑动用
-        Vector2 gridStartPos;
-        Vector2 fingerStartLocal;
+        Vector2 gridPos;
+        Vector2 originPos;
         // 拖拽目标
         CellTouch targetCell;
         public override void OnPointerDown(PointerEventData eventData)
@@ -32,12 +32,12 @@ namespace Lookloop.ItemManager
             var gridRect = container.gridRect;
             if (gridRect != null)
             {
-                gridStartPos = gridRect.anchoredPosition;
+                gridPos = gridRect.anchoredPosition;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     gridRect.parent as RectTransform,
                     eventData.position,
                     core.canvas.worldCamera,
-                    out fingerStartLocal);
+                    out originPos);
             }
         }
         public override void OnDrag(PointerEventData eventData)
