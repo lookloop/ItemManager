@@ -86,7 +86,7 @@ namespace Lookloop.ItemManager
             if (raycast.gameObject != null)
             {
                 var other = raycast.gameObject.GetComponent<CellTouch>();
-                if (other != null && other != this)
+                if (other != null)
                 {
                     targetCell = other;
 
