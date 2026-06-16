@@ -31,7 +31,7 @@ namespace Lookloop.ItemManager
             if (table == null) return;
 
             core.dragItem.sprite = table.ItemSprite;
-            core.dragEdge.sprite = table.GlowSprite;
+            core.dragEdge.sprite = table.edgeSprite;
             core.dragCount.text = item.Count.ToString();
             core.dragParent.gameObject.SetActive(true);
 

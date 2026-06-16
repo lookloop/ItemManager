@@ -55,7 +55,7 @@ public partial class Core
 
         cell.count.text = item.Count.ToString();
         cell.item.sprite = table.ItemSprite;
-        cell.edge.sprite = table.GlowSprite;
+        cell.edge.sprite = table.edgeSprite;
 
         cell.item.gameObject.SetActive(true);
         cell.edge.gameObject.SetActive(true);

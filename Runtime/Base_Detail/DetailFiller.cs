@@ -30,7 +30,7 @@ namespace Lookloop.ItemManager
                 if (table == null) return;
 
                 fakeItemImage.sprite = table.ItemSprite;
-                fakeEdgeImage.sprite = table.GlowSprite;
+                fakeEdgeImage.sprite = table.edgeSprite;
                 itemNameText.text = table.ItemName;
                 itemCountText.text = item.Count.ToString();
                 tierText.text = item.Tier.ToString();
