@@ -46,7 +46,7 @@ public partial class Core
         container.cellWidth = cellSize;
         container.containerRect = prefabContainer;
 
-        AttachContainerHandler(container, prefabContainer.gameObject);
+        AttachContainerTouch(container, prefabContainer.gameObject);
         AttachDetail(container, spec);
         container.cells = BuildCellView(container, cellRects);
     }
@@ -147,7 +147,7 @@ public partial class Core
         container.row = spec.row;
         container.cellWidth = cellSize;
 
-        AttachContainerHandler(container, containerRect.gameObject);
+        AttachContainerTouch(container, containerRect.gameObject);
         AttachDetail(container, spec);
 
         var cellRects = new List<RectTransform>();
@@ -223,7 +223,7 @@ public partial class Core
     }
 
     // ─── Handler 挂载辅助 ───
-    void AttachContainerHandler(Container container, GameObject go)
+    void AttachContainerTouch(Container container, GameObject go)
     {
         var handler = go.AddComponent<ContainerTouch>();
         handler.core = this;
