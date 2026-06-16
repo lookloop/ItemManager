@@ -38,7 +38,10 @@ namespace Lookloop.ItemManager
         /// <param name="outgoing">The item being removed from this container
         /// (Id == 0 means this slot is currently empty).</param>
         /// <returns><c>true</c> to allow the exchange, <c>false</c> to block it.</returns>
-        public virtual bool CanExchange(Item incoming, Item outgoing) => true;
+        public virtual bool CanExchange(Item incoming, Item outgoing)
+        {
+            return true;
+        }
 
         /// <summary>
         /// Callback invoked after <c>SetItem</c> has written data into this container.
