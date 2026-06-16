@@ -6,7 +6,7 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
-    void BuildDragTool()
+    void InitRect()
     {
         dragParent = CreateRect("dragitem", canvas.transform,
             new(0.5f, 0.5f), new(0.5f, 0.5f), new(0.5f, 0.5f),
