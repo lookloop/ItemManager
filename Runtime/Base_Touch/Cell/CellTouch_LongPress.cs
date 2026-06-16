@@ -27,8 +27,8 @@ namespace Lookloop.ItemManager
                 {
                     RectTransformUtility.ScreenPointToLocalPointInRectangle(
                         maskRect, eventData.position, core.canvas.worldCamera, out Vector2 localPos);
-                    ScrollPageByEdge(localPos, maskRect, targetContainer);
-                    TurnPageByEdge(localPos, maskRect, targetContainer);
+                    ScrollPage(localPos, maskRect, targetContainer);
+                    TurnPage(localPos, maskRect, targetContainer);
                 }
                 yield return null;
             }
@@ -114,9 +114,9 @@ namespace Lookloop.ItemManager
         }
 
         // ═══════════════════════════════════════════════
-        //  Mask 边缘滚动（长按时每帧检测）
+        //  Mask 滚动（长按时每帧检测）
         // ═══════════════════════════════════════════════
-        void ScrollPageByEdge(Vector2 localPos, RectTransform maskRect, Container c)
+        void ScrollPage(Vector2 localPos, RectTransform maskRect, Container c)
         {
             float maskH = maskRect.rect.height;
             float distTop = Mathf.Abs(localPos.y);
@@ -137,9 +137,9 @@ namespace Lookloop.ItemManager
         }
 
         // ═══════════════════════════════════════════════
-        //  边缘翻页检测（长按时每帧检测）
+        //  翻页检测（长按时每帧检测）
         // ═══════════════════════════════════════════════
-        void TurnPageByEdge(Vector2 localPos, RectTransform maskRect, Container c)
+        void TurnPage(Vector2 localPos, RectTransform maskRect, Container c)
         {
             float maskW = maskRect.rect.width;
             float halfW = maskW * 0.5f;
