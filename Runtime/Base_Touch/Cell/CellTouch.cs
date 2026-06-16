@@ -19,7 +19,6 @@ namespace Lookloop.ItemManager
         // Grid 滑动用
         Vector2 gridPos;
         Vector2 originPos;
-        // 拖拽目标
         CellTouch targetCell;
         public override void OnPointerDown(PointerEventData eventData)
         {
@@ -79,25 +78,22 @@ namespace Lookloop.ItemManager
 
         void Reset()
         {
-            if (container != null && container.cells != null &&
-                core.sourceContainer == container)
+            if (isLongPress)
             {
+                int globalKey = container.cells.Length * (container.currentPage - 1) + cellKey;
                 int start = container.cells.Length * (container.currentPage - 1);
                 int end = UnityEngine.Mathf.Min(
                     container.cells.Length * container.currentPage - 1,
                     container.items.Length - 1);
-                if (core.sourceItemKey >= start && core.sourceItemKey <= end)
+                if (globalKey >= start && globalKey <= end)
                     core.Launch(
-                        core.View(container, core.sourceItemKey));
+                        core.View(container, globalKey));
             }
 
             targetCell = null;
             lastTurnTime = 0f;
             isDrag = false;
             isLongPress = false;
-
-            core.sourceContainer = null;
-            core.sourceItemKey = 0;
 
             core.dragParent.gameObject.SetActive(false);
             core.Shadow.gameObject.SetActive(false);

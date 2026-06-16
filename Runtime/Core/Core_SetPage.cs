@@ -41,11 +41,17 @@ public partial class Core
         if (container.pageInput != null)
             container.pageInput.text = page + "/" + Mathf.CeilToInt((float)container.items.Length / container.cells.Length);
 
-        // 翻页后检测：当前 container 是否是 sourceContainer，且 sourceItemKey 是否在当前页
-        if (container == sourceContainer &&
-            sourceItemKey >= start && sourceItemKey <= end)
+        // 翻页后检测：拖拽中的 Cell 翻到了新页，隐藏它
+        foreach (var cell in container.cells)
         {
-            NoView(container, sourceItemKey);
+            var ct = cell.cell.GetComponent<CellTouch>();
+            if (ct != null && ct.isLongPress)
+            {
+                int globalKey = container.cells.Length * (container.currentPage - 1) + ct.cellKey;
+                if (globalKey >= start && globalKey <= end)
+                    NoView(container, globalKey);
+                break;
+            }
         }
 
         if (page != oldPage)

@@ -27,8 +27,7 @@ public partial class Core
     // ── 运行时引用 ──
     [HideInInspector] public Canvas canvas;
     [HideInInspector] public Container[] containers;
-    [HideInInspector] public Container sourceContainer;
-    [HideInInspector] public int sourceItemKey;
+
 
     // ── 拖拽幽灵 ──
     [HideInInspector] public RectTransform dragParent;
