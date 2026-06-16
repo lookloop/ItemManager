@@ -20,14 +20,13 @@ namespace Lookloop.ItemManager
 
             while (true)
             {
-                var targetContainer = targetCell?.container ?? container;
-                var maskRect = targetContainer?.maskRect;
+                var maskRect = target?.container?.maskRect;
                 if (maskRect != null)
                 {
                     RectTransformUtility.ScreenPointToLocalPointInRectangle(
                         maskRect, eventData.position, core.canvas.worldCamera, out Vector2 localPos);
-                    ScrollPage(localPos, maskRect, targetContainer);
-                    TurnPage(localPos, maskRect, targetContainer);
+                    ScrollPage(localPos, maskRect, target.container);
+                    TurnPage(localPos, maskRect, target.container);
                 }
 
                 yield return null;
@@ -62,7 +61,7 @@ namespace Lookloop.ItemManager
             core.NoView(container, globalKey);
         }
 
-        // ── Move the drag‑ghost to follow the finger and raycast for a target cell ──
+        // ── Move the drag‑ghost to follow the finger and raycast for the target ──
         void DragItem(PointerEventData eventData)
         {
             if (!core.dragParent.gameObject.activeSelf) return;
@@ -75,21 +74,29 @@ namespace Lookloop.ItemManager
                 out Vector2 localPos);
             core.dragParent.anchoredPosition = localPos;
 
-            // raycast to find the cell under the finger
+            // raycast — accept any TouchBase, Shadow only for CellTouch
             var raycast = eventData.pointerCurrentRaycast;
             if (raycast.gameObject != null)
             {
-                var other = raycast.gameObject.GetComponent<CellTouch>();
-                if (other != null)
+                var touch = raycast.gameObject.GetComponent<TouchBase>();
+                if (touch?.container != null)
                 {
-                    targetCell = other;
+                    target = touch;
 
-                    if (targetCell.container != null && targetCell.container.containerRect != null)
-                        targetCell.container.containerRect.SetAsLastSibling();
+                    if (touch.container.containerRect != null)
+                        touch.container.containerRect.SetAsLastSibling();
 
-                    var cellRect = targetCell.container.cells[targetCell.cellKey].cell;
-                    core.Shadow.SetParent(cellRect, false);
-                    core.Shadow.gameObject.SetActive(true);
+                    if (touch is CellTouch ct)
+                    {
+                        var cellRect = ct.container.cells[ct.cellKey].cell;
+                        core.Shadow.SetParent(cellRect, false);
+                        core.Shadow.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        core.Shadow.SetParent(core.canvas.transform, false);
+                        core.Shadow.gameObject.SetActive(false);
+                    }
                 }
                 else
                 {
@@ -104,7 +111,7 @@ namespace Lookloop.ItemManager
 
         void ClearTarget()
         {
-            targetCell = null;
+            target = null;
             core.Shadow.SetParent(core.canvas.transform, false);
             core.Shadow.gameObject.SetActive(false);
         }

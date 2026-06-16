@@ -23,7 +23,7 @@ namespace Lookloop.ItemManager
         // Grid scroll tracking
         Vector2 gridPos;
         Vector2 originPos;
-        CellTouch targetCell;
+        TouchBase target;
         public override void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.pointerId != 0) return;
@@ -77,12 +77,17 @@ namespace Lookloop.ItemManager
 
         void Exchange()
         {
-            if (targetCell == null) return;
+            if (target == null) return;
 
             int srcKey = container.cells.Length * (originPage - 1) + cellKey;
-            int tgtKey = targetCell.container.cells.Length * (targetCell.container.currentPage - 1) + targetCell.cellKey;
+            int page = target.container.currentPage;
+            int tgtKey;
+            if (target is CellTouch ct)
+                tgtKey = target.container.cells.Length * (page - 1) + ct.cellKey;
+            else
+                tgtKey = target.container.items.Length - 1;
 
-            core.Exchange(container, srcKey, targetCell.container, tgtKey);
+            core.Exchange(container, srcKey, target.container, tgtKey);
         }
 
         void Reset()
@@ -93,7 +98,7 @@ namespace Lookloop.ItemManager
                 core.Launch(core.View(container, globalKey));
             }
 
-            targetCell = null;
+            target = null;
             lastTurnTime = 0f;
             isDrag = false;
             isLongPress = false;
