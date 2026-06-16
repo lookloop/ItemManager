@@ -46,7 +46,7 @@ namespace Lookloop.ItemManager
                     container.cells.Length * container.currentPage - 1,
                     container.items.Length - 1);
                 if (core.sourceItemKey >= start && core.sourceItemKey <= end)
-                    core.FireAndForget(
+                    core.Launch(
                         core.View(container, core.sourceItemKey));
             }
 

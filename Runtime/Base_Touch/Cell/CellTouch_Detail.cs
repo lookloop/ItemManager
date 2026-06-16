@@ -11,7 +11,7 @@ namespace Lookloop.ItemManager
         void ShowDetail()
         {
             int globalKey = container.cells.Length * (container.currentPage - 1) + cellKey;
-            core.FireAndForget(container.detailFiller?.Fill(core, container, globalKey) ?? Task.CompletedTask);
+            core.Launch(container.detailFiller?.Fill(core, container, globalKey) ?? Task.CompletedTask);
         }
     }
 }

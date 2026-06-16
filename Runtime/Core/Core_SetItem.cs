@@ -25,7 +25,7 @@ public partial class Core
             if (page != container.currentPage) return;
         }
 
-        FireAndForget(View(container, itemKey));
+        Launch(View(container, itemKey));
     }
 
     /// <summary>

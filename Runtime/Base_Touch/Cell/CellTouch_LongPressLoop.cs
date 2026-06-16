@@ -15,7 +15,7 @@ namespace Lookloop.ItemManager
         {
             yield return new WaitForSeconds(core.pressTime);
             isLongPress = true;
-            core.FireAndForget(ExtractItem(eventData));
+            core.Launch(ExtractItem(eventData));
             lastTurnTime = Time.time;
 
             while (true)

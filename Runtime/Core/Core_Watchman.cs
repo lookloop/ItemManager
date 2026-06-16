@@ -5,7 +5,7 @@ namespace Lookloop.ItemManager
 {
 public partial class Core
 {
-    public async void FireAndForget(Task task)
+    public async void Launch(Task task)
     {
         try { await task; }
         catch (Exception e)

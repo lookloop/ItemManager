@@ -35,7 +35,7 @@ public partial class Core
         }
 
         for (int i = start; i <= end; i++)
-            FireAndForget(View(container, i));
+            Launch(View(container, i));
 
         // 同步 TMP 翻页输入框显示
         if (container.pageInput != null)
