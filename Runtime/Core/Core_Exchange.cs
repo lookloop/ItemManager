@@ -28,7 +28,12 @@ public partial class Core
 
         SetItem(srcC, srcKey, tgtItem);
         SetItem(tgtC, tgtKey, srcItem);
+
+        srcC.itemFilter?.OnItemSet(tgtC, tgtKey);
+        tgtC.itemFilter?.OnItemSet(srcC, srcKey);
+
         ShowTip("交换成功", 0.5f, UnityEngine.Color.green);
+        
     }
 }
 }
