@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Lookloop.ItemManager
 {
@@ -13,7 +14,7 @@ namespace Lookloop.ItemManager
         {
             bool ok = incoming.Id == 1 || incoming.Id == 3;
             if (!ok)
-                core.ShowTip("交换失败");
+                core.ShowTip("交换失败", 1f, Color.red);
             return ok;
         }
     }
