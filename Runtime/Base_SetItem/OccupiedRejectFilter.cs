@@ -11,7 +11,10 @@ namespace Lookloop.ItemManager
     {
         public override bool CanExchange(Item incoming, Item outgoing)
         {
-            return incoming.Id == 1 || incoming.Id == 3;
+            bool ok = incoming.Id == 1 || incoming.Id == 3;
+            if (!ok)
+                core.ShowTip("交换失败");
+            return ok;
         }
     }
 }
