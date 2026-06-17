@@ -20,10 +20,15 @@ public partial class Core
             || srcC.itemFilter.CanExchange(tgtItem, srcItem);
         bool tgtOk = tgtC.itemFilter == null
             || tgtC.itemFilter.CanExchange(srcItem, tgtItem);
-        if (!srcOk || !tgtOk) return;
+        if (!srcOk || !tgtOk)
+        {
+            ShowTip("交换失败", 0.5f, UnityEngine.Color.red);
+            return;
+        }
 
         SetItem(srcC, srcKey, tgtItem);
         SetItem(tgtC, tgtKey, srcItem);
+        ShowTip("交换成功", 0.5f, UnityEngine.Color.green);
     }
 }
 }
