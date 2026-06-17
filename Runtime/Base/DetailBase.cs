@@ -10,6 +10,8 @@ namespace Lookloop.ItemManager
     /// </summary>
     public abstract class DetailBase : MonoBehaviour
     {
-        public abstract Task Fill(Core core, Container container, int itemKey);
+        [System.NonSerialized] public Core core;
+
+        public abstract Task Fill(Container container, int itemKey);
     }
 }

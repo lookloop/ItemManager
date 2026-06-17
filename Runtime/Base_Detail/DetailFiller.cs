@@ -20,7 +20,7 @@ namespace Lookloop.ItemManager
         public TMP_Text attributesText;
         public TMP_Text introductionText;
 
-        public override async Task Fill(Core core, Container container, int itemKey)
+        public override async Task Fill(Container container, int itemKey)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace Lookloop.ItemManager
                 tierText.text = item.Tier.ToString();
                 introductionText.text = table.ItemDescription;
 
-                PositionAtCell(core, container, itemKey);
+                PositionAtCell(container, itemKey);
                 gameObject.SetActive(true);
             }
             catch (System.Exception ex)
@@ -46,7 +46,7 @@ namespace Lookloop.ItemManager
             }
         }
 
-        void PositionAtCell(Core core, Container container, int itemKey)
+        void PositionAtCell(Container container, int itemKey)
         {
             int cellKey = itemKey - container.cells.Length * (container.currentPage - 1);
             if (cellKey < 0 || cellKey >= container.cells.Length) return;

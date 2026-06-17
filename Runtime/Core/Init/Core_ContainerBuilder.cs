@@ -14,6 +14,8 @@ public partial class Core
         {
             var container = new Container();
             container.itemFilter = specs[i].itemFilter;
+            if (container.itemFilter != null)
+                container.itemFilter.core = this;
             container.containerIndex = i;
             containers[i] = container;
 
@@ -245,6 +247,8 @@ public partial class Core
         if (spec.detailRect == null) return;
         container.detailRect = Instantiate(spec.detailRect, canvas.transform);
         container.detailFiller = container.detailRect.GetComponent<DetailBase>();
+        if (container.detailFiller != null)
+            container.detailFiller.core = this;
         container.detailRect.gameObject.SetActive(false);
     }
 
