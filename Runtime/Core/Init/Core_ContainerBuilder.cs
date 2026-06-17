@@ -15,7 +15,10 @@ public partial class Core
             var container = new Container();
             container.itemFilter = specs[i].itemFilter;
             if (container.itemFilter != null)
+            {
                 container.itemFilter.core = this;
+                container.itemFilter.container = container;
+            }
             container.containerIndex = i;
             containers[i] = container;
 

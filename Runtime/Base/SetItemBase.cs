@@ -31,6 +31,7 @@ namespace Lookloop.ItemManager
     public class SetItemBase
     {
         [System.NonSerialized] public Core core;
+        [System.NonSerialized] public Container container;
 
         /// <summary>
         /// Pre-exchange admission check. Called bidirectionally during a swap.
