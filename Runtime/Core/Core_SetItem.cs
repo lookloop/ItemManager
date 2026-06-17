@@ -13,6 +13,13 @@ public partial class Core
 
     public void SetItem(Container container, int itemKey, Item item)
     {
+        var outgoing = container.items[itemKey];
+
+        // Admission check — incoming must pass the container's filter
+        if (container.itemFilter != null
+            && !container.itemFilter.CanExchange(item, outgoing))
+            return;
+
         container.items[itemKey] = item;
 
         // Notify the filter that data has changed
